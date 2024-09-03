@@ -1,7 +1,7 @@
-# About the eCLLA project
+# About the Liturgica Poloniae project
 
-eCLLA project - an online catalog and Integrated Tool for the Study of Latin Liturgical Manuscripts.
-CLLA stands for Codices Liturgici Latini Antiquiores.
+This repository contains the latest version of the online platform for manuscript analysis, which is being developed as part of the Liturgica Poloniae project for the Institute of Art of the Polish Academy of Sciences (Instytut Sztuki Polskiej Akademii Nauk).
+The base for the development is the code of the platform, which was previously developed as part of the eCLLA+ project ( https://github.com/TutajITeraz/eCLLA_Plus/ )
 
 The project aims to create an interactive catalog of Latin liturgical manuscripts available via the website. This catalog will contain a general description of the manuscript, its bibliography, and will also enable the introduction of information about its contents regarding many different disciplines (rites, formulas, liturgy, codicology, musicology, decoration, paleography and others).
 
