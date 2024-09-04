@@ -166,3 +166,4 @@ cython_debug/
 ritus_indexer/settings.py
 indexerapp/migrations/
 ritus_indexer/settings.py
+ritus_indexer/settings.py
