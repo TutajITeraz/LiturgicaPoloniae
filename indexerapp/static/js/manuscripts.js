@@ -22,8 +22,11 @@ manuscripts_init = function()
 
     $('#ms_name_select').select2({
         ajax: {
-            url: '/manuscripts-autocomplete/',
-            dataType: 'json'
+            url: pageRoot+'/manuscripts-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
             // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
           },
           allowClear: true,
@@ -34,8 +37,11 @@ manuscripts_init = function()
 
     $('#ms_foreign_id_select').select2({
         ajax: {
-            url: '/ms-foreign-id-autocomplete/',
-            dataType: 'json'
+            url: pageRoot+'/ms-foreign-id-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
             // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
           },
           allowClear: true,
@@ -46,8 +52,11 @@ manuscripts_init = function()
 
     $('#ms_contemporary_repository_place_select').select2({
         ajax: {
-            url: '/ms-contemporary-repository-place-autocomplete/',
-            dataType: 'json'
+            url: pageRoot+'/ms-contemporary-repository-place-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
             // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
         },
     	formatSelection: function(selected, total) {
@@ -61,8 +70,11 @@ manuscripts_init = function()
     // ms_shelfmark_select 'ms-shelf-mark-autocomplete/
     $('#ms_shelfmark_select').select2({
         ajax: {
-            url: '/ms-shelf-mark-autocomplete/',
-            dataType: 'json'
+            url: pageRoot+'/ms-shelf-mark-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
             // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
           },
           allowClear: true,
@@ -74,7 +86,10 @@ manuscripts_init = function()
     $('#ms_dating_select').select2({
         ajax: {
             url: '/ms-dating-autocomplete/',
-            dataType: 'json'
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
             // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
           },
           allowClear: true,
@@ -85,8 +100,11 @@ manuscripts_init = function()
     // ms_place_of_origins_select ms-place-of-origins-autocomplete/
     $('#ms_place_of_origins_select').select2({
         ajax: {
-            url: '/ms-place-of-origins-autocomplete/',
-            dataType: 'json'
+            url: pageRoot+'/ms-place-of-origins-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
             // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
           },
           allowClear: true,
@@ -99,7 +117,10 @@ manuscripts_init = function()
     $('#ms_main_script_select').select2({
         ajax: {
             url: '/ms-main-script-autocomplete/',
-            dataType: 'json'
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
             // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
           },
           allowClear: true,
@@ -114,7 +135,10 @@ manuscripts_init = function()
     $('#ms_binding_date_select').select2({
         ajax: {
             url: '/ms-binding-date-autocomplete/',
-            dataType: 'json'
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
             // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
           },
           allowClear: true,
@@ -151,8 +175,11 @@ manuscripts_init = function()
     //New select2 with remote options (json):
     $('#parchment_colour_select').select2({
         ajax: {
-            url: '/colours-autocomplete/',
-            dataType: 'json'
+            url: pageRoot+'/colours-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
             // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
           },
           allowClear: true,
@@ -162,8 +189,11 @@ manuscripts_init = function()
 
     $('#main_script_select').select2({
         ajax: {
-            url: '/script-names-autocomplete/',
-            dataType: 'json'
+            url: pageRoot+'/script-names-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
             // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
           },
           allowClear: true,
@@ -173,8 +203,11 @@ manuscripts_init = function()
 
     $('#script_name_select').select2({
         ajax: {
-            url: '/script-names-autocomplete/',
-            dataType: 'json'
+            url: pageRoot+'/script-names-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
             // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
           },
           allowClear: true,
@@ -185,8 +218,11 @@ manuscripts_init = function()
 
     $('#binding_place_of_origin_select').select2({
         ajax: {
-            url: '/places-autocomplete/',
-            dataType: 'json'
+            url: pageRoot+'/places-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
             // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
           },
           allowClear: true,
@@ -196,8 +232,11 @@ manuscripts_init = function()
 
     $('#binding_type_select').select2({
         ajax: {
-            url: '/binding-types-autocomplete/',
-            dataType: 'json'
+            url: pageRoot+'/binding-types-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
             // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
           },
           allowClear: true,
@@ -208,8 +247,11 @@ manuscripts_init = function()
 
     $('#binding_style_select').select2({
         ajax: {
-            url: '/binding-styles-autocomplete/',
-            dataType: 'json'
+            url: pageRoot+'/binding-styles-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
             // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
           },
           allowClear: true,
@@ -219,8 +261,11 @@ manuscripts_init = function()
 
     $('#binding_material_select').select2({
         ajax: {
-            url: '/binding-materials-autocomplete/',
-            dataType: 'json'
+            url: pageRoot+'/binding-materials-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
             // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
           },
           allowClear: true,
@@ -229,10 +274,43 @@ manuscripts_init = function()
     //$('#binding_material_select').on('select2:select', processFilters);
 
 
+    $('#formula_select').select2({
+        ajax: {
+            url: pageRoot+'/formulas-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
+            // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
+          },
+          allowClear: true,
+          placeholder: '',
+    });
+    //$('#provenance_place_select').on('select2:select', processFilters);
+
+
+    $('#rite_select').select2({
+        ajax: {
+            url: pageRoot+'/ritenames-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
+            // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
+          },
+          allowClear: true,
+          placeholder: '',
+    });
+    //$('#provenance_place_select').on('select2:select', processFilters);
+
+
     $('#provenance_place_select').select2({
         ajax: {
-            url: '/places-autocomplete/',
-            dataType: 'json'
+            url: pageRoot+'/places-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
             // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
           },
           allowClear: true,
@@ -243,8 +321,11 @@ manuscripts_init = function()
 
     $('#title_select').select2({
         ajax: {
-            url: '/bibliography-title-autocomplete/',
-            dataType: 'json'
+            url: pageRoot+'/bibliography-title-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
             // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
           },
           allowClear: true,
@@ -255,8 +336,11 @@ manuscripts_init = function()
 
     $('#author_select').select2({
         ajax: {
-            url: '/bibliography-author-autocomplete/',
-            dataType: 'json'
+            url: pageRoot+'/bibliography-author-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
             // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
           },
           allowClear: true,
@@ -264,6 +348,33 @@ manuscripts_init = function()
     });
     //$('#author_select').on('select2:select', processFilters);
 
+
+    $('#clla_liturgical_genre_select').select2({
+        ajax: {
+            url: pageRoot+'/clla-liturgical-genre-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
+            // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
+          },
+          allowClear: true,
+          placeholder: '',
+    });
+
+
+    $('#clla_provenance_place_select').select2({
+        ajax: {
+            url: pageRoot+'/clla-provenance-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
+            // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
+          },
+          allowClear: true,
+          placeholder: '',
+    });
 
     //Unselecting:
 
@@ -317,6 +428,12 @@ manuscripts_init = function()
     $('#digitized_false').on( "change", processFilters );
     $('#ms_dating_min').on("change", processFilters);
     $('#ms_dating_max').on("change", processFilters);
+    $('#ms_dating_years_min').on("change", processFilters);
+    $('#ms_dating_years_max').on("change", processFilters);
+    $('#clla_dating_min').on("change", processFilters);
+    $('#clla_dating_max').on("change", processFilters);
+    $('#clla_dating_years_min').on("change", processFilters);
+    $('#clla_dating_years_max').on("change", processFilters);
     $('#number_of_parchment_folios_min').on("change", processFilters);
     $('#number_of_parchment_folios_max').on("change", processFilters);
     $('#ms_binding_date_min').on("change", processFilters);
@@ -352,6 +469,8 @@ manuscripts_init = function()
     $('#binding_type_select').on("change", processFilters);
     $('#binding_style_select').on("change", processFilters);
     $('#binding_material_select').on("change", processFilters);
+    $('#formula_select').on("change", processFilters);
+    $('#rite_select').on("change", processFilters);
     $('#binding_decoration_true').on("change", processFilters);
     $('#damage_select').on("change", processFilters);
     $('#parchment_shrinkage_true').on("change", processFilters);
@@ -363,6 +482,10 @@ manuscripts_init = function()
     $('#provenance_place_select').on("change", processFilters);
     $('#title_select').on("change", processFilters);
     $('#author_select').on("change", processFilters);
+    $('#clla_liturgical_genre_select').on("change", processFilters);
+    $('#clla_provenance_place_select').on("change", processFilters);
+
+
     $('#paper_leafs_false').on("change", processFilters);
     $('#parchment_thickness_max').on("change", processFilters);
     $('#page_size_wh_max').on("change", processFilters);
@@ -383,7 +506,10 @@ manuscripts_init = function()
     $('#copper_corrosion_false').on("change", processFilters);
     $('#powdering_or_cracking_paint_layer_false').on("change", processFilters);
     $('#conservation_false').on("change", processFilters);
+    $('#formula_text').on("change", processFilters);
+    $('#clla_no').on("change", processFilters);
 
+    $('#rite_name_from_ms').on("change", processFilters);
 
     var getFilterData = function(d)
     {    
@@ -412,6 +538,13 @@ manuscripts_init = function()
 
         d.dating_min = $('#ms_dating_min').val();
         d.dating_max = $('#ms_dating_max').val();
+        //d.dating_years_min = $('#ms_dating_years_min').val();
+        //d.dating_years_max = $('#ms_dating_years_max').val();
+        //d.clla_dating_max = $('#clla_dating_max').val();
+        //d.clla_dating_years_min = $('#clla_dating_years_min').val();
+        //d.clla_dating_min = $('#clla_dating_min').val();
+        //d.clla_dating_years_max = $('#clla_dating_years_max').val();
+
         d.number_of_parchment_folios_min = $('#number_of_parchment_folios_min').val();
         d.number_of_parchment_folios_max = $('#number_of_parchment_folios_max').val();
 
@@ -477,19 +610,30 @@ manuscripts_init = function()
         d.binding_type_select = $('#binding_type_select').select2('data').map(item => item.id).join(';');
         d.binding_style_select = $('#binding_style_select').select2('data').map(item => item.id).join(';');
         d.binding_material_select = $('#binding_material_select').select2('data').map(item => item.id).join(';');
+        d.formula_select = $('#formula_select').select2('data').map(item => item.id).join(';');
+        d.rite_select = $('#rite_select').select2('data').map(item => item.id).join(';');
         d.damage_select = $('#damage_select').select2('data').map(item => item.id).join(';');
         d.provenance_place_select = $('#provenance_place_select').select2('data').map(item => item.id).join(';');
         d.title_select = $('#title_select').select2('data').map(item => item.id).join(';');
         //Special case (authors does not have .id)
         d.author_select = $('#author_select').select2('data').map(item => item.text).join(';');
 
+        //d.clla_liturgical_genre_select = $('#clla_liturgical_genre_select').select2('data').map(item => item.text).join(';');
+        //d.clla_provenance_place_select = $('#clla_provenance_place_select').select2('data').map(item => item.text).join(';');
+
+        d.formula_text = $('#formula_text').val();
+        d.rite_name_from_ms = $('#rite_name_from_ms').val();
+        //d.clla_no = $('#clla_no').val();
+
         d.display_as_main_true = $('#display_as_main_true').is(':checked');
         d.display_as_main_false = $('#display_as_main_false').is(':checked');
+
+        d.projectId = projectId;
     }
 
     var manuscripts_table = $('#manuscripts').DataTable({
         "ajax": {
-            "url": "/api/manuscripts/?format=datatables", // Add your URL here
+            "url": pageRoot+"/api/manuscripts/?format=datatables", // Add your URL here
             "dataSrc": function (data) {
                 var processedData=[]
 
@@ -522,7 +666,7 @@ manuscripts_init = function()
                 if(oData.image.length > 3)
                     $(nTd).html("<img src='"+oData.image+"' style='max-heigth: 120px; max-width: 120px;'></img>");
             }},
-            { "data": "foreign_id", "title": "CLLA no." },
+            { "data": "foreign_id", "title": foreign_id_name },
             { "data": "contemporary_repository_place", "title": "Contemporary Repository Place" },
             { "data": "shelf_mark", "title": "Shelf Mark" },
             { "data": "place_of_origins", "title": "Place of Origins" },

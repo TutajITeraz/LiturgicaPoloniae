@@ -6,7 +6,7 @@ content_comparator_init = function()
 
     var content_table_left = $('#content_left').DataTable({
         "ajax": {
-            "url": "/api/content/?format=datatables", // Add your URL here
+            "url": pageRoot+"/api/content/?format=datatables", // Add your URL here
             "dataSrc": function (data) {
                 var processedData=[]
 
@@ -61,6 +61,14 @@ content_comparator_init = function()
 
 
             { "data": "sequence_in_ms", "title": "Sequence in MS" },
+            { "data": "proper_texts", "title": "Proper texts", searchable: false },
+
+
+
+            { "data": 'subrite_name_from_ms', "title": "Subrite name from MS", searchable: false },
+            { "data": 'edition_index', "title": "Edition Index", searchable: false },
+            { "data": 'edition_subindex', "title": "Edition Subindex", searchable: false },
+
 
             { "data": "authors", "title": "Authors" },
             { "data": "data_contributor", "title": "Data contributor" }
@@ -78,8 +86,11 @@ content_comparator_init = function()
 
     $('.manuscript_filter_left').select2({
         ajax: {
-            url: '/manuscripts-autocomplete/',
-            dataType: 'json'
+            url: pageRoot+'/manuscripts-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
             // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
           }
     });
@@ -100,7 +111,7 @@ content_comparator_init = function()
 
     var content_table_right = $('#content_right').DataTable({
         "ajax": {
-            "url": "/api/content/?format=datatables", // Add your URL here
+            "url": pageRoot+"/api/content/?format=datatables", // Add your URL here
             "dataSrc": function (data) {
                 var processedData=[]
 
@@ -155,6 +166,14 @@ content_comparator_init = function()
 
 
             { "data": "sequence_in_ms", "title": "Sequence in MS" },
+            { "data": "proper_texts", "title": "Proper texts", searchable: false },
+
+
+
+            { "data": 'subrite_name_from_ms', "title": "Subrite name from MS", searchable: false },
+            { "data": 'edition_index', "title": "Edition Index", searchable: false },
+            { "data": 'edition_subindex', "title": "Edition Subindex", searchable: false },
+
 
             { "data": "authors", "title": "Authors" },
             { "data": "data_contributor", "title": "Data contributor" }
@@ -171,8 +190,11 @@ content_comparator_init = function()
 
     $('.manuscript_filter_right').select2({
         ajax: {
-            url: '/manuscripts-autocomplete/',
-            dataType: 'json'
+            url: pageRoot+'/manuscripts-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
             // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
           }
     });
@@ -189,7 +211,7 @@ content_comparator_init = function()
     $('#compareButton').click(function() {
         var leftId = $('.manuscript_filter_left').val();
         var rightId = $('.manuscript_filter_right').val();
-        var url = "/compare_graph/?left=" + leftId + "&right=" + rightId;
+        var url = pageRoot+"/compare_graph/?left=" + leftId + "&right=" + rightId;
         window.open(url, '_blank');
     });
 
@@ -197,7 +219,7 @@ content_comparator_init = function()
     $('#compareEditionButton').click(function() {
         var leftId = $('.manuscript_filter_left').val();
         var rightId = $('.manuscript_filter_right').val();
-        var url = "/compare_edition_graph/?left=" + leftId + "&right=" + rightId;
+        var url = pageRoot+"/compare_edition_graph/?left=" + leftId + "&right=" + rightId;
         window.open(url, '_blank');
     });
 
@@ -211,6 +233,11 @@ content_comparator_init = function()
     //RESIZER:
     const leftColumn = document.getElementById("leftColumn");
     const rightColumn = document.getElementById("rightColumn");
+
+    leftColumn.style.width = `49%`;
+    rightColumn.style.width = `49%`;
+
+
     const resizer = document.getElementById("resizer");
     let isResizing = false;
 
@@ -238,8 +265,8 @@ content_comparator_init = function()
             
             const containerWidth = leftColumn.offsetWidth + rightColumn.offsetWidth;
 
-            leftColumn.style.width = `${newLeftWidth}%`;
-            rightColumn.style.width = `${100 - newLeftWidth}%`;
+            leftColumn.style.width = `${newLeftWidth-1}%`;
+            rightColumn.style.width = `${100 - newLeftWidth-1}%`;
 
             console.log(newLeftWidth);
 

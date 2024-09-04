@@ -621,8 +621,11 @@ importer_init = function()
 
     $('.manuscript_filter').select2({
         ajax: {
-            url: '/manuscripts-autocomplete/',
-            dataType: 'json'
+            url: pageRoot+'/manuscripts-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
             // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
           }
     });
@@ -641,8 +644,11 @@ importer_init = function()
 
     $('.contributor_filter').select2({
         ajax: {
-            url: '/contributors-autocomplete/',
-            dataType: 'json'
+            url: pageRoot+'/contributors-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
             // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
           }
     });

@@ -61,15 +61,18 @@ async function getAndShowSimilarMSbyEditionIndex(id,name)
 
 async function getSimilarMSbyEditionIndex(id) 
 {
-    return fetchOnce(`/rites_lookup/?ms=${id}`);
+    return fetchOnce(pageRoot+`/rites_lookup/?ms=${id}`);
 }
 
 content_init = function()
 {
     $('.manuscript_filter').select2({
         ajax: {
-            url: '/manuscripts-autocomplete/',
-            dataType: 'json'
+            url: pageRoot+'/manuscripts-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
             // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
           }
     });

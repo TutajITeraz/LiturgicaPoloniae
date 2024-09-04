@@ -8,7 +8,11 @@ manuscriptId = urlParams.get('id')
 
 
 async function getMSInfo() {
-  return fetchOnce(`/ms_info/?pk=${manuscriptId}`);
+  return fetchOnce(pageRoot+`/ms_info/?pk=${manuscriptId}`);
+}
+
+async function getTEIUrl() {
+    return pageRoot+'/ms_tei/?ms='+(await getMSInfo()).manuscript.id;
 }
 
 async function getMSInfoFiltered() {
@@ -53,7 +57,7 @@ async function getMSInfoFiltered() {
 }
 
 async function getCodicologyInfo() {
-    return fetchOnce(`/codicology_info/?pk=${manuscriptId}`);
+    return fetchOnce(pageRoot+`/codicology_info/?pk=${manuscriptId}`);
 }
 
 async function getCodicologyFiltered(){
@@ -89,7 +93,7 @@ async function getCodicologyFiltered(){
 }
 
 async function getProvenanceInfo() {
-    return fetchOnce(`/provenance_info/?ms=${manuscriptId}`);
+    return fetchOnce(pageRoot+`/provenance_info/?ms=${manuscriptId}`);
 }
 
 
@@ -111,7 +115,7 @@ async function getProvenanceColumns()
 }
 
 async function getBibliographyInfo() {
-    return fetchOnce(`/bibliography_info/?ms=${manuscriptId}`);
+    return fetchOnce(pageRoot+`/bibliography_info/?ms=${manuscriptId}`);
 }
 
 async function getBooksHTML() {
@@ -126,27 +130,27 @@ async function getBooksHTML() {
 }
 
 async function getDecorationInfo() {
-    return fetchOnce(`/decoration_info/?ms=${manuscriptId}`); 
+    return fetchOnce(pageRoot+`/decoration_info/?ms=${manuscriptId}`); 
 }
 async function getQuiresInfo() {
-    return fetchOnce(`/quires_info/?ms=${manuscriptId}`);
+    return fetchOnce(pageRoot+`/quires_info/?ms=${manuscriptId}`);
 }
 async function getConditionInfo() {
-    return fetchOnce(`/condition_info/?ms=${manuscriptId}`);
+    return fetchOnce(pageRoot+`/condition_info/?ms=${manuscriptId}`);
 }
 async function getCLLAInfo() {
-    return fetchOnce(`/clla_info/?ms=${manuscriptId}`);
+    return fetchOnce(pageRoot+`/clla_info/?ms=${manuscriptId}`);
 }
 async function getOriginsInfo() {
-    return fetchOnce(`/origins_info/?ms=${manuscriptId}`);
+    return fetchOnce(pageRoot+`/origins_info/?ms=${manuscriptId}`);
 }
 
 async function getBindingInfo() {
-    return fetchOnce(`/binding_info/?ms=${manuscriptId}`);
+    return fetchOnce(pageRoot+`/binding_info/?ms=${manuscriptId}`);
 }
 
 async function getMusicNotationInfo() {
-    return fetchOnce(`/music_notation_info/?ms=${manuscriptId}`);
+    return fetchOnce(pageRoot+`/music_notation_info/?ms=${manuscriptId}`);
 }
 
 /*
@@ -155,8 +159,12 @@ async function getHandsInfo() {
 }
 */
 async function getWatermarksInfo() {
-    return fetchOnce(`/watermarks_info/?ms=${manuscriptId}`);
+    return fetchOnce(pageRoot+`/watermarks_info/?ms=${manuscriptId}`);
 }
+async function getBibliographyPrintableInfo() {
+    return fetchOnce(pageRoot+`/bibliography_print/?ms=${manuscriptId}`);
+}
+
 
 
 // LAYOUTS
@@ -166,7 +174,7 @@ function init_layouts_table()
 {
     layouts_table = $('#layouts').DataTable({
         "ajax": {
-            "url": '/layouts_info/?ms=' + manuscriptId,
+            "url": pageRoot+'/layouts_info/?ms=' + manuscriptId,
             "dataSrc": function (data) {
                 return data.data;
             }
@@ -187,8 +195,29 @@ function init_layouts_table()
                 "visible": false
             },
             { "data": "name", "title": "Name" },
-            { "data": "where_in_ms_from", "title": "Where in MS From" },
-            { "data": "where_in_ms_to","title": "Where in MS To" },
+            { "data": "where_in_ms_from", "title": "Where in MS From" , "visible": false },
+            { "data": "where_in_ms_to","title": "Where in MS To" , "visible": false },
+            {
+                "data": "where",
+                "title": "Where in MS",
+                "render": function (data, type, row, meta) {
+                    //let fromIndex = findCanvasIndexByLabel(row.where_in_ms_from);
+                    //let toIndex = findCanvasIndexByLabel(row.where_in_ms_to);
+
+                    let fromText = row.where_in_ms_from;
+                    let toText = row.where_in_ms_to;
+
+                    //if(fromIndex)
+                        fromText = '<a  onclick="goToCanvasByLabel(\''+row.where_in_ms_from+'\')">'+row.where_in_ms_from+'</a>';
+
+                    //if(toIndex)
+                        toText = '<a  onclick="goToCanvasByLabel(\''+row.where_in_ms_to+'\')">'+row.where_in_ms_to+'</a>';
+
+                    if(row.where_in_ms_from == row.where_in_ms_to || row.where_in_ms_to == '-')
+                        return fromText;
+                    return fromText +' - '+ toText;
+                }
+            },
             { "data": "how_many_columns","title": "How Many Columns" },
             { "data": "lines_per_page_minimum", "title": "Lines per Page (min)", "visible": false },
             { "data": "lines_per_page_maximum", "title": "Lines per Page (max)", "visible": false },
@@ -250,7 +279,7 @@ function displayUniqueLayouts(dataTable, targetSelector) {
         if (uniqueLayouts.hasOwnProperty(key)) {
             var layout = uniqueLayouts[key];
             var layoutDiv = $('<div class="layout">');
-            var img = $('<img>').attr('src', '/media/'+layout.graph_img).attr('alt', layout.name).css('max-width', '200px');
+            var img = $('<img>').attr('src', pageRoot+'/media/'+layout.graph_img).attr('alt', layout.name).css('max-width', '200px');
             var name = $('<p>').text(layout.name).css('text-align', 'center');
 
             layoutDiv.append(img, name);
@@ -268,7 +297,7 @@ function init_music_table()
 {
     music_table = $('#music_notation').DataTable({
         "ajax": {
-            "url": '/music_notation_info/?ms=' + manuscriptId,
+            "url": pageRoot+'/music_notation_info/?ms=' + manuscriptId,
             "dataSrc": function (data) {
                 return data.data;
             }
@@ -276,8 +305,29 @@ function init_music_table()
         "columns": [
             { "data": "music_notation_name", "title": "Music Notation Name" },
             { "data": "sequence_in_ms", "title": "Sequence in MS" },
-            { "data": "where_in_ms_from", "title": "Where in MS From" },
-            { "data": "where_in_ms_to", "title": "Where in MS To" },
+            { "data": "where_in_ms_from", "title": "Where in MS From" , "visible": false },
+            { "data": "where_in_ms_to","title": "Where in MS To" , "visible": false },
+            {
+                "data": "where",
+                "title": "Where in MS",
+                "render": function (data, type, row, meta) {
+                    //let fromIndex = findCanvasIndexByLabel(row.where_in_ms_from);
+                    //let toIndex = findCanvasIndexByLabel(row.where_in_ms_to);
+
+                    let fromText = row.where_in_ms_from;
+                    let toText = row.where_in_ms_to;
+
+                    //if(fromIndex)
+                        fromText = '<a  onclick="goToCanvasByLabel(\''+row.where_in_ms_from+'\')">'+row.where_in_ms_from+'</a>';
+
+                    //if(toIndex)
+                        toText = '<a  onclick="goToCanvasByLabel(\''+row.where_in_ms_to+'\')">'+row.where_in_ms_to+'</a>';
+
+                    if(row.where_in_ms_from == row.where_in_ms_to || row.where_in_ms_to == '-')
+                        return fromText;
+                    return fromText +' - '+ toText;
+                }
+            },
             { "data": "dating", "title": "Dating" },
             { "data": "original", "title": "Original" },
             { "data": "on_lines", "title": "On Lines" },
@@ -300,7 +350,7 @@ function init_content_table()
 {
     content_table = $('#content').DataTable({
         "ajax": {
-            "url": "/api/content/?format=datatables", // Add your URL here
+            "url": pageRoot+"/api/content/?format=datatables", // Add your URL here
             "dataSrc": function (data) {
                 var processedData=[]
 
@@ -330,9 +380,21 @@ function init_content_table()
                 "data": "where",
                 "title": "Where in MS",
                 "render": function (data, type, row, meta) {
+                    //let fromIndex = findCanvasIndexByLabel(row.where_in_ms_from);
+                    //let toIndex = findCanvasIndexByLabel(row.where_in_ms_to);
+
+                    let fromText = row.where_in_ms_from;
+                    let toText = row.where_in_ms_to;
+
+                    //if(fromIndex)
+                        fromText = '<a  onclick="goToCanvasByLabel(\''+row.where_in_ms_from+'\')">'+row.where_in_ms_from+'</a>';
+
+                    //if(toIndex)
+                        toText = '<a  onclick="goToCanvasByLabel(\''+row.where_in_ms_to+'\')">'+row.where_in_ms_to+'</a>';
+
                     if(row.where_in_ms_from == row.where_in_ms_to || row.where_in_ms_to == '-')
-                        return row.where_in_ms_from;
-                    return row.where_in_ms_from +' - '+ row.where_in_ms_to;
+                        return fromText;
+                    return fromText +' - '+ toText;
                 }
             },
             { "data": "rite_name_from_ms", "title": "Rite name from MS" },
@@ -372,6 +434,7 @@ function init_content_table()
             { "data": "music_notation", "title": "Music Notation" , "visible": false },
             { "data": "sequence_in_ms", "title": "Sequence in MS" , "visible": false },
             { "data": "original_or_added", "title": "Original or Added", "visible": false },
+            { "data": "proper_texts", "title": "Proper texts"},
 
             { "data": "authors", "title": "Authors", "visible": false },
             { "data": "data_contributor", "title": "Data contributor", "visible": false },
@@ -390,12 +453,13 @@ function init_content_table()
         },
         "initComplete": function(settings, json)  {
             displayUniqueAuthorsAndContributors(content_table,"#content");
+            displaOriginalAddedLegend(content_table,"#content");
 
             // Get column information from DataTable settings
             var columns = settings.aoColumns;
 
             // Column names to check for null values
-            var columnsToCheck = ["function", "subfunction", "biblical_reference", "subsection", "quire"];
+            var columnsToCheck = ["function", "subfunction", "biblical_reference", "subsection", "quire", "similarity_by_user",  "proper_texts", "formula_text"];
 
             // Get the DataTable instance
             var table = this;
@@ -411,7 +475,16 @@ function init_content_table()
                     // Set column visibility based on null values
                     settings.oInstance.api().column(columnIndex).visible(isVisible);
                 }
+                else if(column.data == "similarity_levenshtein_percent")
+                {
+                    var isVisible = json.data.some(function(row) {
+                        return !( row[column.data] == 0 || row[column.data] == null );
+                    });
+                    settings.oInstance.api().column(columnIndex).visible(isVisible);
+                }
             });
+
+
         }
     });
     content_table.columns(0).search(manuscriptId).draw()
@@ -423,7 +496,7 @@ function init_quires_table()
 {
     quires_table = $('#quires').DataTable({
         "ajax": {
-            "url": '/quires_info/?ms=' + manuscriptId,
+            "url": pageRoot+'/quires_info/?ms=' + manuscriptId,
             "dataSrc": function (data) {
                 return data.data;
             }
@@ -450,9 +523,21 @@ function init_quires_table()
                 "data": "where",
                 "title": "Where in MS",
                 "render": function (data, type, row, meta) {
+                    //let fromIndex = findCanvasIndexByLabel(row.where_in_ms_from);
+                    //let toIndex = findCanvasIndexByLabel(row.where_in_ms_to);
+
+                    let fromText = row.where_in_ms_from;
+                    let toText = row.where_in_ms_to;
+
+                    //if(fromIndex)
+                        fromText = '<a  onclick="goToCanvasByLabel(\''+row.where_in_ms_from+'\')">'+row.where_in_ms_from+'</a>';
+
+                    //if(toIndex)
+                        toText = '<a  onclick="goToCanvasByLabel(\''+row.where_in_ms_to+'\')">'+row.where_in_ms_to+'</a>';
+
                     if(row.where_in_ms_from == row.where_in_ms_to || row.where_in_ms_to == '-')
-                        return row.where_in_ms_from;
-                    return row.where_in_ms_from +' - '+ row.where_in_ms_to;
+                        return fromText;
+                    return fromText +' - '+ toText;
                 }
             },
             { "data": "comment", "title": "Comment" },
@@ -474,15 +559,18 @@ var decoration_table
 
 function init_decoration_table()
 { 
+    var decoration_groupColumn = 0;
     decoration_table = $('#decoration').DataTable({
         "ajax": {
-            "url": '/decoration_info/?ms=' + manuscriptId,
+            "url": pageRoot+'/decoration_info/?ms=' + manuscriptId,
             "dataSrc": function (data) {
                 return data.data;
             }
         },
         "columns": [
-            { "data": "decoration_type", "title": "Decoration type" },
+            { "data": "id", "title": "id"  , "visible": false },
+            { "data": "decoration_type", "title": "Decoration type"  , "visible": false },
+            { "data": "decoration_subtype", "title": "Decoration subtype" },
             { "data": "size_height", "title": "Size - height" , "visible": false },
             { "data": "size_width", "title": "Size - width" , "visible": false },
             {
@@ -500,9 +588,21 @@ function init_decoration_table()
                 "data": "where",
                 "title": "Where in MS",
                 "render": function (data, type, row, meta) {
+                    //let fromIndex = findCanvasIndexByLabel(row.where_in_ms_from);
+                    //let toIndex = findCanvasIndexByLabel(row.where_in_ms_to);
+
+                    let fromText = row.where_in_ms_from;
+                    let toText = row.where_in_ms_to;
+
+                    //if(fromIndex)
+                        fromText = '<a  onclick="goToCanvasByLabel(\''+row.where_in_ms_from+'\')">'+row.where_in_ms_from+'</a>';
+
+                    //if(toIndex)
+                        toText = '<a  onclick="goToCanvasByLabel(\''+row.where_in_ms_to+'\')">'+row.where_in_ms_to+'</a>';
+
                     if(row.where_in_ms_from == row.where_in_ms_to || row.where_in_ms_to == '-')
-                        return row.where_in_ms_from;
-                    return row.where_in_ms_from +' - '+ row.where_in_ms_to;
+                        return fromText;
+                    return fromText +' - '+ toText;
                 }
             },
             { "data": "location_characteristic", "title": "Location Characteristic" },
@@ -516,10 +616,33 @@ function init_decoration_table()
             { "data": "data_contributor", "title": "Data contributor" , "visible": false },
         ],
         "order": [
+            [ decoration_groupColumn, 'asc' ],
             { "data": "where_in_ms_from", "order": "asc" }      // Then sort by the "manuscript" column in descending order
         ],
         "initComplete": function() {
+            displayDebate(decoration_table,"#decoration");
             displayUniqueAuthorsAndContributors(decoration_table,"#decoration");
+        },
+        "drawCallback": function (settings) {
+            var api = this.api();
+            var rows = api.rows({ page: 'current' }).nodes();
+            var last = null;
+     
+            api.column(decoration_groupColumn, { page: 'current' })
+                .data()
+                .each(function (group, i) {
+                    if (last !== group) {
+                        $(rows)
+                            .eq(i)
+                            .before(
+                                '<tr class="table_group"><td colspan="9">' +
+                                    group +
+                                    '</td></tr>'
+                            );
+     
+                        last = group;
+                    }
+                });
         }
     });
 }
@@ -559,12 +682,13 @@ function init_origins_table()
 {
     origins_table = $('#origins').DataTable({
         "ajax": {
-            "url": '/origins_info/?ms=' + manuscriptId,
+            "url": pageRoot+'/origins_info/?ms=' + manuscriptId,
             "dataSrc": function (data) {
                 return data.data;
             }
         },
         "columns": [
+            { "data": "id", "title": "id"  , "visible": false },
             { "data": "origins_date", "title": "Origins date" },
             { "data": "origins_place", "title": "Origins place" },
             { "data": "origins_comment", "title": "Origins comment" },
@@ -573,6 +697,7 @@ function init_origins_table()
             { "data": "data_contributor", "title": "Data contributor", "visible": false }
         ],
         "initComplete": function() {
+            displayDebate(origins_table,"#origins");
             displayUniqueAuthorsAndContributors(origins_table,"#origins");
         }
     });
@@ -611,7 +736,7 @@ function init_binding_materials_table()
 {
     binding_materials_table = $('#binding_materials').DataTable({
         "ajax": {
-            "url": '/binding_materials_info/?ms=' + manuscriptId,
+            "url": pageRoot+'/binding_materials_info/?ms=' + manuscriptId,
             "dataSrc": function (data) {
                 return data.data; 
             }
@@ -628,7 +753,8 @@ function init_main_hands()
 {
     main_hands = $('#main_hands').DataTable({
         "ajax": {
-            "url": "/api/hands/?format=datatables", // Add your URL here
+            //"url": pageRoot+"/api/hands/?format=datatables", // Add your URL here
+            "url": pageRoot+"/hands_info/",
             "type": 'GET',
             "data": function(d) {
                 d.is_main_text = true;
@@ -650,7 +776,8 @@ function init_main_hands()
             }
         },
         "processing": false,
-        "serverSide": true,
+        //"serverSide": true,
+        "serverSide": false,
         "lengthMenu": [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"] ],
         "pagingType": "full_numbers",
         "pageLength": 25,
@@ -664,9 +791,21 @@ function init_main_hands()
                 "data": "where",
                 "title": "Where in MS",
                 "render": function (data, type, row, meta) {
+                    //let fromIndex = findCanvasIndexByLabel(row.where_in_ms_from);
+                    //let toIndex = findCanvasIndexByLabel(row.where_in_ms_to);
+
+                    let fromText = row.where_in_ms_from;
+                    let toText = row.where_in_ms_to;
+
+                    //if(fromIndex)
+                        fromText = '<a  onclick="goToCanvasByLabel(\''+row.where_in_ms_from+'\')">'+row.where_in_ms_from+'</a>';
+
+                    //if(toIndex)
+                        toText = '<a  onclick="goToCanvasByLabel(\''+row.where_in_ms_to+'\')">'+row.where_in_ms_to+'</a>';
+
                     if(row.where_in_ms_from == row.where_in_ms_to || row.where_in_ms_to == '-')
-                        return row.where_in_ms_from;
-                    return row.where_in_ms_from +' - '+ row.where_in_ms_to;
+                        return fromText;
+                    return fromText +' - '+ toText;
                 }
             },
             { "data": "is_medieval", "title": "is medieval?", "visible": false },
@@ -687,7 +826,10 @@ function init_main_hands()
             }
         },
         "initComplete": function() {
+            displayDebate(main_hands,"#main_hands");
+
             displayUniqueAuthorsAndContributors(main_hands,"#main_hands");
+            displayScriptsLegend(main_hands,"#main_hands");
         }
     });
 }
@@ -697,7 +839,8 @@ function init_additions_hands()
 {
     additions_hands = $('#additions_hands').DataTable({
         "ajax": {
-            "url": "/api/hands/?format=datatables", // Add your URL here
+            //"url": pageRoot+"/api/hands/?format=datatables", // Add your URL here
+            "url": pageRoot+"/hands_info/",
             "type": 'GET',
             "data": function(d) {
                 d.is_main_text = false;
@@ -719,7 +862,8 @@ function init_additions_hands()
             }
         },
         "processing": false,
-        "serverSide": true,
+        //"serverSide": true,
+        "serverSide": false,
         "lengthMenu": [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"] ],
         "pagingType": "full_numbers",
         "pageLength": 25,
@@ -733,9 +877,21 @@ function init_additions_hands()
                 "data": "where",
                 "title": "Where in MS",
                 "render": function (data, type, row, meta) {
+                    //let fromIndex = findCanvasIndexByLabel(row.where_in_ms_from);
+                    //let toIndex = findCanvasIndexByLabel(row.where_in_ms_to);
+
+                    let fromText = row.where_in_ms_from;
+                    let toText = row.where_in_ms_to;
+
+                    //if(fromIndex)
+                        fromText = '<a  onclick="goToCanvasByLabel(\''+row.where_in_ms_from+'\')">'+row.where_in_ms_from+'</a>';
+
+                    //if(toIndex)
+                        toText = '<a  onclick="goToCanvasByLabel(\''+row.where_in_ms_to+'\')">'+row.where_in_ms_to+'</a>';
+
                     if(row.where_in_ms_from == row.where_in_ms_to || row.where_in_ms_to == '-')
-                        return row.where_in_ms_from;
-                    return row.where_in_ms_from +' - '+ row.where_in_ms_to;
+                        return fromText;
+                    return fromText +' - '+ toText;
                 }
             },
             { "data": "is_medieval", "title": "is medieval?" , "visible": false },
@@ -749,14 +905,16 @@ function init_additions_hands()
             { "data": "where_in_ms_from", "order": "asc" }      // Then sort by the "manuscript" column in descending order
         ],
         "createdRow": function(row, data, dataIndex) {
-            if (data.is_medieval == true || data.is_medieval == "true" || data.is_medieval == "yes") {
+            if (data.is_medieval == true || data.is_medieval == "true" || data.is_medieval == "yes" || data.is_medieval == "Yes") {
                 $(row).addClass('medieval-row');
             } else {
                 $(row).addClass('non-medieval-row');
             }
         },
         "initComplete": function() {
+            displayDebate(additions_hands,"#additions_hands");
             displayUniqueAuthorsAndContributors(additions_hands,"#additions_hands");
+            displayScriptsLegend(additions_hands,"#additions_hands");
         }
     });
 }
@@ -767,7 +925,7 @@ function init_watermarks_table()
 {
     watermarks_table = $('#watermarks').DataTable({
         "ajax": {
-            "url": '/watermarks_info/?ms=' + manuscriptId,
+            "url": pageRoot+'/watermarks_info/?ms=' + manuscriptId,
             "dataSrc": function (data) {
                 return data.data; 
             }
@@ -805,12 +963,13 @@ function init_provenance_table()
 {
     provenance_table = $('#provenance').DataTable({
         "ajax": {
-            "url": '/provenance_info/?ms=' + manuscriptId,
+            "url": pageRoot+'/provenance_info/?ms=' + manuscriptId,
             "dataSrc": function (data) {
                 return data.data; 
             }
         },
         "columns": [
+            { "data": "id", "title": "id" , "visible": false },
             { "data": "date_from", "title": "date_from" , "visible": false },
             { "data": "date_to", "title": "date_to" , "visible": false },
             {
@@ -832,6 +991,7 @@ function init_provenance_table()
             { "data": "timeline_sequence", "order": "asc" },  // Sort by the "manuscript_name" column in ascending order
         ],
         "initComplete": function() {
+            displayDebate(provenance_table,"#provenance");
             displayUniqueAuthorsAndContributors(provenance_table,"#provenance");
         }
     });
@@ -845,7 +1005,7 @@ function init_bibliography_table()
 {
     bibliography_table = $('#bibliography').DataTable({
         "ajax": {
-            "url": '/bibliography_info/?ms=' + manuscriptId,
+            "url": pageRoot+'/bibliography_info/?ms=' + manuscriptId,
             "dataSrc": function (data) {
                 return data.data;
             }
@@ -861,6 +1021,99 @@ function init_bibliography_table()
             { "data": "year", "title": "Year" }
         ]
     });
+}
+
+function displayDebate(dataTable,divToAppend)
+{
+    var all_data = dataTable.ajax.json();
+    var debates = all_data.debate;
+
+    if(debates.length < 1)
+        return 0;
+
+    console.log(all_data);
+
+    var uniqueValuesDiv = $('<div class="printIt">');
+    var title = $('<h4>Different Opinions:</h4>');
+    uniqueValuesDiv.append(title);
+
+    var list = $('<ul>');
+
+    /////////////////////////////////////////
+    var table = dataTable.table();
+
+    for (d in debates)
+    {
+        var debate = debates[d];
+
+        var id_to_find = debate.instance_id;
+        var column_to_find = debate.field_name;
+
+        if (column_to_find == "date_from" || column_to_find == "date_to")
+            column_to_find = "date";
+        if (column_to_find == "where_in_ms_from" || column_to_find == "where_in_ms_to")
+            column_to_find = "where";
+        if (column_to_find == "size_height" || column_to_find == "size_width")
+            column_to_find = "size";
+        
+
+        // Get the column index of the column named `column_to_find`
+        var columnIndex = table.settings().init().columns.findIndex(col => col.data === column_to_find);
+
+        // Find the row that has id == id_to_find
+        var row = table.rows().indexes().filter(function (value, index) {
+            return table.row(value).data().id == id_to_find;
+        });
+
+        if (row.length > 0) {
+            // Get the cell in the row and column specified
+
+            var cell = table.cell(row[0], columnIndex).node();
+            var cellData = $(cell).text();
+
+            // Append the desired string to the cell data
+            $(cell).html(cellData + ' <a class="debate-link" href="#debate_'+debate.id+'" title="'+debate.text+'">*</a>');
+
+            // Redraw the table to reflect the changes (if necessary)
+        }
+
+        //Debate list below
+        var list_item = $('<li>According to:' 
+            +'<div id="debate_'+debate.id+'"><b>'+debate.bibliography+'</b>'
+            +'  <span style="display: block;">'
+            +'      <u>'+debate.field_name+'</u>'
+            +'      is: <b>'+debate.text+'</b>'
+            +'  </span>'
+            +'</li>');
+        list.append(list_item);
+    }
+    //////////////////////////////////////////
+    /*
+    <div>
+    <h4 class="printIt" >Different Opinions:</h4>
+    <ul>
+        <template x-for="(comment) in (await getCodicologyInfo()).debate">
+            <div class="printIt" >
+                <li>
+                    According to:
+                    <div x-bind:id="'#debate-'+comment.id"><b x-text="comment.bibliography "></b>,
+                    <span style="display: block;">
+                        <u x-text="comment.field_name"></u>
+                        is: <b  x-text="comment.text "></b>
+                    </span>
+                </li>
+                <!--<a class="debate-link" x-bind:href="'#debate-'+comment.id" x-bind:title="comment.text">*</a>-->
+            </div>
+        </template>
+
+    </ul>
+</div>
+*/
+
+    table.draw(false);
+
+    uniqueValuesDiv.append(list);
+    $(divToAppend).after(uniqueValuesDiv);
 }
 
 function displayUniqueAuthorsAndContributors(dataTable, divToAppend) {
@@ -889,18 +1142,51 @@ function displayUniqueAuthorsAndContributors(dataTable, divToAppend) {
     var authorsString = uniqueAuthors.join(', ');
     var contributorsString = uniqueContributors.join(', ');
     
-    var combinedParagraph = '<p class="printIt"><strong>Authors:</strong>' + authorsString + '. <strong>Data Contributors</strong>: ' + contributorsString + '</p>';
+    var combinedParagraph = '<p class="printIt"><strong>Authors: </strong>' + authorsString + '. <strong>Data Contributors</strong>: ' + contributorsString + '</p>';
     uniqueValuesDiv.append(combinedParagraph);
 
     $(divToAppend).after(uniqueValuesDiv);
 }
 
 
-function printDiv(divId, title) {
+function displayScriptsLegend(dataTable, divToAppend) {
+    var table = dataTable.table();
+
+    // Render unique values in a div below the table
+    var mainDiv = $('<div class="printIt" style="margin-top:0.5em;">'
+    +'<div class="medieval-row" style="border: 1px solid black; width: 1.1em; height:1.1em; display: inline-block; margin-right:0.5em;  margin-left: 1em; text-align: middle"></div>'
+    +'<i>Medieval</i>'
+    +'<div style="border: 1px solid black; width: 1.1em; height:1.1em; display: inline-block; margin-right:0.5em; margin-left: 1em; text-align: middle" class="non-medieval-row"></div>'
+    +'<i>Modern</i></div>');
+
+    $(divToAppend).after(mainDiv);
+}
+
+
+
+function displaOriginalAddedLegend(dataTable, divToAppend) {
+    var table = dataTable.table();
+
+    // Render unique values in a div below the table
+    var mainDiv = $('<div class="printIt" style="margin-top:0.5em;">'
+    +'<div class="medieval-row" style="border: 1px solid black; width: 1.1em; height:1.1em; display: inline-block; margin-right:0.5em;  margin-left: 1em; text-align: middle"></div>'
+    +'<i>Original</i>'
+    +'<div style="border: 1px solid black; width: 1.1em; height:1.1em; display: inline-block; margin-right:0.5em; margin-left: 1em; text-align: middle" class="non-medieval-row"></div>'
+    +'<i>Added</i></div>');
+
+    $(divToAppend).after(mainDiv);
+}
+
+
+
+
+function printDiv(divId, title) 
+{
     let mywindow = window.open('', 'PRINT', 'height=700,width=1200,top=100,left=100');
 
     mywindow.document.body.innerHTML = '<html><head><title>${title}</title><link rel="stylesheet" href="/static/css/printed.css" /></head><body>Loading data... Please be patient...</body></html>';
-    
+
+    let bibliography_promise = getBibliographyPrintableInfo();
 
     //Open all:
     toggles = $('.toggle');
@@ -919,7 +1205,7 @@ function printDiv(divId, title) {
     $('#bibliography').DataTable().page.len(-1).draw();
     
     $('#content').DataTable().page.len(-1).draw();
-    $('#content').on( 'draw.dt', function ()
+    $('#content').on( 'draw.dt', async function ()// waits untill the content would be fully loaded
     {
         //console.log( 'Content table redrawn' );
         mywindow.document.body.innerHTML = '';
@@ -932,6 +1218,10 @@ function printDiv(divId, title) {
             if(inside_elements[e].outerHTML)
                 mywindow.document.write( inside_elements[e].outerHTML );
         }
+
+        let bibliography_data = await bibliography_promise;
+        mywindow.document.write('<h2>Bibliography</h2>');
+        mywindow.document.write(bibliography_data.data);
 
         mywindow.document.write('</body></html>');
     
@@ -954,7 +1244,7 @@ function printDiv(divId, title) {
     //mywindow.close();
     
     return true;
-    }
+}
 
 
 let isResizing = false;
@@ -1144,13 +1434,101 @@ manuscript_init = function()
             "windows": [
                 {
                 "loadedManifest": iiif_manifest_url,
-                "canvasIndex": 2,
+                "canvasIndex": 1,
                 "thumbnailNavigationPosition": 'far-bottom'
                 }
             ]
         };
 
-        var mirador = Mirador.viewer(mirador_config);
+        var miradorInstance = Mirador.viewer(mirador_config);
+        window.miradorInstance = miradorInstance;
+
+
+        window.allCanvasesWithLabels = []
+        function getAllCanvasesWithLabels() {
+
+            if(window.allCanvasesWithLabels.length > 0)
+                return window.allCanvasesWithLabels;
+
+            const state = miradorInstance.store.getState();
+            const windowId = Object.keys(state.windows)[0]; // Pobierz pierwszy identyfikator okna
+            const manifestId = state.windows[windowId].manifestId;
+        
+            // Sprawdź, czy manifest jest już załadowany
+            if (state.manifests[manifestId]) {
+                const manifest = state.manifests[manifestId].json;
+        
+                // Sprawdź, czy manifest zawiera elementy
+                if (manifest.items && manifest.items.length > 0) {
+                    const canvases = manifest.items;
+                    const canvasList = [];
+        
+                    for (let i = 0; i < canvases.length; i++) {
+                        const canvas = canvases[i];
+                        const label = canvas.label;
+                        canvasList.push({ index: i, id: canvas.id, label: label[Object.keys(label)[0]][0] });
+                    }
+
+                    window.allCanvasesWithLabels = canvasList;
+        
+                    return canvasList;
+                } else {
+                    console.error('Manifest does not contain items');
+                    return [];
+                }
+            } else {
+                console.error('Manifest not loaded yet');
+                return [];
+            }
+        }
+        
+        // Przykład użycia
+        const canvasList = getAllCanvasesWithLabels();
+        console.log(canvasList);
+        
+
+        window.getAllCanvasesWithLabels = getAllCanvasesWithLabels;
+
+
+        // Funkcja do znalezienia indeksu kanwy na podstawie etykiety
+        function findCanvasIndexByLabel(label) {
+            const canvases = getAllCanvasesWithLabels();
+            
+            for (let i = 0; i < canvases.length; i++) {
+                if (canvases[i].label === label) {
+                    return canvases[i].id;
+                }
+            }
+            return null;
+        }
+        window.findCanvasIndexByLabel = findCanvasIndexByLabel;   
+
+        function goToCanvasById(canvasId) {
+        
+            const state = miradorInstance.store.getState();
+            const windowId = Object.keys(state.windows)[0]; // Pobierz pierwszy identyfikator okna
+        
+            var action = Mirador.actions.setCanvas(windowId, canvasId);
+            miradorInstance.store.dispatch(action); 
+        }
+
+        window.goToCanvasById = goToCanvasById;
+
+        // Funkcja do przełączania się na kanwę na podstawie etykiety
+        function goToCanvasByLabel(label) {
+            const index = findCanvasIndexByLabel(label);
+            if (index !== null) {
+                goToCanvasById(index);
+            } else {
+                console.error(`Canvas with label "${label}" not found`);
+            }
+        }
+        window.goToCanvasByLabel = goToCanvasByLabel;    
+
+    
+        // Przykład użyciaj
+        // goToCanvasById('my-mirador', 'your-canvas-id'); // Zamień 'your-canvas-id' na właściwy identyfikator kanwy
+        
     
     })()
 
@@ -1208,9 +1586,37 @@ async function map_init()
 
     for(m in markers)
     {
-        var marker = L.marker([markers[m].lat , markers[m].lon ]).addTo(map);
-        marker.bindPopup("<b>"+ markers[m].name +"</b>");
+        //var marker = L.marker([markers[m].lat , markers[m].lon ]).addTo(map);
+
+        var marker = new L.Marker(new L.LatLng(markers[m].lat, markers[m].lon ), {
+            icon:	new L.NumberedDivIcon({number: Number(m)+1}),
+            autoPanOnFocus: false
+        });
+        marker.addTo(map);
+
+        marker.bindPopup("<b>"+ markers[m].name +"</b>", {
+            autoPan: false
+        });
+
         allMarkers.push(marker);
+
+        //Add arrow
+        let next_m = parseInt(m)+1
+        if(next_m < markers.length)
+        {
+            var myVector = L.polyline([
+                (new L.LatLng(markers[m].lat, markers[m].lon )),
+                (new L.LatLng(markers[next_m].lat, markers[next_m].lon ))
+            ],
+            {color:'darkblue'}).arrowheads({
+                fill: true,
+                frequency: 'endonly',
+                //frequency: '100px',
+                size: '10px',
+                color: 'darkblue'
+            });
+            myVector.addTo(map);
+        }
     }
 
     if(allMarkers.length>0)
@@ -1219,13 +1625,20 @@ async function map_init()
         map_bounds = group.getBounds()
         map.fitBounds(map_bounds, {padding: [50,50]});
 
-        map_refresh();
+        //map_refresh();
     }
 }
 
+var map_refreshed = false
+
 async function map_refresh()
 {
+    if(map_refreshed)
+        return;
+
     map.invalidateSize();
     map.fitBounds(map_bounds, {padding: [50,50]});
     //map.redraw();
+
+    map_refreshed = true;
 }

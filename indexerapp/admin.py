@@ -800,6 +800,11 @@ class ManuscriptBibliographyAdmin(CustomDebateableAdmin):
                              #if not isinstance(field, models.ForeignKey)
                              ]
 
+class UserOpenAIAPIKeyAdmin(admin.ModelAdmin):
+    list_display=  [field.name for field in UserOpenAIAPIKey._meta.fields
+                             #if not isinstance(field, models.ForeignKey)
+                             ]
+
 
 
 admin.site.register(Content,ContentAdmin)
@@ -852,3 +857,4 @@ admin.site.register(Calendar,CalendarAdmin)
 admin.site.register(DecorationSubjects,DecorationSubjectsAdmin)
 admin.site.register(ManuscriptBibliography,ManuscriptBibliographyAdmin)
 admin.site.register(Layouts,LayoutsAdmin)
+admin.site.register(UserOpenAIAPIKey,UserOpenAIAPIKeyAdmin)

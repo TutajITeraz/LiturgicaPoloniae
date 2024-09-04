@@ -9,6 +9,7 @@ from django.db import models
 from django.contrib.contenttypes.models import ContentType #dla komentarzy
 from django.contrib.contenttypes.fields import GenericForeignKey #dla komentarzy
 from django.utils.functional import cached_property
+from django.contrib.auth.models import User
 
 from Levenshtein import distance
 
@@ -400,6 +401,14 @@ class Authors(models.Model):
         return f"{self.first_name} {self.last_name}"
 """
 
+class UserOpenAIAPIKey(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    api_key = models.CharField(max_length=100)
+
+    class Meta:
+        db_table = 'user_openai_api_key'
+        verbose_name_plural = 'Users OpenAI API Keys'
+
 #TODO [X] rename to Content:
 class Content(models.Model):
 
@@ -764,6 +773,10 @@ class Clla(models.Model):
     provenance_comment = models.TextField(blank=True, null=True)
     comment = models.TextField(blank=True, null=True)
 
+    authors = models.CharField(max_length=128, blank=True, default="Klaus Gamber", null=True)
+    data_contributor  = models.CharField(max_length=512, default="Quirin Rosenberger", blank=True, null=True)
+
+
     class Meta:
         #managed = False
         verbose_name_plural = 'CLLA'
@@ -1082,9 +1095,9 @@ class ManuscriptBindingDecorations(models.Model):
 class Binding(models.Model):
     manuscript = models.ForeignKey(Manuscripts, models.DO_NOTHING, related_name='ms_binding')
 
-    max_height = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
-    max_width = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
-    block_max = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+    max_height = models.PositiveIntegerField(blank=True, null=True)
+    max_width = models.PositiveIntegerField(blank=True, null=True)
+    block_max = models.PositiveIntegerField(blank=True, null=True)
     date = models.ForeignKey(TimeReference, models.DO_NOTHING, blank=True, null=True)
     place_of_origins = models.ForeignKey(Places, models.DO_NOTHING, blank=True, null=True)
     type_of_binding = models.ForeignKey(BindingTypes, models.DO_NOTHING, null=True)

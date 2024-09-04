@@ -7,7 +7,7 @@ content_init = function()
 
     var content_table = $('#content').DataTable({
         "ajax": {
-            "url": "/api/content/?format=datatables", // Add your URL here
+            "url": pageRoot+"/api/content/?format=datatables", // Add your URL here
             "dataSrc": function (data) {
                 var processedData=[]
 
@@ -69,6 +69,13 @@ content_init = function()
 
 
             { "data": "sequence_in_ms", "title": "Sequence in MS", searchable: false },
+
+            { "data": "proper_texts", "title": "Proper texts", searchable: false },
+
+
+            { "data": 'subrite_name_from_ms', "title": "Subrite name from MS", searchable: false },
+            { "data": 'edition_index', "title": "Edition Index", searchable: false },
+            { "data": 'edition_subindex', "title": "Edition Subindex", searchable: false },
 
             { "data": "authors", "title": "Authors", searchable: false },
             { "data": "data_contributor", "title": "Data contributor", searchable: false }
@@ -158,8 +165,11 @@ content_init = function()
 
     $('.manuscript_filter').select2({
         ajax: {
-            url: '/manuscripts-autocomplete/',
-            dataType: 'json'
+            url: pageRoot+'/manuscripts-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
             // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
           }
     });
@@ -174,6 +184,7 @@ content_init = function()
     });
 
 
+    /*
     var whereInMsSlider = document.getElementById('where_in_ms_slider');
 
     noUiSlider.create(whereInMsSlider, {
@@ -206,5 +217,6 @@ content_init = function()
     {
         console.log('filter active!');
     }
+    */
 
 }

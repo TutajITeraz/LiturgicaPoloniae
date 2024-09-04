@@ -10,12 +10,15 @@ function askQuestion() {
     var questionInput = document.getElementById('question');
     var question = questionInput.value;
 
+
+    var loader = document.getElementById('loader');
+    loader.innerHTML = '<h2>Info:</h2><p>Loading...(can take up to 20sec)</p>';
+
     if (question.trim() === '') {
         alert('Please enter a question.');
         return;
     }
 
-    var loader = document.getElementById('loader');
     var answerDiv = document.getElementById('answer');
 
     loader.style.display = 'block';
@@ -23,7 +26,7 @@ function askQuestion() {
 
     $.ajax({
         type: 'GET',
-        url: '/assistant/?q=' + question,
+        url: pageRoot+'/assistant/?q=' + question,
         success: function (data) {
             loader.style.display = 'none';
             displayAnswer(data);
@@ -31,12 +34,22 @@ function askQuestion() {
         error: function () {
             loader.style.display = 'none';
             alert('Error fetching data.');
+        },
+        xhrFields: {
+                withCredentials: true
         }
     });
 }
 
 function displayAnswer(data) {
     var answerDiv = document.getElementById('answer');
+    var infoDiv = document.getElementById('loader');
+
+    if(data.text)
+    {
+        infoDiv.style.display = 'block';
+        infoDiv.innerHTML = '<h2>Info:</h2><p>'+data.text+'</p>';
+    }
 
     if (Array.isArray(data.info) && data.info.length > 0 && typeof data.info[0] === 'object') {
         var keys = Object.keys(data.info[0]);
@@ -48,13 +61,29 @@ function displayAnswer(data) {
 
         table += '</tr></thead><tbody>';
 
-        data.info.forEach(function (item) {
+        var processedData=[]
+        for(var idx in data.info)
+        {
+            table += '<tr>';
+
+            processedData[idx] = {}
+            for(var f in data.info[idx])
+            {
+                processedData[idx][f] = getPrintableValues(f,data.info[idx][f]).value;
+                table += '<td>' + processedData[idx][f] + '</td>';
+            }
+
+            table += '</tr>';
+        }
+        /*
+
+        processedData.forEach(function () {
             table += '<tr>';
             keys.forEach(function (key) {
                 table += '<td>' + item[key] + '</td>';
             });
             table += '</tr>';
-        });
+        });*/
 
         table += '</tbody></table>';
         answerDiv.innerHTML = table;

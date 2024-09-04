@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; }
+        .container { max-width: 300px; margin: 100px auto; padding: 20px; background: #fff; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; }
+        .form-group input { width: 100%; padding: 8px; box-sizing: border-box; }
+        .form-group button { width: 100%; padding: 10px; background: #007bff; color: white; border: none; cursor: pointer; }
+        .form-group button:hover { background: #0056b3; }
+        .error { color: red; }
+    </style>
+    <script src="/static/js/main.js"></script>
+
+</head>
+<body>
+    <div class="container">
+        <h2>Login</h2>
+        <div id="error" class="error"></div>
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username">
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password">
+        </div>
+        <div class="form-group">
+            <button onclick="login()">Login</button>
+        </div>
+        <p>No account yet? No problem! <a href="/static/register.html">Create new user for free!</a></p>
+    </div>
+
+    <script>
+        function login() {
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+            var xhr = new XMLHttpRequest();
+            xhr.withCredentials = true
+            xhr.open('POST', pageRoot+'/ajax_login/', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
+
+            xhr.onload = function() {
+                var response = JSON.parse(xhr.responseText);
+                if (response.success) {
+                    window.location.href = '/static/page.html?p=about';
+                } else {
+                    document.getElementById('error').textContent = response.error;
+                }
+            };
+            xhr.send('username=' + username + '&password=' + password);
+        }
+
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</body>
+</html>

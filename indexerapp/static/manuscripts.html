@@ -8,7 +8,7 @@
         <div class="left_column"  id="leftColumn">
             <h2 style="display: inline-block; justify-content: space-between;">Filters:</h2>
 
-            <button class='clearButton' type="button" id="clearFieldsButton">Clear All</button>
+            <a class="action_button" type="button" id="clearFieldsButton" style="margin-top: 25px; float: right">See All</a>
 
             <div class="openbox open-lvl-0" x-data="{ open: false }">
                 <button @click="open = ! open" class="toggle" x-bind:opened="open"><img class="button-icon" src="/static/img/icons/info.svg"></img><span class="printIt title">Main info</span></button>
@@ -17,23 +17,23 @@
             
 
                     <label class="top_level_label" for="ms_name_select">Name:</label>
-                    <select class="manuscript_filter"  id="ms_name_select" multiple>
+                    <select class="manuscript_filter"  id="ms_name_select">
                     </select>
                     <br />
                     <br />
                     <!-- Foreign id -->
-                    <label class="top_level_label" for="ms_foreign_id_select">CLLA no.:</label>
-                    <select class="manuscript_filter"  id="ms_foreign_id_select" multiple>
+                    <label class="top_level_label" for="ms_foreign_id_select" x-text="foreign_id_name"></label>
+                    <select class="manuscript_filter"  id="ms_foreign_id_select">
                     </select>
                     <br />
                     <br />
                     <label class="top_level_label" for="ms_contemporary_repository_place_select">Contemporary repository:</label>
-                    <select id="ms_contemporary_repository_place_select"  class="manuscript_filter" multiple></select>
+                    <select id="ms_contemporary_repository_place_select"  class="manuscript_filter"></select>
                     <br />
 
                     <br />
                     <label class="top_level_label" for="ms_shelfmark_select">Shelfmark:</label>
-                    <select class="manuscript_filter"  id="ms_shelfmark_select" multiple>
+                    <select class="manuscript_filter"  id="ms_shelfmark_select">
                     </select>
                     <br />
                     <!--
@@ -50,7 +50,7 @@
                     -->
                     <br />
                     <label class="top_level_label" for="ms_place_of_origins_select">Place of origins:</label>
-                    <select class="manuscript_filter"  id="ms_place_of_origins_select" multiple>
+                    <select class="manuscript_filter"  id="ms_place_of_origins_select">
                     </select>
                     <br />
 
@@ -80,6 +80,20 @@
                             <input class="range_number" type="number" id="ms_dating_max" min="0" max="22" />
                         </div>
                     </fieldset>
+
+                    <fieldset>
+                        <legend class="top_level_label">Dating (Years):</legend>
+                        <div class="range_input" >
+                            <label class="top_level_label range_label" for="ms_dating_years_min">min.</label>
+                            <input class="range_number" type="number" id="ms_dating_years_min" min="0" max="2200" />
+                        </div>
+                        <span>&nbsp;—&nbsp;</span>
+                        <div class="range_input" >
+                            <label class="top_level_label range_label" for="ms_dating_years_max">max.</label>
+                            <input class="range_number" type="number" id="ms_dating_years_max" min="0" max="2200" />
+                        </div>
+                    </fieldset>
+
                     <br />
 
                     <fieldset>
@@ -113,6 +127,61 @@
                 </div>
             </div>
 
+
+            <div x-show="projectId==1">
+                <div class="openbox open-lvl-0" x-data="{ open: false }">
+                    <button @click="open = ! open" class="toggle" x-bind:opened="open"><img class="button-icon" src="/static/img/icons/books.svg"></img><span class="printIt title">CLLA</span></button>
+
+                    <div class="open-inside" x-show="open" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
+                    
+                                            
+                        <label class="top_level_label" for="clla_no">CLLA no.:</label>
+                        <input type="text" id="clla_no" name="clla_no">
+                        <br />
+
+                        <label class="top_level_label" for="clla_liturgical_genre_select">Liturgical genre:</label>
+                        <select class="manuscript_filter"  id="clla_liturgical_genre_select">
+                        </select>
+                        <br />
+
+                        <label class="top_level_label" for="clla_provenance_place_select">Provenance place:</label>
+                        <select class="manuscript_filter"  id="clla_provenance_place_select">
+                        </select>
+                        <br />
+
+                        <fieldset>
+                            <legend class="top_level_label">Dating (Ages):</legend>
+                            <div class="range_input" >
+                                <label class="top_level_label range_label" for="clla_dating_min">min.</label>
+                                <input class="range_number" type="number" id="clla_dating_min" min="0" max="22" />
+                            </div>
+                            <span>&nbsp;—&nbsp;</span>
+                            <div class="range_input" >
+                                <label class="top_level_label range_label" for="clla_dating_max">max.</label>
+                                <input class="range_number" type="number" id="clla_dating_max" min="0" max="22" />
+                            </div>
+                        </fieldset>
+    
+                        <fieldset>
+                            <legend class="top_level_label">Dating (Years):</legend>
+                            <div class="range_input" >
+                                <label class="top_level_label range_label" for="clla_dating_years_min">min.</label>
+                                <input class="range_number" type="number" id="clla_dating_years_min" min="0" max="2200" />
+                            </div>
+                            <span>&nbsp;—&nbsp;</span>
+                            <div class="range_input" >
+                                <label class="top_level_label range_label" for="clla_dating_years_max">max.</label>
+                                <input class="range_number" type="number" id="clla_dating_years_max" min="0" max="2200" />
+                            </div>
+                        </fieldset>
+
+
+                    
+                    </div>
+
+                </div>
+            </div>
+            
             <div class="openbox open-lvl-0" x-data="{ open: false }">
                 <button @click="open = ! open" class="toggle" x-bind:opened="open"><img class="button-icon" src="/static/img/icons/codicology.svg"></img><span class="printIt title">Codicology and Paleography</span></button>
                 
@@ -177,7 +246,7 @@
                     <br />
 
                     <label class="top_level_label" for="parchment_colour_select">Parchment colour:</label>
-                    <select class="manuscript_filter"  id="parchment_colour_select" multiple>
+                    <select class="manuscript_filter"  id="parchment_colour_select">
                     </select>
                     <br />
 
@@ -197,7 +266,7 @@
                     <br />
 
                     <label class="top_level_label" for="main_script_select">Main script:</label>
-                    <select class="manuscript_filter"  id="main_script_select" multiple>
+                    <select class="manuscript_filter"  id="main_script_select">
                     </select>
                     <br />
 
@@ -256,7 +325,7 @@
                 <div class="open-inside" x-show="open" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
                 
                     <label class="top_level_label" for="script_name_select">Script name:</label>
-                    <select class="manuscript_filter"  id="script_name_select" multiple>
+                    <select class="manuscript_filter"  id="script_name_select">
                     </select>
                     <br />
                 
@@ -459,19 +528,19 @@
 
 
                     <label class="top_level_label" for="binding_place_of_origin_select">Place of origin:</label>
-                    <select class="manuscript_filter"  id="binding_place_of_origin_select" multiple>
+                    <select class="manuscript_filter"  id="binding_place_of_origin_select">
                     </select>
                     <br />
 
 
                     <label class="top_level_label" for="binding_type_select">Type:</label>
-                    <select class="manuscript_filter"  id="binding_type_select" multiple>
+                    <select class="manuscript_filter"  id="binding_type_select">
                     </select>
                     <br />
 
 
                     <label class="top_level_label" for="binding_style_select">Style:</label>
-                    <select class="manuscript_filter"  id="binding_style_select" multiple>
+                    <select class="manuscript_filter"  id="binding_style_select">
                     </select>
                     <br />
 
@@ -501,7 +570,8 @@
                     
                 
                     <label class="top_level_label" for="damage_select">Damage:</label>
-                    <select class="manuscript_filter"  id="damage_select" multiple>
+                    <select class="manuscript_filter"  id="damage_select">
+                        <option value=""></option>
                         <option value="very">very damaged</option>
                         <option value="average">average damaged</option>
                         <option value="slightly">slightly damaged</option>
@@ -573,7 +643,25 @@
                 
                 <div class="open-inside" x-show="open" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
                 
-                
+                    <label class="top_level_label" for="formula_select">Formula (standarized):</label>
+                    <select class="manuscript_filter"  id="formula_select" multiple>
+                    </select>
+                    <br />
+                    
+                    <label class="top_level_label" for="formula_text">Formula text from MS:</label>
+                    <input type="text" id="formula_text" name="formula_text">
+                    <br />
+
+
+                    <label class="top_level_label" for="rite_select">Rite (standarized):</label>
+                    <select class="manuscript_filter"  id="rite_select" multiple>
+                    </select>
+                    <br />
+
+                    <label class="top_level_label" for="rite_name_from_ms">Rite name from MS:</label>
+                    <input type="text" id="rite_name_from_ms" name="rite_name_from_ms">
+                    <br />
+
                 
                 </div>
             </div>
@@ -625,7 +713,7 @@
 
         </div>
 
-        <div class="resizer" id="resizer"></div>
+        <div class="resizer" id="resizer" style="cursor: auto"></div>
 
         
         <div class="right_column" id="rightColumn">    

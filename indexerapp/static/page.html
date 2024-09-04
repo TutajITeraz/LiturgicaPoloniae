@@ -20,6 +20,8 @@
   <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/4.0.1/css/fixedHeader.dataTables.min.css"  crossorigin="anonymous"/>
 
 
+  
+  <link rel="stylesheet" href="/static/css/lib/leaflet_numbered_markers.css" />
 
   <link rel="stylesheet" href="/static/css/my_style.css" />
 
@@ -27,15 +29,24 @@
 
 
 
+
   <link rel="stylesheet" href="/static/css/lib/nouislider.min.css" />
 
 
   <script src="/static/js/lib/nouislider.min.js" crossorigin="anonymous"></script>
-
+  <!--
   <script src="https://unpkg.com/mirador@latest/dist/mirador.min.js" crossorigin="anonymous"></script>
+  -->
+  <script src="https://cdn.jsdelivr.net/npm/mirador@3.3.0/dist/mirador.min.js" crossorigin="anonymous"></script>
+
+
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
   integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
   crossorigin="anonymous"></script>
+
+  <script src="/static/js/lib/leaflet.geometryutil.js"  crossorigin="anonymous"></script>
+  <script src="/static/js/lib/leaflet-arrowheads.js"  crossorigin="anonymous"></script>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
   <script src="/static/js/scripts.js"></script>
   <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
@@ -54,8 +65,6 @@
 
   <script src="/static/js/lib/select2.multi-checkboxes.js"></script>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-  <script src="/static/js/scripts.js"></script>
   <script src="https://cdn.datatables.net/2.0.3/js/dataTables.min.js" crossorigin="anonymous"></script>
   <script src="https://cdn.datatables.net/fixedheader/4.0.1/js/dataTables.fixedHeader.min.js" crossorigin="anonymous"></script>
 
@@ -63,12 +72,19 @@
   <script async src="https://docs.opencv.org/master/opencv.js" <!--onload="onOpenCvReady();"--> type="text/javascript"></script>
     
 
+  <script src="/static/js/lib/leaflet_numbered_markers.js"></script>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
   <script src="/static/js/main.js"></script>
+
 </head>
 <body  x-data="start()">
 
  <script>
-      function contentDropdownHandler() {
+
+  window.project_id = 1;
+
+    function contentDropdownHandler() {
       document.getElementById("contentDropdown").classList.toggle("show");
     }
 
@@ -97,8 +113,8 @@
         <div class="gjs-grid-column">
 					<a href="/" class="gjs-link-box">
             <div data-type-icon class="gjs-icon">
-							<!--<img class="logo" src="/static/img/logo.svg"></img>-->
-              <img class="logo" src="/static/img/eCLLA_logo.png"></img>
+			  <img class="logo" src="/static/img/logo.svg"></img>
+              <!--<img class="logo" src="/static/img/logo.png"></img>-->
             </div>
 					</a>
         </div>
@@ -113,20 +129,20 @@
 							<button onclick="contentDropdownHandler()" class="dropbtn">Content</button>
 							<div id="contentDropdown" class="dropdown-content">
 								<a href="/static/page.html?p=content">Browse content</a>
-								<a href="/static/page.html?p=importer">Import content</a>
+								<a x-show="(await canUserImport())" href="/static/page.html?p=importer">Import content</a>
 								<a href="/static/page.html?p=content_comparator">Compare content</a>
                 <a href="/static/page.html?p=ms_edition_comparator">Compare edition content</a>
                 <a href="/static/page.html?p=hands">AI hands recognition</a>
 							</div>
 						</div>
 					</div>
-					<!--
+					
           <div class="gjs-grid-column">
 						<a href="/static/page.html?p=assistant" class="gjs-link">AI Assistant</a>
 					</div>
-          -->
+          
 					<div class="gjs-grid-column">
-						<a class="gjs-button"  x-data="{  user: getUsername() } ">Hi, <strong x-text="user"></strong></a>
+						<a class="gjs-button"  x-data="{  user: getUsername() } " href="/static/page.html?p=user">Hi, <strong x-text="user"></strong></a>
 					</div>
       </div>
     </div>
@@ -148,8 +164,9 @@
     <div  class="gjs-grid-column">
       <div class="gjs-grid-row">
         <div class="gjs-grid-column">
-					<a href="/admin/" class="gjs-link">Admin Panel</a>
-					<a href="/iommi-admin/" class="gjs-link">Iommi Admin Panel</a>
+					<a  x-show="(await canUserVisitAdmin())"  x-bind:href="pageRoot+'/admin/'" class="gjs-link">Admin Panel</a>
+					<a  x-show="(await canUserVisitAdmin())" x-bind:href="pageRoot+'/iommi-admin/'" class="gjs-link">Iommi Admin Panel</a>
+          <a href="/static/page.html?p=terms" class="gjs-link">Terms of service</a>
         </div>
       </div>
       <div class="gjs-text-blue">Copyright © Ritus Indexer by Paweł Figurski & Rebold Łukasz Bolda 2024</div>

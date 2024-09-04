@@ -1,0 +1,36 @@
+
+<div  style="max-width: 1000px; margin: auto;" id="user" x-init="user_init()">
+    <h1 style="vertical-align: middle; display: inline-block;">User Info</h1>
+    <p>Login: <strong x-text="getUsername()"></strong></p>
+
+    <h2>AI Assistant settings</h2>
+    <div  style="padding-left: 40px;">
+        <label class="top_level_label" for="ai_api_key">OpenAI API Key:</label>
+        <input type="text" id="ai_api_key" name="ai_api_key">
+        <br />
+        <a class="action_button" type="button" href="#" onclick="saveAiApiKey()">Save</a>
+        </div>
+
+    <h2>Change password</h2>
+    <div style="padding-left: 40px;">
+        <div id="error" class="error"></div>
+        <div class="form-group">
+            <label for="new_password">New Password</label><br />
+            <input type="password" id="new_password">
+        </div>
+        <div class="form-group">
+            <label for="confirm_new_password">Confirm New Password</label><br />
+            <input type="password" id="confirm_new_password">
+        </div>
+        <div class="form-group">
+            <a class="action_button" type="button" href="#" onclick="changePassword()">Change Password</a><br />
+        </div>
+    </div>
+
+    <h2>Logout</h2>
+    <div style="padding-left: 40px;">
+        <a class="action_button" type="button" x-bind:href="pageRoot+'/logout/'">Logout</a>
+
+    </div>
+
+</div>

@@ -8,7 +8,7 @@ from django.contrib.auth import login, authenticate
 
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Manuscripts, AttributeDebate, Content, Formulas, Subjects, RiteNames, ManuscriptMusicNotations, Provenance, Codicology, Layouts, TimeReference, Bibliography, EditionContent, BindingTypes, BindingStyles, BindingMaterials, Colours, Clla, Projects, MSProjects
+from .models import Manuscripts, AttributeDebate, Content, Formulas, Subjects, RiteNames, ManuscriptMusicNotations, Provenance, Codicology, Layouts, TimeReference, Bibliography, EditionContent, BindingTypes, BindingStyles, BindingMaterials, Colours, Clla, Projects, MSProjects, UserOpenAIAPIKey
 from django.http import JsonResponse
 from django.contrib.contenttypes.models import ContentType
 
@@ -30,6 +30,8 @@ from rest_framework import viewsets
 
 #for admin url creation:
 from django.urls import reverse
+import re
+
 import math
 
 #For filtering only specific columns:
@@ -43,8 +45,10 @@ from django.db.models import Count
 
 #For assistant:
 from django.db import connection
-from dubo import generate_sql
+#from dubo import generate_sql
 import os
+from .ai_tools import gpt_generate_sql 
+
 
 #For content importer:
 from decimal import Decimal
@@ -64,8 +68,17 @@ import io
 #For TEI:
 from xml.etree.ElementTree import Element, SubElement, tostring
 
+#for Registration:
+from django.contrib.auth.models import User, Group
 
+#for logout:
+from django.contrib.auth import logout
 
+#for password change
+from django.contrib.auth import update_session_auth_hash
+
+#for api key getter setter
+from django.contrib.auth.decorators import login_required
 
 #from zotero.forms import get_tag_formset
 
@@ -96,17 +109,163 @@ class Login(View):
         else:
             return render(request, self.template, {'form': form})
 
+
+@method_decorator(csrf_exempt, name='dispatch')
+class AjaxLoginView(View):
+    def post(self, request, *args, **kwargs):
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False, 'error': 'Invalid credentials'})
+
+class LogoutView(View):
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        #return redirect('/login')
+        return HttpResponseRedirect('/static/login.html')
+
+
+class AjaxChangePasswordView(View):
+    def post(self, request, *args, **kwargs):
+        new_password = request.POST.get('new_password')
+
+        if not self.validate_password(new_password):
+            return JsonResponse({'success': False, 'error': 'Password must be at least 10 characters long, contain both uppercase and lowercase letters, and at least one number.'})
+
+        user = request.user
+        user.set_password(new_password)
+        user.save()
+        update_session_auth_hash(request, user)  # To keep the user logged in after password change
+
+        return JsonResponse({'success': True})
+
+    def validate_password(self, password):
+        import re
+        if len(password) < 10:
+            return False
+        if not re.search(r'[A-Z]', password):
+            return False
+        if not re.search(r'[a-z]', password):
+            return False
+        if not re.search(r'[0-9]', password):
+            return False
+        return True
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class AjaxRegisterView(View):
+    def post(self, request, *args, **kwargs):
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        
+        if User.objects.filter(username=username).exists():
+            return JsonResponse({'success': False, 'error': 'Username already taken.'})
+
+        if User.objects.filter(email=email).exists():
+            return JsonResponse({'success': False, 'error': 'Email already registered.'})
+
+        if not self.validate_password(password):
+            return JsonResponse({'success': False, 'error': 'Password must be at least 10 characters long, contain both uppercase and lowercase letters, and at least one number.'})
+
+        user = User.objects.create_user(username=username, email=email, password=password)
+        user.save()
+
+        # Add user to "views-only" group
+        views_only_group, created = Group.objects.get_or_create(name='views-only')
+        user.groups.add(views_only_group)
+
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False, 'error': 'Authentication failed after registration.'})
+
+    def validate_password(self, password):
+        import re
+        if len(password) < 10:
+            return False
+        if not re.search(r'[A-Z]', password):
+            return False
+        if not re.search(r'[a-z]', password):
+            return False
+        if not re.search(r'[0-9]', password):
+            return False
+        return True
+
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class GetAPIKeyView(View):
+    @method_decorator(login_required)
+    def get(self, request, *args, **kwargs):
+        try:
+            user_api_key = UserOpenAIAPIKey.objects.get(user=request.user)
+            return JsonResponse({'success': True, 'api_key': user_api_key.api_key})
+        except UserOpenAIAPIKey.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'API key not found.'})
+
+@method_decorator(csrf_exempt, name='dispatch')
+class SetAPIKeyView(View):
+    @method_decorator(login_required)
+    def post(self, request, *args, **kwargs):
+        api_key = request.POST.get('api_key')
+        if not api_key:
+            return JsonResponse({'success': False, 'error': 'API key cannot be empty.'})
+        
+        user_api_key, created = UserOpenAIAPIKey.objects.get_or_create(user=request.user)
+        user_api_key.api_key = api_key
+        user_api_key.save()
+        
+        return JsonResponse({'success': True})
+
+
+
+
+
 class MainInfoAjaxView(View):
     def get(self, request, *args, **kwargs):
         # Assuming you want to retrieve the username from the currently logged-in user
+        print(request.user);
+
         username = request.user.get_username()
+        groups = list(request.user.groups.values_list('name', flat=True))
         
-        # You can include more data here if needed
+        # Check if user is a superuser
+        is_superuser = request.user.is_superuser
+        is_staff = request.user.is_staff
+
+        # Define the list of permissions to check
+        permissions_to_check = [
+            'add_manuscripts',
+            'add_content',
+            'add_bibliography',
+            'add_editioncontent',
+            'add_formulas',
+            'add_manuscripts',  # Duplicate permission 'add_manuscripts' is listed twice, is this intentional?
+            'add_ritenames',
+            'add_timereference'
+        ]
+
+        # Check each permission
+        #permissions = {perm: request.user.has_perm(f'app_label.{perm}') for perm in permissions_to_check}
+
+        # Check if user has all the specified permissions
+        import_permissions = all(request.user.has_perm(f'app_label.{perm}') for perm in permissions_to_check)
+
+        # Prepare the data to be returned in the JSON response
         data = {
             'username': username,
-            # Add more key-value pairs as needed
+            'groups': groups,
+            'is_superuser': is_superuser,
+            'is_staff': is_staff,
+            'import_permissions': import_permissions
         }
-
         return JsonResponse(data)
 
 
@@ -252,6 +411,8 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         # Extract ordering parameters from DataTables formatted request
         order_column_index = int(self.request.query_params.get('order[0][column]', 0))
+
+        order_column_index = int(self.request.query_params.get('order[0][column]', 0))
         order_column_name = self.request.query_params.get(f'columns[{order_column_index}][data]', 'name')
         order_direction = self.request.query_params.get('order[0][dir]', 'asc')
 
@@ -275,6 +436,14 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
         # Filtering for dating_min and dating_max
         dating_min = self.request.query_params.get('dating_min')
         dating_max = self.request.query_params.get('dating_max')
+        dating_years_min = self.request.query_params.get('dating_years_min')
+        dating_years_max = self.request.query_params.get('dating_years_max')
+
+        clla_dating_min = self.request.query_params.get('clla_dating_min')
+        clla_dating_max = self.request.query_params.get('clla_dating_max')
+        clla_dating_years_min = self.request.query_params.get('clla_dating_years_min')
+        clla_dating_years_max = self.request.query_params.get('clla_dating_years_max')
+
         binding_date_min = self.request.query_params.get('binding_date_min')
         binding_date_max = self.request.query_params.get('binding_date_max')
 
@@ -296,16 +465,36 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
         digitized_true = True if digitized_true == "true" else False if digitized_true == "false" else None
         digitized_false = True if digitized_false == "true" else False if digitized_false == "false" else None
 
+        projectId = int(self.request.query_params.get('projectId'))
 
-
-
-
-
-
-
+        #text values
+        formula_text = self.request.query_params.get('formula_text')
+        rite_name_from_ms = self.request.query_params.get('rite_name_from_ms')
+        clla_no = self.request.query_params.get('clla_no')
 
 
         queryset = Manuscripts.objects.all()
+
+        print("projectId = "+str(projectId))
+        if projectId != 0:
+            queryset = queryset.filter(ms_projects__project__id=projectId)
+
+        
+        #Main search
+        search_value = self.request.GET.get('search[value]', None)
+
+        print("search_value "+search_value)
+
+        if search_value:
+            # Assuming you want to search in 'name', 'author', and 'description' fields
+            queryset = queryset.filter(
+                Q(name__icontains=search_value) |
+                Q(foreign_id__icontains=search_value) |
+                Q(shelf_mark__icontains=search_value) |
+                Q(common_name__icontains=search_value)
+                #Q(contemporary_repository_place__icontains=search_value)
+            )
+
                 
                     
         # Apply the filter for name if provided
@@ -363,6 +552,26 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
         if dating_max and dating_max.isdigit():
             queryset = queryset.filter(Q(dating__century_from__lte=int(dating_max)) | Q(dating__century_to__lte=int(dating_max)))
 
+        if dating_years_min and dating_years_min.isdigit():
+            queryset = queryset.filter(Q(dating__year_from__gte=int(dating_years_min)) | Q(dating__year_to__gte=int(dating_years_min)))
+
+        if dating_years_max and dating_years_max.isdigit():
+            queryset = queryset.filter(Q(dating__year_from__lte=int(dating_years_max)) | Q(dating__year_to__lte=int(dating_years_max)))
+
+
+
+        if clla_dating_min and clla_dating_min.isdigit():
+            queryset = queryset.filter(Q(ms_clla__dating__century_from__gte=int(clla_dating_min)) | Q(ms_clla__dating__century_to__gte=int(clla_dating_min)))
+
+        if clla_dating_max and clla_dating_max.isdigit():
+            queryset = queryset.filter(Q(ms_clla__dating__century_from__lte=int(clla_dating_max)) | Q(ms_clla__dating__century_to__lte=int(clla_dating_max)))
+
+        if clla_dating_years_min and clla_dating_years_min.isdigit():
+            queryset = queryset.filter(Q(ms_clla__dating__year_from__gte=int(clla_dating_years_min)) | Q(ms_clla__dating__year_to__gte=int(clla_dating_years_min)))
+
+        if clla_dating_years_max and clla_dating_years_max.isdigit():
+            queryset = queryset.filter(Q(ms_clla__dating__year_from__lte=int(clla_dating_years_max)) | Q(ms_clla__dating__year_to__lte=int(clla_dating_years_max)))
+
 
         if decoration_false and not decoration_true:
             queryset = queryset.filter(decorated=False)
@@ -398,7 +607,6 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
         # Check if number_of_parchment_folios_max is provided and is a digit
         if number_of_parchment_folios_max and number_of_parchment_folios_max.isdigit():
             queryset = queryset.filter(ms_codicology__number_of_parchment_folios__lte=int(number_of_parchment_folios_max))
-
 
 
         #New true/false values:
@@ -466,9 +674,9 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(ms_codicology__watermarks=True)
 
         if is_main_text_false and not is_main_text_true:
-            queryset = queryset.exclude(ms_hands__is_main_text=True)
+            queryset = queryset.filter(ms_hands__is_main_text=False)
         if is_main_text_true and not is_main_text_false:
-            queryset = queryset.filter(ms_hands__is_main_text=True)
+            queryset = queryset.exclude(ms_hands__is_main_text=False)
 
         if written_above_the_top_line_false and not written_above_the_top_line_true:
             queryset = queryset.filter(ms_layouts__written_above_the_top_line=False)
@@ -606,10 +814,15 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
         binding_type_select = self.request.query_params.get('binding_type_select')
         binding_style_select = self.request.query_params.get('binding_style_select')
         binding_material_select = self.request.query_params.get('binding_material_select')
+        formula_select = self.request.query_params.get('formula_select')
+        rite_select = self.request.query_params.get('rite_select')
         damage_select = self.request.query_params.get('damage_select')
         provenance_place_select = self.request.query_params.get('provenance_place_select')
         title_select = self.request.query_params.get('title_select')
         author_select = self.request.query_params.get('author_select')
+
+        clla_liturgical_genre_select = self.request.query_params.get('clla_liturgical_genre_select')
+        clla_provenance_place_select = self.request.query_params.get('clla_provenance_place_select')
 
         if parchment_colour_select: 
             parchment_colour_select_ids = parchment_colour_select.split(';')
@@ -619,16 +832,20 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(main_script__in=main_script_select_ids)
         if type_of_the_quire_select: 
             type_of_the_quire_select_ids = type_of_the_quire_select.split(';')
-            queryset = queryset.filter(ms_quires__type_of_the_quire__in=type_of_the_quire_select_ids)
+            for q in type_of_the_quire_select_ids:
+                queryset = queryset.filter(ms_quires__type_of_the_quire=q)
         if script_name_select: 
             script_name_select_ids = script_name_select.split(';')
-            queryset = queryset.filter(ms_hands__script_name__in=script_name_select_ids)
+            for q in script_name_select_ids:
+                queryset = queryset.filter(ms_hands__script_name=q)
         if ruling_method_select: 
             ruling_method_select_ids = ruling_method_select.split(';')
-            queryset = queryset.filter(ms_layouts__ruling_method__in=ruling_method_select_ids)
+            for q in ruling_method_select_ids:
+                queryset = queryset.filter(ms_layouts__ruling_method=q)
         if pricking_select: 
             pricking_select_ids = pricking_select.split(';')
-            queryset = queryset.filter(ms_layouts__pricking__in=pricking_select_ids)
+            for q in pricking_select_ids:
+                queryset = queryset.filter(ms_layouts__pricking=q)
         if binding_place_of_origin_select: 
             binding_place_of_origin_select_ids = binding_place_of_origin_select.split(';')
             queryset = queryset.filter(ms_binding__place_of_origins__in=binding_place_of_origin_select_ids)
@@ -640,19 +857,52 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(ms_binding__style_of_binding__in=binding_style_select_ids)
         if binding_material_select: 
             binding_material_select_ids = binding_material_select.split(';')
-            queryset = queryset.filter(ms_binding_materials__material__in=binding_material_select_ids)
+            for q in binding_material_select_ids:
+                queryset = queryset.filter(ms_binding_materials__material=q)
+        if formula_select: 
+            formula_select_ids = formula_select.split(';')
+            for q in formula_select_ids:
+                queryset = queryset.filter(ms_content__formula=q)
+        if rite_select: 
+            rite_select_ids = rite_select.split(';')
+            for q in rite_select_ids:
+                queryset = queryset.filter(ms_content__rite=q)
         if damage_select: 
             damage_select_ids = damage_select.split(';')
             queryset = queryset.filter(ms_condition__damage__in=damage_select_ids)
         if provenance_place_select: 
             provenance_place_select_ids = provenance_place_select.split(';')
-            queryset = queryset.filter(ms_provenance__place__in=provenance_place_select_ids)
+            for q in provenance_place_select_ids:
+                queryset = queryset.filter(ms_provenance__place=q)
         if title_select: 
             title_select_ids = title_select.split(';')
-            queryset = queryset.filter(ms_bibliography__bibliography__in=title_select_ids)
+            for q in title_select_ids:
+                queryset = queryset.filter(ms_bibliography__bibliography=q)
         if author_select: 
             author_select_ids = author_select.split(';')
-            queryset = queryset.filter(ms_bibliography__bibliography__author__in=author_select_ids)
+            for q in author_select_ids:
+                queryset = queryset.filter(ms_bibliography__bibliography__author=q)
+
+        if clla_liturgical_genre_select: 
+            clla_liturgical_genre_select_ids = clla_liturgical_genre_select.split(';')
+            for q in clla_liturgical_genre_select_ids:
+                queryset = queryset.filter(ms_clla__liturgical_genre=q)
+        if clla_provenance_place_select: 
+            clla_provenance_place_select_ids = clla_provenance_place_select.split(';')
+            for q in clla_provenance_place_select_ids:
+                queryset = queryset.filter(ms_clla__provenance=q)
+
+
+        if len(formula_text)>1:
+            queryset = queryset.filter(ms_content__formula_text__icontains=formula_text)
+        if len(rite_name_from_ms)>1:
+            queryset = queryset.filter(ms_content__rite_name_from_ms__icontains=rite_name_from_ms)
+        
+        if clla_no and len(clla_no)>=1:
+            queryset = queryset.filter(ms_clla__clla_no__icontains=clla_no)
+
+
+    
 
         # Apply ordering to queryset
         if order_direction == 'asc':
@@ -663,54 +913,86 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
 
         return queryset.distinct()
 
+    
+
 class assistantAjaxView(View):
 
     def get(self, request, *args, **kwargs):
         q = self.request.GET.get('q')
         #print(q)
-        sql = self.text_to_sql(q)
+        sql_text = self.text_to_sql(request,q)
+
+
         #print(sql)
-        answer = self.sql_query(sql)
+        answer = self.sql_query(sql_text['sql'])
         json_output = (answer)
         #print(json_output)
 
         data = {
-            'info': json_output
+            'info': json_output,
+            'text': sql_text['text']
         }
 
         return JsonResponse(data)
 
-    def text_to_sql(self,text):
-        os.environ["DUBO_API_KEY"] = "pk.bb63cda35d47463fb858192bee22510f"
-        return generate_sql(text, fast=False)
+    def text_to_sql(self, request, text):
+        
+        #return generate_sql(text, fast=False)
+
+        return gpt_generate_sql(request,text)
+
 
     def sql_query(self,query):
         with connection.cursor() as cursor:
-            cursor.execute(query)
-            r = [dict((cursor.description[i][0], value) \
-               for i, value in enumerate(row)) for row in cursor.fetchall()]
-            cursor.connection.close()
-            return r
 
-        return r
+            try:
+                cursor.execute(query)
+
+            except Exception as e:
+                print(e)
+                return None
+
+            
+            try: 
+                r = [dict((cursor.description[i][0], value) \
+                    for i, value in enumerate(row)) for row in cursor.fetchall()]
+                return r
+
+            except TypeError as e:
+                print(e)
+                return None
+
+        return None
 
 class CodicologyAjaxView(View):
     def get(self, request, *args, **kwargs):
         pk = self.request.GET.get('pk')
         ms_instance = get_object_or_404(Manuscripts, id=pk)
-        skip_fields = ['id', 'manuscript']  # Add any other fields to skip
+        skip_fields = ['manuscript']  # Add any other fields to skip
         instance = ms_instance.ms_codicology.first()
         info = get_obj_dictionary(instance,skip_fields)
 
-        # Manuscript comments (debate)
-        debate = {}
+        debate = []
         if instance:
-            debate = AttributeDebate.objects.filter(content_type__model='codicology', object_id=instance.id)
+            debate_query = AttributeDebate.objects.filter(content_type__model='codicology', object_id=instance.id)
+            for d in debate_query:
+                bibliography = Bibliography.objects.get(id=d.bibliography_id)
+                # Create a dictionary with debate details
+                debate_dict = {
+                    'id': d.id,
+                    'field_name': d.field_name,
+                    'text': d.text,
+                    'bibliography': str(bibliography),  # String representation of the Bibliography name
+                    'bibliography_id': d.bibliography_id 
+                }
+                
+                # Append the dictionary to the debate_data list
+                debate.append(debate_dict)
 
         # Create the response dictionary
         data = {
             'info': info,
-            'debate': list(debate.values()),  # Convert QuerySet to a list for JSON serialization
+            'debate': debate,  # Convert QuerySet to a list for JSON serialization
         }
 
         return JsonResponse(data)
@@ -735,13 +1017,32 @@ class DecorationAjaxView(View):
     def get(self, request, *args, **kwargs):
         pk = self.request.GET.get('ms')
         ms_instance = get_object_or_404(Manuscripts, id=pk)
-        skip_fields = ['id', 'manuscript']  # Add any other fields to skip
+        skip_fields = ['manuscript']  # Add any other fields to skip
         info_queryset = ms_instance.ms_decorations.all()
         info_dict = [get_obj_dictionary(entry, skip_fields) for entry in info_queryset]
+
+        debate = []
+        for instance in info_queryset:
+            debate_query = AttributeDebate.objects.filter(content_type__model='decoration', object_id=instance.id)
+            for d in debate_query:
+                bibliography = Bibliography.objects.get(id=d.bibliography_id)
+                # Create a dictionary with debate details
+                debate_dict = {
+                    'id': d.id,
+                    'instance_id': instance.id,
+                    'field_name': d.field_name,
+                    'text': d.text,
+                    'bibliography': str(bibliography),  # String representation of the Bibliography name
+                    'bibliography_id': d.bibliography_id 
+                }
+                
+                # Append the dictionary to the debate_data list
+                debate.append(debate_dict)
 
         # Create the response dictionary
         data = {
             'data': info_dict,
+            'debate': debate,
         }
 
         return JsonResponse(data)
@@ -795,13 +1096,32 @@ class OriginsAjaxView(View):
     def get(self, request, *args, **kwargs):
         pk = self.request.GET.get('ms')
         ms_instance = get_object_or_404(Manuscripts, id=pk)
-        skip_fields = ['id', 'manuscript']  # Add any other fields to skip
+        skip_fields = ['manuscript']  # Add any other fields to skip
         info_queryset = ms_instance.ms_origins.all()
         info_dict = [get_obj_dictionary(entry, skip_fields) for entry in info_queryset]
+
+        debate = []
+        for instance in info_queryset:
+            debate_query = AttributeDebate.objects.filter(content_type__model='origins', object_id=instance.id)
+            for d in debate_query:
+                bibliography = Bibliography.objects.get(id=d.bibliography_id)
+                # Create a dictionary with debate details
+                debate_dict = {
+                    'id': d.id,
+                    'instance_id': instance.id,
+                    'field_name': d.field_name,
+                    'text': d.text,
+                    'bibliography': str(bibliography),  # String representation of the Bibliography name
+                    'bibliography_id': d.bibliography_id 
+                }
+                
+                # Append the dictionary to the debate_data list
+                debate.append(debate_dict)
 
         # Create the response dictionary
         data = {
             'data': info_dict,
+            'debate': debate
         }
 
         return JsonResponse(data)
@@ -874,14 +1194,43 @@ class MusicNotationAjaxView(View):
 class HandsAjaxView(View):
     def get(self, request, *args, **kwargs):
         pk = self.request.GET.get('ms')
+        is_main_text = self.request.GET.get('is_main_text')
+
+
         ms_instance = get_object_or_404(Manuscripts, id=pk)
-        skip_fields = ['id', 'manuscript']  # Add any other fields to skip
+        skip_fields = [ 'manuscript']  # Add any other fields to skip
         info_queryset = ms_instance.ms_hands.all()
+
+        if is_main_text=='true' :
+            info_queryset = info_queryset.filter(is_main_text=True)
+        elif is_main_text == 'false' :
+            info_queryset = info_queryset.filter(is_main_text=False)
+
         info_dict = [get_obj_dictionary(entry, skip_fields) for entry in info_queryset]
+
+
+        debate = []
+        for instance in info_queryset:
+            debate_query = AttributeDebate.objects.filter(content_type__model='manuscripthands', object_id=instance.id)
+            for d in debate_query:
+                bibliography = Bibliography.objects.get(id=d.bibliography_id)
+                # Create a dictionary with debate details
+                debate_dict = {
+                    'id': d.id,
+                    'instance_id': instance.id,
+                    'field_name': d.field_name,
+                    'text': d.text,
+                    'bibliography': str(bibliography),  # String representation of the Bibliography name
+                    'bibliography_id': d.bibliography_id 
+                }
+                
+                # Append the dictionary to the debate_data list
+                debate.append(debate_dict)
 
         # Create the response dictionary
         data = {
             'data': info_dict,
+            'debate': debate
         }
 
         return JsonResponse(data)
@@ -957,29 +1306,76 @@ class BibliographyExportView(View):
         response = HttpResponse(info_str, content_type='application/x-bibtex charset=utf-8')
         return response
 
+class BibliographyPrintView(View):
+    def get(self, request, *args, **kwargs):
+        pk = self.request.GET.get('ms')
+        ms_instance = get_object_or_404(Manuscripts, id=pk)
+
+        #Zotero:
+        bibliography = ms_instance.ms_bibliography.all()
+
+        zot = zotero.Zotero(ZOTERO_library_id, ZOTERO_library_type, ZOTERO_api_key)
+        zot.add_parameters(format='bib')
+        #allItems = zot.items()
+
+        info_str = ""
+        for b in bibliography:
+            item = zot.item(b.bibliography.zotero_id, limit=50, content='bib,html', format='https://www.zotero.org/styles/pontifical-biblical-institute')
+            info_str += item[0] + "\n\n"
+
+        # Create the response dictionary
+        data = {
+            'data': info_str.replace('\n','<br />'),
+        }
+
+        return JsonResponse(data)
+
 class ProvenanceAjaxView(View):
     def get(self, request, *args, **kwargs):
         pk = self.request.GET.get('ms')
         ms_instance = get_object_or_404(Manuscripts, id=pk)
-        skip_fields = ['id', 'manuscript']  # Add any other fields to skip
+        skip_fields = [ 'manuscript']  # Add any other fields to skip
         info_queryset = ms_instance.ms_provenance.all()
         info_dict = [get_obj_dictionary(entry, skip_fields) for entry in info_queryset]
 
         markers = []
         for p in info_queryset:
-            print(p.place.repository_today_eng)
-            print(p.place.longitude)
-            print(p.place.latitude)
-            markers.append({
-                'name':p.place.repository_today_eng,
-                'lon':p.place.longitude,
-                'lat':p.place.latitude,
-                })
+
+            name = '-'
+            if p.place:
+                name = p.place.repository_today_eng
+                if len(name)<3:
+                    name = p.place.repository_today_local_language
+            
+                markers.append({
+                    'name':name,
+                    'lon':p.place.longitude,
+                    'lat':p.place.latitude,
+                    })
+
+        debate = []
+        for instance in info_queryset:
+            debate_query = AttributeDebate.objects.filter(content_type__model='provenance', object_id=instance.id)
+            for d in debate_query:
+                bibliography = Bibliography.objects.get(id=d.bibliography_id)
+                # Create a dictionary with debate details
+                debate_dict = {
+                    'id': d.id,
+                    'instance_id': instance.id,
+                    'field_name': d.field_name,
+                    'text': d.text,
+                    'bibliography': str(bibliography),  # String representation of the Bibliography name
+                    'bibliography_id': d.bibliography_id 
+                }
+                
+                # Append the dictionary to the debate_data list
+                debate.append(debate_dict)
 
         # Create the response dictionary
         data = {
             'data': info_dict,
-            'markers':markers
+            'markers':markers,
+            'debate': debate
         }
 
         return JsonResponse(data)
@@ -1033,6 +1429,42 @@ class ManuscriptsAutocomplete(autocomplete.Select2QuerySetView):
             qs = qs.filter(name__icontains=self.q)
 
         return qs
+
+class CllaProvenanceAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # Pobierz unikalne wartości pola provenance, które nie są puste
+        qs = Clla.objects.exclude(provenance__isnull=True).exclude(provenance__exact='').values('provenance').distinct()
+
+        # Filtruj wyniki na podstawie wartości wprowadzonej przez użytkownika
+        if self.q:
+            qs = qs.filter(provenance__icontains=self.q)
+
+        return qs
+
+    def get_result_value(self, item):
+        return str(item['provenance'])
+
+    def get_result_label(self, item):
+        return str(item['provenance'])
+
+
+class CllaLiturgicalGenreAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # Pobierz unikalne wartości pola liturgical_genre, które nie są puste
+        qs = Clla.objects.exclude(liturgical_genre__isnull=True).exclude(liturgical_genre__exact='').values('liturgical_genre').distinct()
+
+        # Filtruj wyniki na podstawie wartości wprowadzonej przez użytkownika
+        if self.q:
+            qs = qs.filter(liturgical_genre__icontains=self.q)
+
+        return qs
+
+    def get_result_value(self, item):
+        return str(item['liturgical_genre'])
+
+    def get_result_label(self, item):
+        return str(item['liturgical_genre'])
+
 
 class MSForeignIdAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
@@ -1296,6 +1728,38 @@ class BibliographyAuthorAutocomplete(autocomplete.Select2QuerySetView):
 
     def get_result_label(self, item):
         return item.author
+
+class FormulasAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # Don't forget to filter out results depending on the visitor !
+        if not self.request.user.is_authenticated:
+            return Formulas.objects.none()
+
+        qs = Formulas.objects.all()
+
+        if self.q:
+            qs = qs.filter(text__icontains=self.q)
+
+        return qs
+
+    def get_result_label(self, item):
+        return item.text
+
+class RiteNamesAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # Don't forget to filter out results depending on the visitor !
+        if not self.request.user.is_authenticated:
+            return RiteNames.objects.none()
+
+        qs = RiteNames.objects.all()
+
+        if self.q:
+            qs = qs.filter(name__icontains=self.q)
+
+        return qs
+
+    def get_result_label(self, item):
+        return item.name
 
 class PlacesAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
@@ -2209,6 +2673,7 @@ def get_obj_dictionary(obj, skip_fields):
         obj_dict.pop(field, None)
 
     info_strings = {}
+
     #Translation model to string values:
     for field_name, value in obj_dict.items():
         if hasattr(obj, field_name):
@@ -2219,7 +2684,7 @@ def get_obj_dictionary(obj, skip_fields):
                 info_strings[field_name] = "-"
             elif field_name == 'where_in_ms_from' or field_name == 'where_in_ms_to':
                 info_strings[field_name] =foliation(field)
-            elif field_name == 'authors':
+            elif field_name == 'authors' and type(obj.authors) is not str:
                 info_strings[field_name] = [str(author) for author in obj.authors.all()]
             else:
                 info_strings[field_name]=str(field)
@@ -2494,6 +2959,46 @@ class contentCompareGraph(View):
         
         return response
 
+class contentCompareJSON(View):
+
+    def get(self, request, *args, **kwargs):
+        left = self.request.GET.get('left')
+        right = self.request.GET.get('right')
+    
+        ms_ids = [left, right]
+        category_column = 'formula_id'
+        value_column = 'sequence_in_ms'
+
+        # Query the database for data
+        data = []
+        for ms_id in ms_ids:
+            manuscript = Manuscripts.objects.get(id=ms_id)
+            content_objects = Content.objects.filter(manuscript_id=ms_id, formula_id__isnull=False)
+            data.append({'Table': str(manuscript), 'Values': list(content_objects)})
+
+        # Create a DataFrame from the fetched data
+        df = pd.DataFrame(data)
+
+        # Reshape the DataFrame to have a separate row for each 'formula_id'
+        reshaped_data = []
+        for index, row in df.iterrows():
+            for content_object in row['Values']:
+                formula_id = content_object.formula_id
+                formula = str(content_object.formula)
+                reshaped_data.append({
+                    'Table': row['Table'],
+                    'formula_id': str(formula_id),
+                    'sequence_in_ms': content_object.sequence_in_ms,
+                    'formula': formula
+                })
+
+        reshaped_df = pd.DataFrame(reshaped_data)
+
+        # Convert the reshaped data to a JSON-friendly format
+        json_data = reshaped_df.to_dict(orient='records')
+
+        return JsonResponse(json_data, safe=False)
+
 
 
 class contentCompareEditionGraph(View):
@@ -2571,6 +3076,50 @@ class contentCompareEditionGraph(View):
         buf.close()
         
         return response
+
+import json
+from django.http import JsonResponse
+from django.views import View
+import pandas as pd
+
+class contentCompareEditionJSON(View):
+
+    def get(self, request, *args, **kwargs):
+        mss = self.request.GET.get('mss');
+        ms_ids = mss.split(';')
+
+        category_column = 'edition_index'
+        value_column = 'rite_sequence'
+
+        # Query the database for data
+        data = []
+        for ms_id in ms_ids:
+            manuscript = Manuscripts.objects.get(id=ms_id)
+            content_objects = Content.objects.filter(manuscript_id=ms_id, edition_index__isnull=False)
+            data.append({'Table': str(manuscript), 'Values': list(content_objects)})
+
+        # Create a DataFrame from the fetched data
+        df = pd.DataFrame(data)
+
+        # Reshape the DataFrame to have a separate row for each 'edition_index'
+        reshaped_data = []
+        for index, row in df.iterrows():
+            for content_object in row['Values']:
+                edition_index = content_object.edition_index
+                rite_name_standarized = str(content_object.edition_index.rite_name_standarized)
+                reshaped_data.append({
+                    'Table': row['Table'],
+                    'edition_index': str(edition_index),
+                    'rite_sequence': content_object.rite_sequence,
+                    'rite_name_standarized': rite_name_standarized
+                })
+
+        reshaped_df = pd.DataFrame(reshaped_data)
+
+        # Convert the reshaped data to a JSON-friendly format
+        json_data = reshaped_df.to_dict(orient='records')
+
+        return JsonResponse(json_data, safe=False)
 
 class MSRitesLookupView(View):
     def get(self, request, *args, **kwargs):
