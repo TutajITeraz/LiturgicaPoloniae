@@ -10,9 +10,9 @@ manuscripts_init = function()
 
     const newLeftWidth = 300;
 
-    leftColumn.style.width = `${newLeftWidth}px`;
-    rightColumn.style.width = `calc(100% - 305px)`;
-    resizer.style.left =`${newLeftWidth}px`;
+    // leftColumn.style.width = `${newLeftWidth}px`;
+    // rightColumn.style.width = `calc(100% - 305px)`;
+    // resizer.style.left =`${newLeftWidth}px`;
 
     function processFilters(e)
     {
@@ -414,6 +414,115 @@ manuscripts_init = function()
         clearFields();
     });
 
+    // function setTableHeight() {
+    //     var windowHeight = $(window).height();
+    //     var windowWidth = $(window).width();
+    //     if(windowWidth > 768){
+    //         var tableHeight = windowHeight - 510;
+    //     } else {
+    //         var tableHeight = windowHeight - 650;
+    //     }
+        
+    //     // $('#manuscripts').css('height', tableHeight + 'px');
+    //     // console.log('table height : ', tableHeight);
+    // }
+
+    // // Set initial height
+    // setTableHeight();
+
+    // Adjust height on window resize
+    $(window).resize(function() {
+        // setTableHeight();
+
+        var windowWidth = $(window).width();
+
+        if(windowWidth < 768){
+            $("#manuscripts_wrapper .dt-layout-row").eq(0).css({
+                "position": "sticky",
+                "top": "88px",
+                "background": "#fff7f1",
+                "z-index": "20",
+            });
+        } else if (windowWidth < 1280){
+            $("#manuscripts_wrapper .dt-layout-row").eq(0).css({
+                "position": "sticky",
+                "top": "68px",
+                "background": "#fff7f1",
+                "z-index": "20",
+            });
+        } else {
+            $("#manuscripts_wrapper .dt-layout-row").eq(0).css({
+                "position": "sticky",
+                "top": "48px",
+                "background": "#fff7f1",
+                "z-index": "20",
+            });
+        }
+        // Apply CSS to the first dt-layout-row
+    
+        // Apply CSS to the second dt-layout-row
+        // $("#manuscripts_wrapper .dt-layout-row").eq(1).css({
+        //     "background-color": "lightgreen",
+        //     "margin-top": "20px",
+        //     "border": "2px solid green"
+        // });
+    
+        // Apply CSS to the third dt-layout-row
+        $("#manuscripts_wrapper .dt-layout-row").eq(2).css({
+            "position": "sticky",
+            "bottom": "0px",
+            "background": "#fff7f1",
+            "z-index": "20",
+        });
+    });
+
+
+    $(document).ready(function() {
+        clearFields();
+        // setTableHeight();
+
+        var windowWidth = $(window).width();
+
+        if(windowWidth < 768){
+            $("#manuscripts_wrapper .dt-layout-row").eq(0).css({
+                "position": "sticky",
+                "top": "88px",
+                "background": "#fff7f1",
+                "z-index": "20",
+            });
+        } else if (windowWidth < 1280){
+            $("#manuscripts_wrapper .dt-layout-row").eq(0).css({
+                "position": "sticky",
+                "top": "68px",
+                "background": "#fff7f1",
+                "z-index": "20",
+            });
+        } else {
+            $("#manuscripts_wrapper .dt-layout-row").eq(0).css({
+                "position": "sticky",
+                "top": "48px",
+                "background": "#fff7f1",
+                "z-index": "20",
+            });
+        }
+        // Apply CSS to the first dt-layout-row
+    
+        // Apply CSS to the second dt-layout-row
+        // $("#manuscripts_wrapper .dt-layout-row").eq(1).css({
+        //     "background-color": "lightgreen",
+        //     "margin-top": "20px",
+        //     "border": "2px solid green"
+        // });
+    
+        // Apply CSS to the third dt-layout-row
+        $("#manuscripts_wrapper .dt-layout-row").eq(2).css({
+            "position": "sticky",
+            "bottom": "0px",
+            "background": "#fff7f1",
+            "z-index": "20",
+        });
+    });
+
     $('#ms_how_many_columns_min').on( "change", processFilters );
     $('#ms_how_many_columns_max').on( "change", processFilters );
     $('#ms_lines_per_page_min').on( "change", processFilters );
@@ -656,28 +765,53 @@ manuscripts_init = function()
         "pagingType": "full_numbers",
         "pageLength": 25,
         "columns": [
+            { 
+                "data": "image", "title": "Image", "width": "220px",
+                "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                    if(oData.image.length > 3)
+                        $(nTd).html("<img src='"+oData.image+"' style='max-heigth: 170px; max-width: 190px;'></img>");
+            }},
+
+            { 
+                "data": "name", "title": "Info",
+                "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                        let html = "<h3 class='ms_name'><a href=/static/page.html?p=manuscript&id="+oData.id+">"+oData.name+"</a></h3>"
+                        +"<div class='left_script_content'><div class='ms_foreign_id'>"+oData.foreign_id+"<span class='mspltext'> ("+foreign_id_name+")</span>, "+oData.shelf_mark+"<span class='mspltext'> (Shelf mark)</span></div>"
+                        +"<div class='ms_contemporary_repository_place'><b>Contemporary repository place:</b>"+oData.contemporary_repository_place+"</div>"
+                        +"<div class='ms_place_of_origins'><b>Place of origins:</b>"+oData.place_of_origins+"</div>"
+                        +"<div class='ms_main_script'><b>Main script:</b>"+oData.main_script+"</div>"
+                        +"<div class='ms_dating'><b>Dating:</b>"+oData.dating+"</div></div>"
+                        
+                        +"<div class='right_script_content'><div class='ms_decorated'><span class='decorated_left'>Decorated:</span><span class='decorated_right'>"+oData.decorated+"</span></div>"
+                        +"<div class='ms_music_notation'><span class='decorated_left'>Music notation:</span><span class='decorated_right'>"+oData.music_notation+"</span></div>"
+                        +"<div class='ms_binding_date'><span class='decorated_left'>Binding date:</span><span class='decorated_right'>"+oData.binding_date+"</span></div>"
+
+                        +"<div class='ms_how_many_columns_mostly'><span class='decorated_left'>How many columns (mostly):</span><span class='decorated_right'>"+oData.how_many_columns_mostly+"</span></div>"
+                        +"<div class='ms_lines_per_page_usually'><span class='decorated_left'>Lines per page usually:</span><span class='decorated_right'>"+oData.lines_per_page_usually+"</span></div>"
+                        +"<div class='ms_how_many_quires'><span class='decorated_left'>How many quires:</span><span class='decorated_right'>"+oData.how_many_quires+"</span></div></div>"
+                        
+                        ;
+
+                        $(nTd).html(html);
+            }},
+
             { "data": "id", "title": "ID", visible: false },
-            { "data": "name", "title": "Name",
+            /*{ "data": "name", "title": "Name",
             "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
                 $(nTd).html("<a href=/static/page.html?p=manuscript&id="+oData.id+">"+oData.name+"</a>");
-            }},
-            { "data": "image", "title": "Image",
-            "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
-                if(oData.image.length > 3)
-                    $(nTd).html("<img src='"+oData.image+"' style='max-heigth: 120px; max-width: 120px;'></img>");
-            }},
-            { "data": "foreign_id", "title": foreign_id_name },
-            { "data": "contemporary_repository_place", "title": "Contemporary Repository Place" },
-            { "data": "shelf_mark", "title": "Shelf Mark" },
-            { "data": "place_of_origins", "title": "Place of Origins" },
-            { "data": "dating", "title": "Dating" },
-            { "data": "main_script", "title": "Main Script" },
-            { "data": "how_many_columns_mostly", "title": "How Many Columns Mostly" },
-            { "data": "lines_per_page_usually", "title": "Lines per Page Usually" },
-            { "data": "how_many_quires", "title": "How Many Quires" },
-            { "data": "decorated", "title": "Decorated" },
-            { "data": "music_notation", "title": "Music Notation" },
-            { "data": "binding_date", "title": "Binding Date" }
+            }},*/
+            { "data": "foreign_id", "title": foreign_id_name , visible: false },
+            { "data": "contemporary_repository_place", "title": "Contemporary Repository Place" , visible: false },
+            { "data": "shelf_mark", "title": "Shelf Mark" , visible: false },
+            { "data": "place_of_origins", "title": "Place of Origins" , visible: false },
+            { "data": "dating", "title": "Dating" , visible: false },
+            { "data": "main_script", "title": "Main Script" , visible: false },
+            { "data": "how_many_columns_mostly", "title": "How Many Columns Mostly" , visible: false },
+            { "data": "lines_per_page_usually", "title": "Lines per Page Usually" , visible: false },
+            { "data": "how_many_quires", "title": "How Many Quires" , visible: false },
+            { "data": "decorated", "title": "Decorated" , visible: false },
+            { "data": "music_notation", "title": "Music Notation" , visible: false },
+            { "data": "binding_date", "title": "Binding Date" , visible: false }
             // Add more columns as needed
         ]
     });

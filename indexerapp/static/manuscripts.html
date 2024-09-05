@@ -1,722 +1,785 @@
 
-<div  x-init="manuscripts_init()">
+<div x-init="manuscripts_init()" class="px-2">
 
-    <h1>Descriptions of Manuscripts</h1>
+    <h1 class="text-[#0d1b2a] text-[40pt] caudex-bold text-left mt-12 mb-9">Manuscripts</h1>
 
-    <div class="two_columns">
+    <nav class="mb-8 relative z-50 sticky top-0 bg-[#fff7f1]">
+        <div class="flex flex-wrap items-center justify-between mx-auto">
 
-        <div class="left_column"  id="leftColumn">
-            <h2 style="display: inline-block; justify-content: space-between;">Filters:</h2>
+            <div id="mega-menu-icons" class="items-center justify-between w-full flex customShadow border-t border-gray-200">
+                <ul class="w-full my-4 font-medium relative divide-x divide-[#c32f27] text-[#0d1b2a] grid grid-cols-4 md:grid-cols-6 xl:grid-cols-12 gap-y-1">
+                    <li class="items-center justify-center xl:mb-0 flex">
+                        <button id="clearFieldsButton" class="w-full h-full text-center young-serif whitespace-nowrap text-[#0d1b2a] uppercase hover:underline hover:text-[#070e16] text-[8pt]" style="line-height: 16px;">
+                            See All
+                        </button>
+                    </li>
+                    <li x-data="{ maininfo: false }"
+                        @click.away="maininfo = false"
+                        class="md:relative items-center justify-center xl:mb-0 flex">
+                        <button @click="maininfo = !maininfo" id="mega-menu-icons-dropdown-button" 
+                            :class="maininfo ? 'text-[#0d1b2a] underline' : 'hover:underline hover:text-[#070e16]'"
+                            class="w-full h-full text-center young-serif text-[10px] sm:text-xs md:text-[8pt] uppercase">
+                            Main Info
+                        </button>
+                        <div id="mega-menu-icons-dropdown"
+                            class="absolute flex flex-col z-10 w-full md:w-[28rem] top-[60px] md:top-[30px] text-xs md:text-sm text-[#0d1b2a] bg-[#fef9f6] border border-gray-100 rounded shadow-md left-0"
+                            x-show="maininfo"
+                            x-transition:enter="transition ease-out duration-400"
+                            x-transition:enter-start="transform opacity-0 scale-90"
+                            x-transition:enter-end="transform opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-400"
+                            x-transition:leave-start="transform opacity-100 scale-100"
+                            x-transition:leave-end="transform opacity-0 scale-90">
 
-            <a class="action_button" type="button" id="clearFieldsButton" style="margin-top: 25px; float: right">See All</a>
-
-            <div class="openbox open-lvl-0" x-data="{ open: false }">
-                <button @click="open = ! open" class="toggle" x-bind:opened="open"><img class="button-icon" src="/static/img/icons/info.svg"></img><span class="printIt title">Main info</span></button>
-                
-                <div class="open-inside" x-show="open" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
-            
-
-                    <label class="top_level_label" for="ms_name_select">Name:</label>
-                    <select class="manuscript_filter"  id="ms_name_select">
-                    </select>
-                    <br />
-                    <br />
-                    <!-- Foreign id -->
-                    <label class="top_level_label" for="ms_foreign_id_select" x-text="foreign_id_name"></label>
-                    <select class="manuscript_filter"  id="ms_foreign_id_select">
-                    </select>
-                    <br />
-                    <br />
-                    <label class="top_level_label" for="ms_contemporary_repository_place_select">Contemporary repository:</label>
-                    <select id="ms_contemporary_repository_place_select"  class="manuscript_filter"></select>
-                    <br />
-
-                    <br />
-                    <label class="top_level_label" for="ms_shelfmark_select">Shelfmark:</label>
-                    <select class="manuscript_filter"  id="ms_shelfmark_select">
-                    </select>
-                    <br />
-                    <!--
-                    <label class="top_level_label" for="ms_liturgical_genre_select">Liturgical genre:</label>
-                    <select class="manuscript_filter"  id="ms_liturgical_genre_select">
-                    </select>
-                    <br />
-                    -->
-                    <!--
-                    <label class="top_level_label" for="ms_dating_select">Dating:</label>
-                    <select class="manuscript_filter"  id="ms_dating_select" multiple>
-                    </select>
-                    <br />
-                    -->
-                    <br />
-                    <label class="top_level_label" for="ms_place_of_origins_select">Place of origins:</label>
-                    <select class="manuscript_filter"  id="ms_place_of_origins_select">
-                    </select>
-                    <br />
-
-                    <!--
-                    <br />
-                    <label class="top_level_label" for="ms_main_script_select">Main script:</label>
-                    <select class="manuscript_filter"  id="ms_main_script_select" multiple>
-                    </select>
-                    <br />
-                    -->
-                    <!--
-                    <br />
-                    <label class="top_level_label" for="ms_binding_date_select">Binding date:</label>
-                    <select class="manuscript_filter"  id="ms_binding_date_select" multiple>
-                    </select>
-                    <br />
-                    -->
-                    <fieldset>
-                        <legend class="top_level_label">Dating (Ages):</legend>
-                        <div class="range_input" >
-                            <label class="top_level_label range_label" for="ms_dating_min">min.</label>
-                            <input class="range_number" type="number" id="ms_dating_min" min="0" max="22" />
-                        </div>
-                        <span>&nbsp;—&nbsp;</span>
-                        <div class="range_input" >
-                            <label class="top_level_label range_label" for="ms_dating_max">max.</label>
-                            <input class="range_number" type="number" id="ms_dating_max" min="0" max="22" />
-                        </div>
-                    </fieldset>
-
-                    <fieldset>
-                        <legend class="top_level_label">Dating (Years):</legend>
-                        <div class="range_input" >
-                            <label class="top_level_label range_label" for="ms_dating_years_min">min.</label>
-                            <input class="range_number" type="number" id="ms_dating_years_min" min="0" max="2200" />
-                        </div>
-                        <span>&nbsp;—&nbsp;</span>
-                        <div class="range_input" >
-                            <label class="top_level_label range_label" for="ms_dating_years_max">max.</label>
-                            <input class="range_number" type="number" id="ms_dating_years_max" min="0" max="2200" />
-                        </div>
-                    </fieldset>
-
-                    <br />
-
-                    <fieldset>
-                        <legend class="top_level_label">Decoration:</legend>
-                        <input type="checkbox" id="decoration_true" name="decoration_true" value="true" checked>
-                        <label for="decoration_true">Yes</label><br>
-                        <input type="checkbox" id="decoration_false" name="decoration_false" value="true" checked>
-                        <label for="decoration_false">No</label><br>
-                    </fieldset>
-                    <br />
-        
-                    <fieldset>
-                        <legend class="top_level_label">Music notation:</legend>
-                        <input type="checkbox" id="music_notation_true" name="music_notation_true" value="true" checked>
-                        <label for="music_notation_true">Yes</label><br>
-                        <input type="checkbox" id="music_notation_false" name="music_notation_false" value="true" checked>
-                        <label for="music_notation_false">No</label><br>
-                    </fieldset>
-                    <br />
-
-                    <fieldset>
-                        <legend class="top_level_label">Digitized:</legend>
-                        <input type="checkbox" id="digitized_true" name="digitized_true" value="true" checked>
-                        <label for="digitized_true">Yes</label><br>
-                        <input type="checkbox" id="digitized_false" name="digitized_false" value="true" checked>
-                        <label for="digitized_false">No</label><br>
-                    </fieldset>
-                    <br />
-
-
-                </div>
-            </div>
-
-
-            <div x-show="projectId==1">
-                <div class="openbox open-lvl-0" x-data="{ open: false }">
-                    <button @click="open = ! open" class="toggle" x-bind:opened="open"><img class="button-icon" src="/static/img/icons/books.svg"></img><span class="printIt title">CLLA</span></button>
-
-                    <div class="open-inside" x-show="open" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
-                    
-                                            
-                        <label class="top_level_label" for="clla_no">CLLA no.:</label>
-                        <input type="text" id="clla_no" name="clla_no">
-                        <br />
-
-                        <label class="top_level_label" for="clla_liturgical_genre_select">Liturgical genre:</label>
-                        <select class="manuscript_filter"  id="clla_liturgical_genre_select">
-                        </select>
-                        <br />
-
-                        <label class="top_level_label" for="clla_provenance_place_select">Provenance place:</label>
-                        <select class="manuscript_filter"  id="clla_provenance_place_select">
-                        </select>
-                        <br />
-
-                        <fieldset>
-                            <legend class="top_level_label">Dating (Ages):</legend>
-                            <div class="range_input" >
-                                <label class="top_level_label range_label" for="clla_dating_min">min.</label>
-                                <input class="range_number" type="number" id="clla_dating_min" min="0" max="22" />
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Name</h2>
+                                <select class="manuscript_filter"
+                                    id="ms_name_select" 
+                                    style="width: 50% !important;"></select>
                             </div>
-                            <span>&nbsp;—&nbsp;</span>
-                            <div class="range_input" >
-                                <label class="top_level_label range_label" for="clla_dating_max">max.</label>
-                                <input class="range_number" type="number" id="clla_dating_max" min="0" max="22" />
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center" x-text="foreign_id_name"></h2>
+                                <select class="manuscript_filter"
+                                    id="ms_foreign_id_select" 
+                                    style="width: 50% !important;"></select>
                             </div>
-                        </fieldset>
-    
-                        <fieldset>
-                            <legend class="top_level_label">Dating (Years):</legend>
-                            <div class="range_input" >
-                                <label class="top_level_label range_label" for="clla_dating_years_min">min.</label>
-                                <input class="range_number" type="number" id="clla_dating_years_min" min="0" max="2200" />
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Contemporary repository</h2>
+                                <select
+                                    id="ms_contemporary_repository_place_select"
+                                    class="manuscript_filter" 
+                                    style="width: 50% !important;"></select>
                             </div>
-                            <span>&nbsp;—&nbsp;</span>
-                            <div class="range_input" >
-                                <label class="top_level_label range_label" for="clla_dating_years_max">max.</label>
-                                <input class="range_number" type="number" id="clla_dating_years_max" min="0" max="2200" />
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Shelfmark</h2>
+                                <select class="manuscript_filter"
+                                    id="ms_shelfmark_select" 
+                                    style="width: 50% !important;"> </select>
                             </div>
-                        </fieldset>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Place of origins</h2>
+                                <select class="manuscript_filter"
+                                    id="ms_place_of_origins_select" 
+                                    style="width: 50% !important;"></select>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Dating (Ages)</h2>
+                                <div class="flex w-1/2">
+                                    <div class="range_input">
+                                        <label class="top_level_label range_label" for="ms_dating_min">min.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="ms_dating_min" min="0" max="22" />
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <label class="top_level_label range_label" for="ms_dating_max">max.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="ms_dating_max" min="0" max="22" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Dating (Years)</h2>
+                                <div class="flex w-1/2">
+                                    <div class="range_input">
+                                        <label class="top_level_label range_label" for="ms_dating_years_min">min.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="ms_dating_years_min" min="0" max="2200" />
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <label class="top_level_label range_label" for="ms_dating_years_max">max.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="ms_dating_years_max" min="0" max="2200" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Decoration</h2>
+                                <div class="flex my-1 w-1/2">
+                                    <div class="range_input">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="decoration_true" name="decoration_true" value="true" checked> <label for="decoration_true">Yes</label>
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="decoration_false" name="decoration_false" value="true" checked> <label for="decoration_false">No</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Music notation</h2>
+                                <div class="flex my-1 w-1/2">
+                                    <div class="range_input">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="music_notation_true" name="music_notation_true" value="true" checked> <label for="music_notation_true">Yes</label>
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="music_notation_false" name="music_notation_false" value="true" checked> <label for="music_notation_false">No</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 mt-1 mb-4">
+                                <h2 class="w-1/2 flex items-center">Digitized</h2>
+                                <div class="flex my-1 w-1/2">
+                                    <div class="range_input">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="digitized_true" name="digitized_true" value="true" checked> <label for="digitized_true">Yes</label>
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="digitized_false" name="digitized_false" value="true" checked> <label for="digitized_false">No</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 mt-1 mb-4">
+                                <h2 class="w-1/2 flex items-center">Sources</h2>
+                                <div class="flex my-1 w-1/2">
+                                    <div class="range_input">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="display_as_main_true" name="display_as_main_true" value="true" checked> <label for="display_as_main_true">Main</label>
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="display_as_main_false" name="display_as_main_false" value="true" checked> <label for="display_as_main_false">Derivative</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li x-data="{ cap: false }" @click.away="cap = false"
+                        class="md:relative items-center justify-center xl:mb-0 flex col-span-2">
+                        <button @click="cap = !cap"
+                            id="mega-menu-icons-dropdown-button"
+                            data-dropdown-toggle="mega-menu-icons-dropdown"
+                            :class="cap ? 'text-[#0d1b2a] underline' : 'hover:underline hover:text-[#070e16]'"
+                            class="w-full h-full text-center young-serif text-[10px] sm:text-xs md:text-[8pt] uppercase" style="line-height: 15px !important;">
+                            Codicology and Paleography
 
+                        </button>
+                        <div id="mega-menu-icons-dropdown"
+                            class="absolute flex flex-col z-10 w-full md:w-[28rem] top-[60px] md:top-[30px] text-xs md:text-sm text-[#0d1b2a] bg-[#fef9f6] border border-gray-200 rounded shadow-md right-0 md:left-0"
+                            x-show="cap"
+                            x-transition:enter="transition ease-out duration-400"
+                            x-transition:enter-start="transform opacity-0 scale-90"
+                            x-transition:enter-end="transform opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-400"
+                            x-transition:leave-start="transform opacity-100 scale-100"
+                            x-transition:leave-end="transform opacity-0 scale-90">
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">How many quires</h2>
+                                <div class="flex w-1/2">
+                                    <div class="range_input">
+                                        <label class="top_level_label range_label" for="ms_how_many_quires_min">min.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="ms_how_many_quires_min" min="0" max="100" />
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <label class="top_level_label range_label" for="ms_how_many_quires_max">max.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="ms_how_many_quires_max" min="0" max="100" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Foliation or pagination</h2>
+                                <div class="flex my-1 w-1/2">
+                                    <div class="range_input">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="foliation" name="foliation" value="true" checked> <label for="foliation">Foliation</label>
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="pagination" name="pagination" value="true" checked> <label for="pagination">Pagination</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Folio number</h2>
+                                <div class="flex w-1/2">
+                                    <div class="range_input">
+                                        <label class="top_level_label range_label" for="number_of_parchment_folios_min">min.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="number_of_parchment_folios_min" min="0" max="1000" />
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <label class="top_level_label range_label" for="number_of_parchment_folios_max">max.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="number_of_parchment_folios_max" min="0" max="1000" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Does it contain paper leafs</h2>
+                                <div class="flex my-1 w-1/2">
+                                    <div class="range_input">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="paper_leafs_true" name="paper_leafs_true" value="true" checked> <label for="paper_leafs_true">Yes</label>
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="paper_leafs_false" name="paper_leafs_false" value="true" checked> <label for="paper_leafs_false">No</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Parchment thickness</h2>
+                                <div class="flex w-1/2">
+                                    <div class="range_input">
+                                        <label class="top_level_label range_label" for="parchment_thickness_min">min.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="parchment_thickness_min" min="0" max="1000" step="0.01" />
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <label class="top_level_label range_label" for="parchment_thickness_max">max.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="parchment_thickness_max" min="0" max="1000" step="0.01" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Parchment colour</h2>
+                                <select class="manuscript_filter w-1/2" id="parchment_colour_select" style="width: 50% !important;"></select>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Page size (longer edge)</h2>
+                                <div class="flex w-1/2">
+                                    <div class="range_input">
+                                        <label class="top_level_label range_label" for="page_size_wh_min">min.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="page_size_wh_min" min="0" max="1000" />
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <label class="top_level_label range_label" for="page_size_wh_max">max.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="page_size_wh_max" min="0" max="1000" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Main script</h2>
+                                <select class="manuscript_filter w-1/2" id="main_script_select" style="width: 50% !important;"></select>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">How many columns</h2>
+                                <div class="flex w-1/2">
+                                    <div class="range_input">
+                                        <label class="top_level_label range_label" for="ms_how_many_columns_min">min.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="ms_how_many_columns_min" min="0" max="1000" />
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <label class="top_level_label range_label" for="ms_how_many_columns_max">max.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="ms_how_many_columns_max" min="0" max="1000" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Watermarks</h2>
+                                <div class="flex my-1 w-1/2">
+                                    <div class="range_input">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="watermarks_true" name="watermarks_true" value="true" checked> <label for="watermarks_true">Yes</label>
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="watermarks_false" name="watermarks_false" value="true" checked> <label for="watermarks_false">No</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li x-data="{ queries: false }"
+                        @click.away="queries = false"
+                        class="md:relative items-center justify-center xl:mb-0 flex">
+                        <button @click="queries = !queries"
+                            id="mega-menu-icons-dropdown-button"
+                            data-dropdown-toggle="mega-menu-icons-dropdown"
+                            :class="queries ? 'text-[#0d1b2a] underline' : 'hover:underline hover:text-[#070e16]'"
+                            class="w-full h-full text-center young-serif text-[10px] sm:text-xs md:text-[8pt] uppercase">
+                            Quires
 
-                    
-                    </div>
+                        </button>
+                        <div id="mega-menu-icons-dropdown"
+                            class="absolute flex flex-col z-10 w-full md:w-[28rem] top-[60px] md:top-[30px] text-xs md:text-sm text-[#0d1b2a] bg-[#fef9f6] border border-gray-200 rounded shadow-md right-0 xl:right-auto xl:left-0"
+                            x-show="queries"
+                            x-transition:enter="transition ease-out duration-400"
+                            x-transition:enter-start="transform opacity-0 scale-90"
+                            x-transition:enter-end="transform opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-400"
+                            x-transition:leave-start="transform opacity-100 scale-100"
+                            x-transition:leave-end="transform opacity-0 scale-90">
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Quires type</h2>
+                                <select class="manuscript_filter w-1/2" id="type_of_the_quire_select" style="width: 50% !important;">
+                                    <option value="bifolium">bifolium</option>
+                                    <option value="binion">binion</option>
+                                    <option value="ternion">ternion</option>
+                                    <option value="quaternion">quaternion</option>
+                                    <option value="quinternion">quinternion</option>
+                                    <option value="seksternion">seksternion</option>
+                                    <option value="septernion">septernion</option>
+                                    <option value="okternion">okternion</option>
+                                </select>
+                            </div>
+                        </div>
+                    </li>
+                    <li x-data="{ script: false }" @click.away="script = false"
+                        class="md:relative items-center justify-center xl:mb-0 flex">
+                        <button @click="script = !script"
+                            id="mega-menu-icons-dropdown-button"
+                            data-dropdown-toggle="mega-menu-icons-dropdown"
+                            :class="script ? 'text-[#0d1b2a] underline' : 'hover:underline hover:text-[#070e16]'"
+                            class="w-full h-full text-center young-serif text-[10px] sm:text-xs md:text-[8pt] uppercase">
+                            Script
 
-                </div>
+                        </button>
+                        <div id="mega-menu-icons-dropdown"
+                            class="absolute flex flex-col z-10 w-full md:w-[28rem] top-[60px] md:top-[30px] text-xs md:text-sm text-[#0d1b2a] bg-[#fef9f6] border border-gray-200 rounded shadow-md left-0 md:right-0 md:left-auto xl:right-auto xl:left-0"
+                            x-show="script"
+                            x-transition:enter="transition ease-out duration-400"
+                            x-transition:enter-start="transform opacity-0 scale-90"
+                            x-transition:enter-end="transform opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-400"
+                            x-transition:leave-start="transform opacity-100 scale-100"
+                            x-transition:leave-end="transform opacity-0 scale-90">
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Script name</h2>
+                                <select class="manuscript_filter w-1/2" id="script_name_select" style="width: 50% !important;"> </select>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Contains additions</h2>
+                                <div class="flex my-1 w-1/2">
+                                    <div class="range_input">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="is_main_text_false" name="is_main_text_false" value="true" checked> <label for="is_main_text_false">Yes</label>
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="is_main_text_true" name="is_main_text_true" value="true" checked> <label for="is_main_text_true">No</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">How many hands involved</h2>
+                                <div class="flex w-1/2">
+                                    <div class="range_input">
+                                        <label class="top_level_label range_label" for="ms_how_many_hands_min">min.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="ms_how_many_hands_min" min="0" max="10" />
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <label class="top_level_label range_label" for="ms_how_many_hands_max">max.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="ms_how_many_hands_max" min="0" max="10" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li x-data="{ layout: false }" @click.away="layout = false"
+                        class="md:relative items-center justify-center xl:mb-0 flex">
+                        <button @click="layout = !layout"
+                            id="mega-menu-icons-dropdown-button"
+                            data-dropdown-toggle="mega-menu-icons-dropdown"
+                            :class="layout ? 'text-[#0d1b2a] underline' : 'hover:underline hover:text-[#070e16]'"
+                            class="w-full h-full text-center young-serif text-[10px] sm:text-xs md:text-[8pt] uppercase">
+                            Layout
+
+                        </button>
+                        <div id="mega-menu-icons-dropdown"
+                            class="absolute flex flex-col z-10 w-full md:w-[28rem] top-[60px] md:top-[30px] text-xs md:text-sm text-[#0d1b2a] bg-[#fef9f6] border border-gray-200 rounded shadow-md left-0"
+                            x-show="layout"
+                            x-transition:enter="transition ease-out duration-400"
+                            x-transition:enter-start="transform opacity-0 scale-90"
+                            x-transition:enter-end="transform opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-400"
+                            x-transition:leave-start="transform opacity-100 scale-100"
+                            x-transition:leave-end="transform opacity-0 scale-90">
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Distance between horizontal ruling</h2>
+                                <div class="flex w-1/2">
+                                    <div class="range_input">
+                                        <label class="top_level_label range_label" for="distance_between_horizontal_ruling_min">min.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="distance_between_horizontal_ruling_min" min="0" max="100" />
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <label class="top_level_label range_label" for="distance_between_horizontal_ruling_max">max.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="distance_between_horizontal_ruling_max" min="0" max="100" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Distance between vertical ruling</h2>
+                                <div class="flex w-1/2">
+                                    <div class="range_input">
+                                        <label class="top_level_label range_label" for="distance_between_vertical_ruling_min">min.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="distance_between_vertical_ruling_min" min="0" max="100" />
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <label class="top_level_label range_label" for="distance_between_vertical_ruling_max">max.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="distance_between_vertical_ruling_max" min="0" max="100" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Lines per page</h2>
+                                <div class="flex w-1/2">
+                                    <div class="range_input">
+                                        <label class="top_level_label range_label" for="ms_lines_per_page_min">min.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="ms_lines_per_page_min" min="0" max="100" />
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <label class="top_level_label range_label" for="ms_lines_per_page_max">max.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="ms_lines_per_page_max" min="0" max="100" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Written space height</h2>
+                                <div class="flex w-1/2">
+                                    <div class="range_input">
+                                        <label class="top_level_label range_label" for="written_space_height_min">min.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="written_space_height_min" min="0" max="1000" />
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <label class="top_level_label range_label" for="written_space_height_max">max.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="written_space_height_max" min="0" max="1000" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Written space width</h2>
+                                <div class="flex w-1/2">
+                                    <div class="range_input">
+                                        <label class="top_level_label range_label" for="written_space_width_min">min.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="written_space_width_min" min="0" max="1000" />
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <label class="top_level_label range_label" for="written_space_width_max">max.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="written_space_width_max" min="0" max="1000" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Ruling method</h2>
+                                <select class="manuscript_filter w-1/2" id="ruling_method_select" multiple style="width: 50% !important;">
+                                    <option value="blind-point">blind-point</option>
+                                    <option value="board">board</option>
+                                    <option value="ink">ink</option>
+                                    <option value="lead-point">lead-point</option>
+                                    <option value="rake">rake</option>
+                                    <option value="rake-lead">rake (lead-point)</option>
+                                    <option value="rake-ink">rake (ink)</option>
+                                    <option value="rake-lead-ink">rake (lead-point and ink)</option>
+                                </select>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Written above top line</h2>
+                                <div class="flex my-1 w-1/2">
+                                    <div class="range_input">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="written_above_the_top_line_true" name="written_above_the_top_line_true" value="true" checked> <label for="written_above_the_top_line_true">Yes</label>
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="written_above_the_top_line_false" name="written_above_the_top_line_false" value="true" checked> <label for="written_above_the_top_line_false">No</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Pricking</h2>
+                                <select class="manuscript_filter w-1/2" id="pricking_select" style="width: 50% !important;">
+                                    <option value="yes">yes</option>
+                                    <option value="no">no</option>
+                                    <option value="partially">partially</option>
+                                </select>
+                            </div>
+                        </div>
+                    </li>
+                    <li x-data="{ binding: false }"
+                        @click.away="binding = false"
+                        class="md:relative items-center justify-center xl:mb-0 flex">
+                        <button @click="binding = !binding"
+                            id="mega-menu-icons-dropdown-button"
+                            data-dropdown-toggle="mega-menu-icons-dropdown"
+                            :class="binding ? 'text-[#0d1b2a] underline' : 'hover:underline hover:text-[#070e16]'"
+                            class="w-full h-full text-center young-serif text-[10px] sm:text-xs md:text-[8pt] uppercase">
+                            Binding
+
+                        </button>
+                        <div id="mega-menu-icons-dropdown"
+                            class="absolute flex flex-col z-10 w-full md:w-[28rem] top-[60px] md:top-[30px] text-xs md:text-sm text-[#0d1b2a] bg-[#fef9f6] border border-gray-200 rounded shadow-md right-0 md:left-0"
+                            x-show="binding"
+                            x-transition:enter="transition ease-out duration-400"
+                            x-transition:enter-start="transform opacity-0 scale-90"
+                            x-transition:enter-end="transform opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-400"
+                            x-transition:leave-start="transform opacity-100 scale-100"
+                            x-transition:leave-end="transform opacity-0 scale-90">
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Binding height</h2>
+                                <div class="flex w-1/2">
+                                    <div class="range_input">
+                                        <label class="top_level_label range_label" for="binding_height_min">min.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="binding_height_min" min="0" max="1000" />
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <label class="top_level_label range_label" for="binding_height_max">max.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="binding_height_max" min="0" max="1000" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Binding width</h2>
+                                <div class="flex w-1/2">
+                                    <div class="range_input">
+                                        <label class="top_level_label range_label" for="binding_width_min">min.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="binding_width_min" min="0" max="1000" />
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <label class="top_level_label range_label" for="binding_width_max">max.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="binding_width_max" min="0" max="1000" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Block size</h2>
+                                <div class="flex w-1/2">
+                                    <div class="range_input">
+                                        <label class="top_level_label range_label" for="block_size_min">min.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="block_size_min" min="0" max="100" />
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <label class="top_level_label range_label" for="block_size_max">max.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="block_size_max" min="0" max="100" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Binding Date (Ages)</h2>
+                                <div class="flex w-1/2">
+                                    <div class="range_input">
+                                        <label class="top_level_label range_label" for="ms_binding_date_min">min.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="ms_binding_date_min" min="0" max="22" />
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <label class="top_level_label range_label" for="ms_binding_date_max">max.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="ms_binding_date_max" min="0" max="22" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Place of origin</h2>
+                                <select class="manuscript_filter w-1/2" id="binding_place_of_origin_select" style="width: 50% !important;"></select>
+                            </div>
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Type</h2>
+                                <select class="manuscript_filter w-1/2" id="binding_type_select" style="width: 50% !important;"></select>
+                            </div>
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Style</h2>
+                                <select class="manuscript_filter w-1/2" id="binding_style_select" style="width: 50% !important;"></select>
+                            </div>
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Material</h2>
+                                <select class="manuscript_filter w-1/2" id="binding_material_select" style="width: 50% !important;"></select>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Binding decoration</h2>
+                                <div class="flex my-1 w-1/2">
+                                    <div class="range_input">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="binding_decoration_true" name="binding_decoration_true" value="true" checked> <label for="binding_decoration_true">Yes</label>
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="binding_decoration_false" name="binding_decoration_false" value="true" checked> <label for="binding_decoration_false">No</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li x-data="{ condition: false }"
+                        @click.away="condition = false"
+                        class="md:relative items-center justify-center xl:mb-0 flex">
+                        <button @click="condition = !condition"
+                            id="mega-menu-icons-dropdown-button"
+                            data-dropdown-toggle="mega-menu-icons-dropdown"
+                            :class="condition ? 'text-[#0d1b2a] underline' : 'hover:underline hover:text-[#070e16]'"
+                            class="w-full h-full text-center young-serif text-[10px] sm:text-xs md:text-[8pt] uppercase">
+                            Condition
+
+                        </button>
+                        <div id="mega-menu-icons-dropdown"
+                            class="absolute flex flex-col z-10 w-full md:w-[28rem] top-[60px] md:top-[30px] text-xs md:text-sm text-[#0d1b2a] bg-[#fef9f6] border border-gray-200 rounded shadow-md right-0 md:left-0"
+                            x-show="condition"
+                            x-transition:enter="transition ease-out duration-400"
+                            x-transition:enter-start="transform opacity-0 scale-90"
+                            x-transition:enter-end="transform opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-400"
+                            x-transition:leave-start="transform opacity-100 scale-100"
+                            x-transition:leave-end="transform opacity-0 scale-90">
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Damage</h2>
+                                <select class="manuscript_filter w-1/2" id="damage_select" style="width: 50% !important;">
+                                    <option value="very">Very damaged</option>
+                                    <option value="average">Average damaged</option>
+                                    <option value="slightly">Slightly damaged</option>
+                                    <option value>No damages</option>
+                                </select>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Parchment shrinkage</h2>
+                                <div class="flex my-1 w-1/2">
+                                    <div class="range_input">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="parchment_shrinkage_true" name="parchment_shrinkage_true" value="true" checked> <label for="parchment_shrinkage_true">Yes</label>
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="parchment_shrinkage_false" name="parchment_shrinkage_false" value="true" checked> <label for="parchment_shrinkage_false">No</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Illegible text fragments</h2>
+                                <div class="flex my-1 w-1/2">
+                                    <div class="range_input">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="illegible_text_fragments_true" name="illegible_text_fragments_true" value="true" checked> <label for="illegible_text_fragments_true">Yes</label>
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="illegible_text_fragments_false" name="illegible_text_fragments_false" value="true" checked> <label for="illegible_text_fragments_false">No</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Ink corrosion</h2>
+                                <div class="flex my-1 w-1/2">
+                                    <div class="range_input">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="ink_corrosion_true" name="ink_corrosion_true" value="true" checked> <label for="ink_corrosion_true">Yes</label>
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="ink_corrosion_false" name="ink_corrosion_false" value="true" checked> <label for="ink_corrosion_false">No</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Copper corrosion</h2>
+                                <div class="flex my-1 w-1/2">
+                                    <div class="range_input">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="copper_corrosion_true" name="copper_corrosion_true" value="true" checked> <label for="copper_corrosion_true">Yes</label>
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="copper_corrosion_false" name="copper_corrosion_false" value="true" checked> <label for="copper_corrosion_false">No</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Powdering or cracking paint layer</h2>
+                                <div class="flex my-1 w-1/2">
+                                    <div class="range_input">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="powdering_or_cracking_paint_layer_true" name="powdering_or_cracking_paint_layer_true" value="true" checked> <label for="powdering_or_cracking_paint_layer_true">Yes</label>
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="powdering_or_cracking_paint_layer_false" name="powdering_or_cracking_paint_layer_false" value="true" checked> <label for="powdering_or_cracking_paint_layer_false">No</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Conservation</h2>
+                                <div class="flex my-1 w-1/2">
+                                    <div class="range_input">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="conservation_true" name="conservation_true" value="true" checked> <label for="conservation_true">Yes</label>
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="conservation_false" name="conservation_false" value="true" checked> <label for="conservation_false">No</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li x-data="{ content: false }"
+                        @click.away="content = false"
+                        class="md:relative items-center justify-center xl:mb-0 flex border-0">
+                        <button @click="content = !content"
+                            id="mega-menu-icons-dropdown-button"
+                            data-dropdown-toggle="mega-menu-icons-dropdown"
+                            :class="content ? 'text-[#0d1b2a] underline' : 'hover:underline hover:text-[#070e16]'"
+                            class="w-full h-full text-center young-serif text-[10px] sm:text-xs md:text-[8pt] uppercase">
+                            Content
+
+                        </button>
+                        <div id="mega-menu-icons-dropdown"
+                            class="absolute flex flex-col z-10 w-full md:w-[28rem] top-[60px] md:top-[30px] text-xs md:text-sm text-[#0d1b2a] bg-[#fef9f6] border border-gray-200 rounded shadow-md right-0"
+                            x-show="content"
+                            x-transition:enter="transition ease-out duration-400"
+                            x-transition:enter-start="transform opacity-0 scale-90"
+                            x-transition:enter-end="transform opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-400"
+                            x-transition:leave-start="transform opacity-100 scale-100"
+                            x-transition:leave-end="transform opacity-0 scale-90">
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Formula (standarized)</h2>
+                                <select class="manuscript_filter w-1/2" id="formula_select" multiple style="width: 50% !important;"></select>
+                            </div>
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Formula text from MS</h2>
+                                <input type="text" id="formula_text" style="width: 50% !important;" name="formula_text">
+                            </div>
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Rite (standarized)</h2>
+                                <select class="manuscript_filter w-1/2" id="rite_select" multiple style="width: 50% !important;"></select>
+                            </div>
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Rite name from MS</h2>
+                                <input type="text" id="rite_name_from_ms" style="width: 50% !important;" name="rite_name_from_ms">
+                            </div>
+                        </div>
+                    </li>
+                    <li x-data="{ province: false }"
+                        @click.away="province = false"
+                        class="md:relative items-center justify-center xl:mb-0 flex">
+                        <button @click="province = !province"
+                            id="mega-menu-icons-dropdown-button"
+                            data-dropdown-toggle="mega-menu-icons-dropdown"
+                            :class="province ? 'text-[#0d1b2a] underline' : 'hover:underline hover:text-[#070e16]'"
+                            class="w-full h-full text-center young-serif text-[10px] sm:text-xs md:text-[8pt] uppercase">
+                            Provenance
+
+                        </button>
+                        <div id="mega-menu-icons-dropdown"
+                            class="absolute flex flex-col z-10 w-full md:w-[28rem] top-[60px] md:top-[30px] text-xs md:text-sm text-[#0d1b2a] bg-[#fef9f6] border border-gray-200 rounded shadow-md left-0 md:right-0 md:left-auto"
+                            x-show="province"
+                            x-transition:enter="transition ease-out duration-400"
+                            x-transition:enter-start="transform opacity-0 scale-90"
+                            x-transition:enter-end="transform opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-400"
+                            x-transition:leave-start="transform opacity-100 scale-100"
+                            x-transition:leave-end="transform opacity-0 scale-90">
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Provenance place</h2>
+                                <select class="manuscript_filter w-1/2" id="provenance_place_select" multiple style="width: 50% !important;"></select>
+                            </div>
+                        </div>
+                    </li>
+                    <li x-data="{ bib: false }" @click.away="bib = false"
+                        class="md:relative items-center justify-center xl:mb-0 flex">
+                        <button @click="bib = !bib"
+                            id="mega-menu-icons-dropdown-button"
+                            data-dropdown-toggle="mega-menu-icons-dropdown"
+                            :class="bib ? 'text-[#0d1b2a] underline' : 'hover:underline hover:text-[#070e16]'"
+                            class="w-full h-full text-center young-serif text-[10px] sm:text-xs md:text-[8pt] uppercase">
+                            Bibliography
+
+                        </button>
+                        <div id="mega-menu-icons-dropdown"
+                            class="absolute flex flex-col z-10 w-full md:w-[28rem] top-[60px] md:top-[30px] right-0 text-xs md:text-sm text-[#0d1b2a] bg-[#fef9f6] border border-gray-200 rounded shadow-md right-0"
+                            x-show="bib"
+                            x-transition:enter="transition ease-out duration-400"
+                            x-transition:enter-start="transform opacity-0 scale-90"
+                            x-transition:enter-end="transform opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-400"
+                            x-transition:leave-start="transform opacity-100 scale-100"
+                            x-transition:leave-end="transform opacity-0 scale-90">
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Title</h2>
+                                <select class="manuscript_filter w-1/2" id="title_select" multiple style="width: 50% !important;"></select>
+                            </div>
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Author</h2>
+                                <select class="manuscript_filter w-1/2" id="author_select" multiple style="width: 50% !important;"></select>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
             </div>
-            
-            <div class="openbox open-lvl-0" x-data="{ open: false }">
-                <button @click="open = ! open" class="toggle" x-bind:opened="open"><img class="button-icon" src="/static/img/icons/codicology.svg"></img><span class="printIt title">Codicology and Paleography</span></button>
-                
-                <div class="open-inside" x-show="open" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
-                    <fieldset>
-                        <legend class="top_level_label">How many quires:</legend>
-                        <div class="range_input" >
-                            <label class="top_level_label range_label" for="ms_how_many_quires_min">min.</label>
-                            <input class="range_number" type="number" id="ms_how_many_quires_min" min="0" max="100" />
-                        </div>
-                        <span>&nbsp;—&nbsp;</span>
-                        <div class="range_input" >
-                            <label class="top_level_label range_label" for="ms_how_many_quires_max">max.</label>
-                            <input class="range_number" type="number" id="ms_how_many_quires_max" min="0" max="100" />
-                        </div>
-                    </fieldset>
-                    <br />
-
-                    <fieldset>
-                        <legend class="top_level_label">Foliation or pagination:</legend>
-                        <input type="checkbox" id="foliation" name="foliation" value="true" checked>
-                        <label for="foliation">Foliation</label><br>
-                        <input type="checkbox" id="pagination" name="pagination" value="true" checked>
-                        <label for="pagination">Pagination</label><br>
-                    </fieldset>
-                    
-                    <fieldset>
-                        <legend class="top_level_label">Folio number:</legend>
-                        <div class="range_input" >
-                            <label class="top_level_label range_label" for="number_of_parchment_folios_min">min.</label>
-                            <input class="range_number" type="number" id="number_of_parchment_folios_min" min="0" max="1000" />
-                        </div>
-                        <span>&nbsp;—&nbsp;</span>
-                        <div class="range_input" >
-                            <label class="top_level_label range_label" for="number_of_parchment_folios_max">max.</label>
-                            <input class="range_number" type="number" id="number_of_parchment_folios_max" min="0" max="1000" />
-                        </div>
-                    </fieldset>
-                    <br />
-
-                    <fieldset>
-                        <legend class="top_level_label">Does it contain paper leafs:</legend>
-                        <input type="checkbox" id="paper_leafs_true" name="paper_leafs_true" value="true" checked>
-                        <label for="paper_leafs_true">Yes</label><br>
-                        <input type="checkbox" id="paper_leafs_false" name="paper_leafs_false" value="true" checked>
-                        <label for="paper_leafs_false">No</label><br>
-                    </fieldset>
-                    <br />
-
-                    <fieldset>
-                        <legend class="top_level_label">Parchment thickness:</legend>
-                        <div class="range_input" >
-                            <label class="top_level_label range_label" for="parchment_thickness_min">min.</label>
-                            <input class="range_number" type="number" step=".01" id="parchment_thickness_min" min="0" max="1000" />
-                        </div>
-                        <span>&nbsp;—&nbsp;</span>
-                        <div class="range_input" >
-                            <label class="top_level_label range_label" for="parchment_thickness_max">max.</label>
-                            <input class="range_number" type="number" step=".01" id="parchment_thickness_max" min="0" max="1000" />
-                        </div>
-                    </fieldset>
-                    <br />
-
-                    <label class="top_level_label" for="parchment_colour_select">Parchment colour:</label>
-                    <select class="manuscript_filter"  id="parchment_colour_select">
-                    </select>
-                    <br />
-
-
-                    <fieldset>
-                        <legend class="top_level_label">Page size (longer edge):</legend>
-                        <div class="range_input" >
-                            <label class="top_level_label range_label" for="page_size_wh_min">min.</label>
-                            <input class="range_number" type="number" id="page_size_wh_min" min="0" max="1000" />
-                        </div>
-                        <span>&nbsp;—&nbsp;</span>
-                        <div class="range_input" >
-                            <label class="top_level_label range_label" for="page_size_wh_max">max.</label>
-                            <input class="range_number" type="number" id="page_size_wh_max" min="0" max="1000" />
-                        </div>
-                    </fieldset>
-                    <br />
-
-                    <label class="top_level_label" for="main_script_select">Main script:</label>
-                    <select class="manuscript_filter"  id="main_script_select">
-                    </select>
-                    <br />
-
-                    
-                    <fieldset>
-                        <legend class="top_level_label">How many columns:</legend>
-                        <div class="range_input" >
-                            <label class="top_level_label range_label" for="ms_how_many_columns_min">min.</label>
-                            <input class="range_number" type="number" id="ms_how_many_columns_min" min="0" max="10" />
-                        </div>
-                        <span>&nbsp;—&nbsp;</span>
-                        <div class="range_input" >
-                            <label class="top_level_label range_label" for="ms_how_many_columns_max">max.</label>
-                            <input class="range_number" type="number" id="ms_how_many_columns_max" min="0" max="10" />
-                        </div>
-                    </fieldset>
-                    <br />
-
-
-                    <fieldset>
-                        <legend class="top_level_label">Watermarks:</legend>
-                        <input type="checkbox" id="watermarks_true" name="watermarks_true" value="true" checked>
-                        <label for="watermarks_true">Yes</label><br>
-                        <input type="checkbox" id="watermarks_false" name="watermarks_false" value="true" checked>
-                        <label for="watermarks_false">No</label><br>
-                    </fieldset>
-                    <br />
-
-                </div>
-            </div>
-
-            <div class="openbox open-lvl-0" x-data="{ open: false }">
-                <button @click="open = ! open" class="toggle" x-bind:opened="open"><img class="button-icon" src="/static/img/icons/bibliography.svg"></img><span class="printIt title">Quires</span></button>
-                
-                <div class="open-inside" x-show="open" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
-                
-                    <label class="top_level_label" for="type_of_the_quire_select">Quires type:</label>
-                    <select class="manuscript_filter"  id="type_of_the_quire_select" multiple>
-                        <option value="bifolium">bifolium</option>
-                        <option value="binion">binion</option>
-                        <option value="ternion">ternion</option>
-                        <option value="quaternion">quaternion</option>
-                        <option value="quinternion">quinternion</option>
-                        <option value="seksternion">seksternion</option>
-                        <option value="septernion">septernion</option>
-                        <option value="okternion">okternion</option>
-                    </select>
-                    <br />
-                
-                </div>
-            </div>
-
-            <div class="openbox open-lvl-0" x-data="{ open: false }">
-                <button @click="open = ! open" class="toggle" x-bind:opened="open"><img class="button-icon" src="/static/img/icons/codicology.svg"></img><span class="printIt title">Script</span></button>
-                
-                <div class="open-inside" x-show="open" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
-                
-                    <label class="top_level_label" for="script_name_select">Script name:</label>
-                    <select class="manuscript_filter"  id="script_name_select">
-                    </select>
-                    <br />
-                
-                    <fieldset>
-                        <legend class="top_level_label">Contains additions:</legend>
-                        <input type="checkbox" id="is_main_text_false" name="is_main_text_false" value="true" checked>
-                        <label for="is_main_text_false">Yes</label><br>
-                        <input type="checkbox" id="is_main_text_true" name="is_main_text_true" value="true" checked>
-                        <label for="is_main_text_true">No</label><br>
-                    </fieldset>
-                    <br />
-
-                    <fieldset>
-                        <legend class="top_level_label">How many hands involved:</legend>
-                        <div class="range_input" >
-                            <label class="top_level_label range_label" for="ms_how_many_hands_min">min.</label>
-                            <input class="range_number" type="number" id="ms_how_many_hands_min" min="0" max="10" />
-                        </div>
-                        <span>&nbsp;—&nbsp;</span>
-                        <div class="range_input" >
-                            <label class="top_level_label range_label" for="ms_how_many_hands_max">max.</label>
-                            <input class="range_number" type="number" id="ms_how_many_hands_max" min="0" max="10" />
-                        </div>
-                    </fieldset>
-                    <br />
-
-                </div>
-            </div>
-
-            <div class="openbox open-lvl-0" x-data="{ open: false }">
-                <button @click="open = ! open" class="toggle" x-bind:opened="open"><img class="button-icon" src="/static/img/icons/content.svg"></img><span class="printIt title">Layout</span></button>
-                
-                <div class="open-inside" x-show="open" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
-                
-                    <fieldset>
-                        <legend class="top_level_label">Distance between horizontal ruling:</legend>
-                        <div class="range_input" >
-                            <label class="top_level_label range_label" for="distance_between_horizontal_ruling_min">min.</label>
-                            <input class="range_number" type="number" id="distance_between_horizontal_ruling_min" min="0" max="100" />
-                        </div>
-                        <span>&nbsp;—&nbsp;</span>
-                        <div class="range_input" >
-                            <label class="top_level_label range_label" for="distance_between_horizontal_ruling_max">max.</label>
-                            <input class="range_number" type="number" id="distance_between_horizontal_ruling_max" min="0" max="100" />
-                        </div>
-                    </fieldset>
-                    <br />
-                
-                    <fieldset>
-                        <legend class="top_level_label">Distance between vertical ruling:</legend>
-                        <div class="range_input" >
-                            <label class="top_level_label range_label" for="distance_between_vertical_ruling_min">min.</label>
-                            <input class="range_number" type="number" id="distance_between_vertical_ruling_min" min="0" max="100" />
-                        </div>
-                        <span>&nbsp;—&nbsp;</span>
-                        <div class="range_input" >
-                            <label class="top_level_label range_label" for="distance_between_vertical_ruling_max">max.</label>
-                            <input class="range_number" type="number" id="distance_between_vertical_ruling_max" min="0" max="100" />
-                        </div>
-                    </fieldset>
-                    <br />
-                
-
-                    <fieldset>
-                        <legend class="top_level_label">Lines per page:</legend>
-                        <div class="range_input" >
-                            <label class="top_level_label range_label" for="ms_lines_per_page_min">min.</label>
-                            <input class="range_number" type="number" id="ms_lines_per_page_min" min="0" max="100" />
-                        </div>
-                        <span>&nbsp;—&nbsp;</span>
-                        <div class="range_input" >
-                            <label class="top_level_label range_label" for="ms_lines_per_page_max">max.</label>
-                            <input class="range_number" type="number" id="ms_lines_per_page_max" min="0" max="100" />
-                        </div>
-                    </fieldset>
-                    <br />
-
-                    <fieldset>
-                        <legend class="top_level_label">Written space height:</legend>
-                        <div class="range_input" >
-                            <label class="top_level_label range_label" for="written_space_height_min">min.</label>
-                            <input class="range_number" type="number" id="written_space_height_min" min="0" max="1000" />
-                        </div>
-                        <span>&nbsp;—&nbsp;</span>
-                        <div class="range_input" >
-                            <label class="top_level_label range_label" for="written_space_height_max">max.</label>
-                            <input class="range_number" type="number" id="written_space_height_max" min="0" max="1000" />
-                        </div>
-                    </fieldset>
-                    <br />
-
-                    <fieldset>
-                        <legend class="top_level_label">Written space width:</legend>
-                        <div class="range_input" >
-                            <label class="top_level_label range_label" for="written_space_width_min">min.</label>
-                            <input class="range_number" type="number" id="written_space_width_min" min="0" max="1000" />
-                        </div>
-                        <span>&nbsp;—&nbsp;</span>
-                        <div class="range_input" >
-                            <label class="top_level_label range_label" for="written_space_width_max">max.</label>
-                            <input class="range_number" type="number" id="written_space_width_max" min="0" max="1000" />
-                        </div>
-                    </fieldset>
-                    <br />
-
-                    <label class="top_level_label" for="ruling_method_select">Ruling method:</label>
-                    <select class="manuscript_filter"  id="ruling_method_select" multiple>
-                        <option value="blind-point">blind-point</option>
-                        <option value="board">board</option>
-                        <option value="ink">ink</option>
-                        <option value="lead-point">lead-point</option>
-                        <option value="rake">rake</option>
-                        <option value="rake-lead">rake (lead-point)</option>
-                        <option value="rake-ink">rake (ink)</option>
-                        <option value="rake-lead-ink">rake (lead-point and ink)</option>
-                    </select>
-                    <br />
-                
-                    <fieldset>
-                        <legend class="top_level_label">Written above top line:</legend>
-                        <input type="checkbox" id="written_above_the_top_line_true" name="written_above_the_top_line_true" value="true" checked>
-                        <label for="written_above_the_top_line_true">Yes</label><br>
-                        <input type="checkbox" id="written_above_the_top_line_false" name="written_above_the_top_line_false" value="true" checked>
-                        <label for="written_above_the_top_line_false">No</label><br>
-                    </fieldset>
-                    <br />
-
-
-                    <label class="top_level_label" for="pricking_select">Pricking:</label>
-                    <select class="manuscript_filter"  id="pricking_select" multiple>
-                        <option value="yes">yes</option>
-                        <option value="no">no</option>
-                        <option value="partially">partially</option>
-                    </select>
-                    <br />
-
-                </div>
-            </div>
-
-            <div class="openbox open-lvl-0" x-data="{ open: false }">
-                <button @click="open = ! open" class="toggle" x-bind:opened="open"><img class="button-icon" src="/static/img/icons/binding.svg"></img><span class="printIt title">Binding</span></button>
-                
-                <div class="open-inside" x-show="open" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
-                
-                    <fieldset>
-                        <legend class="top_level_label">Binding height:</legend>
-                        <div class="range_input" >
-                            <label class="top_level_label range_label" for="binding_height_min">min.</label>
-                            <input class="range_number" type="number" id="binding_height_min" min="0" max="1000" />
-                        </div>
-                        <span>&nbsp;—&nbsp;</span>
-                        <div class="range_input" >
-                            <label class="top_level_label range_label" for="binding_height_max">max.</label>
-                            <input class="range_number" type="number" id="binding_height_max" min="0" max="1000" />
-                        </div>
-                    </fieldset>
-                    <br />
-
-                    <fieldset>
-                        <legend class="top_level_label">Binding width:</legend>
-                        <div class="range_input" >
-                            <label class="top_level_label range_label" for="binding_width_min">min.</label>
-                            <input class="range_number" type="number" id="binding_width_min" min="0" max="1000" />
-                        </div>
-                        <span>&nbsp;—&nbsp;</span>
-                        <div class="range_input" >
-                            <label class="top_level_label range_label" for="binding_width_max">max.</label>
-                            <input class="range_number" type="number" id="binding_width_max" min="0" max="1000" />
-                        </div>
-                    </fieldset>
-                    <br />
-
-                    <fieldset>
-                        <legend class="top_level_label">Block size:</legend>
-                        <div class="range_input" >
-                            <label class="top_level_label range_label" for="block_size_min">min.</label>
-                            <input class="range_number" type="number" id="block_size_min" min="0" max="100" />
-                        </div>
-                        <span>&nbsp;—&nbsp;</span>
-                        <div class="range_input" >
-                            <label class="top_level_label range_label" for="block_size_max">max.</label>
-                            <input class="range_number" type="number" id="block_size_max" min="0" max="100" />
-                        </div>
-                    </fieldset>
-                    <br />
-
-                    <fieldset>
-                        <legend class="top_level_label">Binding Date (Ages):</legend>
-                        <div class="range_input" >
-                            <label class="top_level_label range_label" for="ms_binding_date_min">min.</label>
-                            <input class="range_number" type="number" id="ms_binding_date_min" min="0" max="22" />
-                        </div>
-                        <span>&nbsp;—&nbsp;</span>
-                        <div class="range_input" >
-                            <label class="top_level_label range_label" for="ms_binding_date_max">max.</label>
-                            <input class="range_number" type="number" id="ms_binding_date_max" min="0" max="22" />
-                        </div>
-                    </fieldset>
-                    <br />
-
-
-                    <label class="top_level_label" for="binding_place_of_origin_select">Place of origin:</label>
-                    <select class="manuscript_filter"  id="binding_place_of_origin_select">
-                    </select>
-                    <br />
-
-
-                    <label class="top_level_label" for="binding_type_select">Type:</label>
-                    <select class="manuscript_filter"  id="binding_type_select">
-                    </select>
-                    <br />
-
-
-                    <label class="top_level_label" for="binding_style_select">Style:</label>
-                    <select class="manuscript_filter"  id="binding_style_select">
-                    </select>
-                    <br />
-
-
-                    <label class="top_level_label" for="binding_material_select">Material:</label>
-                    <select class="manuscript_filter"  id="binding_material_select" multiple>
-                    </select>
-                    <br />
-
-                    <fieldset>
-                        <legend class="top_level_label">Binding decoration:</legend>
-                        <input type="checkbox" id="binding_decoration_true" name="binding_decoration_true" value="true" checked>
-                        <label for="binding_decoration_true">Yes</label><br>
-                        <input type="checkbox" id="binding_decoration_false" name="binding_decoration_false" value="true" checked>
-                        <label for="binding_decoration_false">No</label><br>
-                    </fieldset>
-                    <br />
-                
-                </div>
-            </div>
-
-            <div class="openbox open-lvl-0" x-data="{ open: false }">
-                <button @click="open = ! open" class="toggle" x-bind:opened="open"><img class="button-icon" src="/static/img/icons/condition.svg"></img><span class="printIt title">Condition</span></button>
-                
-                <div class="open-inside" x-show="open" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
-                
-                    
-                
-                    <label class="top_level_label" for="damage_select">Damage:</label>
-                    <select class="manuscript_filter"  id="damage_select">
-                        <option value=""></option>
-                        <option value="very">very damaged</option>
-                        <option value="average">average damaged</option>
-                        <option value="slightly">slightly damaged</option>
-                        <option value="">no damages</option>
-                    </select>
-                    <br />
-
-                    <fieldset>
-                        <legend class="top_level_label">Parchment shrinkage:</legend>
-                        <input type="checkbox" id="parchment_shrinkage_true" name="parchment_shrinkage_true" value="true" checked>
-                        <label for="parchment_shrinkage_true">Yes</label><br>
-                        <input type="checkbox" id="parchment_shrinkage_false" name="parchment_shrinkage_false" value="true" checked>
-                        <label for="parchment_shrinkage_false">No</label><br>
-                    </fieldset>
-                    <br />
-
-                    <fieldset>
-                        <legend class="top_level_label">Illegible text fragments:</legend>
-                        <input type="checkbox" id="illegible_text_fragments_true" name="illegible_text_fragments_true" value="true" checked>
-                        <label for="illegible_text_fragments_true">Yes</label><br>
-                        <input type="checkbox" id="illegible_text_fragments_false" name="illegible_text_fragments_false" value="true" checked>
-                        <label for="illegible_text_fragments_false">No</label><br>
-                    </fieldset>
-                    <br />
-
-                    <fieldset>
-                        <legend class="top_level_label">Ink corrosion:</legend>
-                        <input type="checkbox" id="ink_corrosion_true" name="ink_corrosion_true" value="true" checked>
-                        <label for="ink_corrosion_true">Yes</label><br>
-                        <input type="checkbox" id="ink_corrosion_false" name="ink_corrosion_false" value="true" checked>
-                        <label for="ink_corrosion_false">No</label><br>
-                    </fieldset>
-                    <br />
-
-                    <fieldset>
-                        <legend class="top_level_label">Copper corrosion:</legend>
-                        <input type="checkbox" id="copper_corrosion_true" name="copper_corrosion_true" value="true" checked>
-                        <label for="copper_corrosion_true">Yes</label><br>
-                        <input type="checkbox" id="copper_corrosion_false" name="copper_corrosion_false" value="true" checked>
-                        <label for="copper_corrosion_false">No</label><br>
-                    </fieldset>
-                    <br />
-
-                    <fieldset>
-                        <legend class="top_level_label">Powdering or cracking paint layer:</legend>
-                        <input type="checkbox" id="powdering_or_cracking_paint_layer_true" name="powdering_or_cracking_paint_layer_true" value="true" checked>
-                        <label for="powdering_or_cracking_paint_layer_true">Yes</label><br>
-                        <input type="checkbox" id="powdering_or_cracking_paint_layer_false" name="powdering_or_cracking_paint_layer_false" value="true" checked>
-                        <label for="powdering_or_cracking_paint_layer_false">No</label><br>
-                    </fieldset>
-                    <br />
-
-                    <fieldset>
-                        <legend class="top_level_label">Conservation:</legend>
-                        <input type="checkbox" id="conservation_true" name="conservation_true" value="true" checked>
-                        <label for="conservation_true">Yes</label><br>
-                        <input type="checkbox" id="conservation_false" name="conservation_false" value="true" checked>
-                        <label for="conservation_false">No</label><br>
-                    </fieldset>
-                    <br />
-
-
-
-                </div>
-            </div>
-
-            <div class="openbox open-lvl-0" x-data="{ open: false }">
-                <button @click="open = ! open" class="toggle" x-bind:opened="open"><img class="button-icon" src="/static/img/icons/content.svg"></img><span class="printIt title">Content</span></button>
-                
-                <div class="open-inside" x-show="open" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
-                
-                    <label class="top_level_label" for="formula_select">Formula (standarized):</label>
-                    <select class="manuscript_filter"  id="formula_select" multiple>
-                    </select>
-                    <br />
-                    
-                    <label class="top_level_label" for="formula_text">Formula text from MS:</label>
-                    <input type="text" id="formula_text" name="formula_text">
-                    <br />
-
-
-                    <label class="top_level_label" for="rite_select">Rite (standarized):</label>
-                    <select class="manuscript_filter"  id="rite_select" multiple>
-                    </select>
-                    <br />
-
-                    <label class="top_level_label" for="rite_name_from_ms">Rite name from MS:</label>
-                    <input type="text" id="rite_name_from_ms" name="rite_name_from_ms">
-                    <br />
-
-                
-                </div>
-            </div>
-
-            <div class="openbox open-lvl-0" x-data="{ open: false }">
-                <button @click="open = ! open" class="toggle" x-bind:opened="open"><img class="button-icon" src="/static/img/icons/history.svg"></img><span class="printIt title">Provenance</span></button>
-                
-                <div class="open-inside" x-show="open" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
-                
-                    <label class="top_level_label" for="provenance_place_select">Provenance place:</label>
-                    <select class="manuscript_filter"  id="provenance_place_select" multiple>
-                    </select>
-                    <br />
-                
-                </div>
-            </div>
-
-            <div class="openbox open-lvl-0" x-data="{ open: false }">
-                <button @click="open = ! open" class="toggle" x-bind:opened="open"><img class="button-icon" src="/static/img/icons/bibliography.svg"></img><span class="printIt title">Bibliography</span></button>
-                
-                <div class="open-inside" x-show="open" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
-                
-                    <label class="top_level_label" for="title_select">Title:</label>
-                    <select class="manuscript_filter"  id="title_select" multiple>
-                    </select>
-                    <br />
-
-                    <label class="top_level_label" for="author_select">Author:</label>
-                    <select class="manuscript_filter"  id="author_select" multiple>
-                    </select>
-                    <br />
-
-                
-                </div>
-            </div>
-            
-            <br />
-
-
-            <fieldset>
-                <legend class="top_level_label">Show:</legend>
-                <input type="checkbox" id="display_as_main_true" name="display_as_main_true" value="true" checked>
-                <label for="display_as_main_true">Main sources</label><br>
-                <input type="checkbox" id="display_as_main_false" name="display_as_main_false" value="true" checked>
-                <label for="display_as_main_false">Derivative sources</label><br>
-            </fieldset>
-            <br />
-
-
         </div>
+    </nav>
 
-        <div class="resizer" id="resizer" style="cursor: auto"></div>
+    <div class="">
 
-        
-        <div class="right_column" id="rightColumn">    
-            <table id="manuscripts" class="table table-striped table-bordered table-hover" style="width:100%"></table>
+        <div class id="leftColumn"> </div>
+
+        <div class id="resizer"> </div>
+
+        <!-- <div class="w-full" id="rightColumn"> </div> -->
+        <div class="w-full" id="rightColumns">
+            <table id="manuscripts" class="table table-striped table-bordered table-hover overflow-x-auto" style="width:100%"></table>
         </div>
-</div>
+    </div>
+
+
+<style>
+    #content thead {
+        display: none;
+    }
+</style>
+
+
+
+
+
+

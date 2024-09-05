@@ -1,11 +1,15 @@
 
-<div  id="assistant" x-init="assistant_init()">
-    <img src="/static/img/magpie.jpg" style="max-width: 128px; display: inline-block;">
-    <h1 style="vertical-align: middle; display: inline-block;">AI Database Assistant</h1>
-
-    <textarea name="question" id="question" rows="3"placeholder="Ask me... e.g. 'How much content does manuscripts have?' or 'List all formulas that starts with letter A'"></textarea>
-    <button id="askBtn" onclick="askQuestion()">Ask me...</button>
-    <div id="loader">Loading...(can take up to 20sec)</div>
-    <div id="answer"></div>
-
+<div  id="assistant" x-init="assistant_init()" class="px-2 flex flex-col">
+    <div class="flex flex-row mb-3">
+        <img src="/static/img/magpie.jpg" class="max-w-20 md:max-w-36">
+        <h1 class="text-[#0d1b2a] text-[32px] sm:text-[40pt] caudex-bold text-left mt-4 mb-3 pl-3" style="vertical-align: middle; display: inline-block;">AI Database Assistant</h1>
+    </div>
+    <div class="flex flex-row mb-3">
+        <textarea id="question" name="question" class="rounded border border-[#cabbb0] mr-5 w-full p-1" rows="3" placeholder="Ask me... e.g. 'How much content does manuscripts have?' or 'List all formulas that starts with letter A'"></textarea>
+        <button id="askBtn" class="py-2 text-[#0d1b2a] font-semibold shadow drop-shadow-md bg-[#e8d3c3] rounded w-[144px] hover:bg-[#dec5b2]" onclick="askQuestion()">Ask Me...</button>
+    </div>
+    <div id="assistant_content" class="flex flex-col overflow-x-auto">
+        <div class="flex flex-row mb-2" id="loader">Loading...(can take up to 20sec)</div>
+        <div class="flex flex-row mb-2" id="answer"></div>
+    </div>
 </div>

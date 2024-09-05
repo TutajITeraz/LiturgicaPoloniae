@@ -1,44 +1,74 @@
 
-<div x-init="content_comparator_init()">
-    <h1>Content browser</h1>
-    <a class="action_button" href="/static/page.html?p=ms_formulas_graph" >Formulas Comparison Interactive Graph</a>
-    <a class="action_button" href="/static/page.html?p=ms_edition_graph" >Rites (Edition) Interactive Graph</a>
+<div x-init="content_comparator_init()" class="px-2">
+    <h1 class="text-[#0d1b2a] text-[32px] sm:text-[40pt] caudex-bold text-left mt-4 mb-3">Content browser</h1>
+ 
+    <div class="two_columns">
 
-
-    <div class="two_columns" style="min-height: 75vh; min-width: 100%">
-
-        <div class="left_column"  id="leftColumn" style="overflow: scroll; padding:5px;">
-
-
-            <br />
-
-
-            <!-- <h2>Browser 1 filters:</h2> -->
-            <label for="ms_select_left">Manuscript:</label>
-            <select class="manuscript_filter_left" name="state" id="ms_select_left">
-            </select>
-            <table id="content_left" class="table table-striped table-bordered table-hover" style="width:100%"></table>
-
+        <div class="left_column w-[50%]"  id="leftColumn">
+            <div class="h-12 block my-1">
+                <a class="text-[#0d1b2a] hover:text-[#070e16] hover:underline text-base" href="/static/page.html?p=ms_formulas_graph" >Formulas Comparison Interactive Graph</a>
+            </div>
+            
+            <div class="flex my-1 justify-center md:justify-normal">
+                <h2 class="flex items-center mr-5">Manuscript</h2>
+                <select class="manuscript_filter_left" id="ms_select_left" name="state"></select>
+            </div>
+            <table id="content_left" class="table table-striped table-bordered table-hover" style="width:100%; display: block;"></table>
         </div>
-        <div class="resizer" id="resizer"></div>
+        <div class="resizer w-[5px] bg-gray-300" id="resizer"></div>
+          
+        <div class="right_column w-[49%]" id="rightColumn">
+            <div class="h-12 block my-1">
+                <a class="text-[#0d1b2a] hover:text-[#070e16] hover:underline text-base" href="/static/page.html?p=ms_edition_graph" >Rites (Edition) Interactive Graph</a>
+            </div>
+            
+            <div class="flex my-1 justify-center md:justify-normal">
+                <h2 class="flex items-center mr-5">Manuscript</h2>
+                <select class="manuscript_filter_right" id="ms_select_right" name="state"></select>
+            </div>
 
-                        
-        <div class="right_column" id="rightColumn" style="overflow: scroll; padding:5px;">
-
-            <!--
-            <a class="action_button" href="#" id="compareButton" >Formulas Comparison Image Graph</a>
-            <a class="action_button" href="#"  id="compareEditionButton" >Rites (Edition) Image Graph</a>
-            -->
-            <br />
-
-            <!-- <h2>Browser 2 filters:</h2> -->
-
-            <label for="ms_select_right">Manuscript:</label>
-            <select class="manuscript_filter_right" name="state" id="ms_select_right">
-            </select>
-
-            <table id="content_right" class="table table-striped table-bordered table-hover" style="width:100%"></table>
+            <table id="content_right" class="table table-striped table-bordered table-hover" style="width:100%; display: block;"></table>
 
         </div>
     </div>
 </div>
+
+
+<style>
+    .two_columns {
+        position: relative;
+    }
+
+    .resizer {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 51%;
+        transform: translateX(0%);
+        background-color: #ddd;
+        cursor: ew-resize;
+        user-select: none;
+    }
+
+    .left_column {
+        left: 0;
+    }
+    .left_column, .right_column {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        cursor: default;
+        overflow-y: auto;
+    }
+    .right_column {
+        right: 0;
+        width: 49%;
+    }
+
+    table {
+        display: table !important;
+    }
+    table thead {
+        display: none;
+    }
+</style>

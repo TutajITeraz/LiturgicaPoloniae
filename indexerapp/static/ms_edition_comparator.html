@@ -1,13 +1,25 @@
 
-<div x-init="content_init()">
-    <h1>MS Edition Comparator</h1>
-
-    <label for="ms_select">Manuscript:</label>
-    <select class="manuscript_filter" name="state" id="ms_select">
-    </select>
-
-    <div id="results">
-        
+<div x-init="content_init()" class="px-2">
+    <h1 class="text-[#0d1b2a] text-[32px] sm:text-[40pt] caudex-bold text-left mt-4 mb-3">MS Edition Comparator</h1>
+    <div class="flex my-1 justify-center md:justify-normal">
+        <h2 class="flex items-center mr-5">Manuscript</h2>
+        <select class="manuscript_filter" id="ms_select" name="state"></select>
     </div>
 
+    <div id="results" class="overflow-x-auto"></div>
 </div>
+
+<style>
+    table .firsttd {
+        width: 150px !important;
+        padding: 0px 10px;
+        background: #eae6e4;
+        font-family: "Roboto Condensed", sans-serif;
+        font-size: 14px;
+    }
+    table tr td {
+        width: auto !important;
+        padding: 0px 10px;
+    }
+</style>
+

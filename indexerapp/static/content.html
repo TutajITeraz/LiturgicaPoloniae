@@ -1,21 +1,19 @@
 
-<div x-init="content_init()">
-    <h1>Liturgical Content</h1>
-
-    <h2>Filters:</h2>
-
-    <label for="ms_select">Manuscript:</label>
-    <select class="manuscript_filter" name="state" id="ms_select">
-    </select>
-
-    <!--
-    <div class="filter_with_labels">
-        <label for="where_in_ms_slider">Where in ms:</label>
-        <div id="where_in_ms_slider" class="long_range_slider"></div>
-        <span id="where_in_ms_slider_value"></span>
+<div x-init="content_init()" class="px-2">
+    <h1 class="text-[#0d1b2a] text-[32px] sm:text-[40pt] caudex-bold text-left mt-4 mb-3">Liturgical Content</h1>
+    <div class="flex mx-3 my-1 justify-center md:justify-normal">
+        <h2 class="flex items-center mr-5">Manuscript</h2>
+        <select class="manuscript_filter" id="ms_select" name="state"></select>
     </div>
-    -->
-    
-    <table id="content" class="table table-striped table-bordered table-hover" style="width:100%">
-
+    <table id="content" class="table table-striped table-bordered table-hover overflow-x-auto" style="width:100%">
 </div>
+
+<style>
+    table td {
+        width: 100% !important;
+    }
+
+    #content thead {
+        display: none;
+    }
+</style>

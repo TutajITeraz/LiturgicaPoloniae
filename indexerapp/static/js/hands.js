@@ -48,6 +48,30 @@ hands_init = function()
     
 }        
 
+function setTableHeight() {
+    var windowHeight = $(window).height();
+    var windowWidth = $(window).width();
+    
+    if(windowWidth > 640){
+        var tableHeight = windowHeight - 370;
+    } else {
+        var tableHeight = windowHeight - 340;
+    }
+    
+    $('#hands_column').css('height', tableHeight + 'px');
+}
+
+
+$(document).ready(function() {
+    setTableHeight();
+});
+
+
+// Adjust height on window resize
+$(window).resize(function() {
+    setTableHeight();
+});
+
 
 function drawInputCanvas() 
 {
@@ -195,7 +219,7 @@ function loadDefaultImage() {
     const defaultImage = new Image();
     defaultImage.src = '/static/assets/hands/sample.png';
     defaultImage.onload = function () {
-        img = cv.imread(defaultImage);
+        // img = cv.imread(defaultImage);
 
         displayImage('canvas1', img);
         performOperations();

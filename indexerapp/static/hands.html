@@ -29,20 +29,20 @@
   </style>
     
 
-<h1>AI Hands Recognition</h1>
 
 
 
-<div class="two_columns" style="min-height: 75vh; min-width: 100%"  x-init="hands_init()">
-
-    <div class="left_column"  id="leftColumn" style="overflow: scroll; padding:0px;">
-        <h2>Encoder</h2>
+  <h1 class="text-[#0d1b2a] text-[32px] sm:text-[40pt] caudex-bold text-left mt-4 mb-3 px-2">AI Hands Recognition</h1>
+<div class="px-2 pb-5 grid grid-cols-2 gap-2 overflow-x-auto" id="hands_column"  x-init="hands_init()">
+    
+    <div class="left_column w-full"  id="leftColumn">
+        <h2 class="py-2 font-semibold roboto-cen">Encoder</h2>
         <input type="file" id="fileInput" accept="image/*">
         <br>
 
         <canvas id="canvas1" width="128" height="128"></canvas>
         <br>
-        <canvas id="canvas2" width="64" height="64" style="width: 128px; height: 128px;"></canvas>
+        <canvas id="canvas2" width="128" height="128"></canvas>
         <div id="outputValues"></div>
           
         <label for="styleName">Hand Name:</label>
@@ -53,16 +53,13 @@
         <div id="savedStyles"></div>
         
     </div>
-    <div class="resizer" id="resizer"></div>
+    <!--<div class="resizer" id="resizer"></div>-->
 
-                    
-    <div class="right_column" id="rightColumn" style="overflow: scroll; padding:0px;">
-        <h2>Decoder</h2>
+    <div class="right_column w-full" id="rightColumn">
+        <h2 class="py-2 font-semibold roboto-cen">Decoder</h2>
         <canvas id="inputCanvas" width="400" height="400"></canvas>
         <div id="coordinates"></div>
         <canvas id="outputCanvas" width="64" height="64" style="width:128px; height:128px;"></canvas>
-          
-
     </div>
 </div>
           

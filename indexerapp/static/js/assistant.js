@@ -4,9 +4,29 @@ assistant_init = function()
 
 }
 
+function setTableHeight() {
+    var windowHeight = $(window).height();
+    var windowWidth = $(window).width();
+    console.log('height: ', windowHeight);
+    if(windowWidth > 640){
+        var tableHeight = windowHeight - 500;
+    } else {
+        var tableHeight = windowHeight - 470;
+    }
+    
+    
+    $('#assistant_content').css('height', tableHeight + 'px');
+}
+
+// Adjust height on window resize
+$(window).resize(function() {
+    setTableHeight();
+});
+
 
 
 function askQuestion() {
+    setTableHeight();
     var questionInput = document.getElementById('question');
     var question = questionInput.value;
 

@@ -1,3 +1,4 @@
+
 async function getAndShowSimilarMSbyEditionIndex(id,name)
 {
     $('#results').empty();
@@ -13,9 +14,9 @@ async function getAndShowSimilarMSbyEditionIndex(id,name)
     var ms_content_count = ms_content.length;
 
     var ms_content_div = $('<div class="ms_content">');
-    ms_content_div.append('<h2>'+name+'</h2>');
+    ms_content_div.append('<h2 class="content_header">'+name+'</h2>');
 
-    var manuscript_description = $('<table class="manuscript_description">');
+    var manuscript_description = $('<table class="manuscript_description result_table">');
 
     var ms_content_span = '';
     for(c in ms_content)
@@ -23,7 +24,7 @@ async function getAndShowSimilarMSbyEditionIndex(id,name)
         ms_content_span += ' <span class="ms_content_span"> '+c+": "+ms_content[c]+', </span>';
     }
 
-    manuscript_description.append('<tr><th>Content:</th><td>'+ms_content_span+'</td><tr>');
+    manuscript_description.append('<tr><td class="firsttd">Content:</td><td>'+ms_content_span+'</td><tr>');
 
     ms_content_div.append(manuscript_description);
     $('#results').append(ms_content_div);
@@ -35,28 +36,60 @@ async function getAndShowSimilarMSbyEditionIndex(id,name)
         var manuscript_div = $('<div class="similar_ms">');
 
         var manuscript_name = manuscript.manuscript_name;
-        var manuscript_name_el =  $('<h2>'+manuscript_name+'</h2>');
+        var manuscript_name_el =  $('<h2 class="content_header">'+manuscript_name+'</h2>');
         manuscript_div.append(manuscript_name_el);
 
         var manuscript_description = $('<table class="manuscript_description">');
 
         var content_similarity = ( manuscript.identical_edition_index_count / ms_content_count)*100.0;
         var sequence_similarity = ( manuscript.identical_edition_index_on_same_sequence_count / ms_content_count)*100.0;
-        manuscript_description.append('<tr><th>Content similarity:</th><td>'+Math.round(content_similarity * 100) / 100+'%</td><tr>');
-        manuscript_description.append('<tr><th>Sequence similarity:</th><td>'+Math.round(sequence_similarity * 100) / 100+'%</td><tr>');
+        manuscript_description.append('<tr><td class="firsttd" class="firsttd">Content similarity:</td><td>'+Math.round(content_similarity * 100) / 100+'%</td><tr>');
+        manuscript_description.append('<tr><td class="firsttd">Sequence similarity:</td><td>'+Math.round(sequence_similarity * 100) / 100+'%</td><tr>');
 
-        manuscript_description.append('<tr><th>How many rites in edition index:</th><td>'+manuscript.total_edition_index_count+'</td><tr>');
+        manuscript_description.append('<tr><td class="firsttd">How many rites in edition index:</td><td>'+manuscript.total_edition_index_count+'</td><tr>');
         
-        manuscript_description.append('<tr><th>How many rites are the same:</th><td>'+manuscript.identical_edition_index_count+'</td><tr>');
-        manuscript_description.append('<tr><th>How many rites are the same (and have same sequence no.):</th><td>'+manuscript.identical_edition_index_on_same_sequence_count+'</td><tr>');
-        manuscript_description.append('<tr><th>List of same edition indexes:</th><td>'+manuscript.identical_edition_index_list+'</td><tr>');
-        manuscript_description.append('<tr><th>List of all edition indexes:</th><td>'+manuscript.edition_index_list+'</td><tr>');
+        manuscript_description.append('<tr><td class="firsttd">How many rites are the same:</td><td>'+manuscript.identical_edition_index_count+'</td><tr>');
+        manuscript_description.append('<tr><td class="firsttd">How many rites are the same (and have same sequence no.):</td><td>'+manuscript.identical_edition_index_on_same_sequence_count+'</td><tr>');
+        manuscript_description.append('<tr><td class="firsttd">List of same edition indexes:</td><td>'+manuscript.identical_edition_index_list+'</td><tr>');
+        manuscript_description.append('<tr><td class="firsttd">List of all edition indexes:</td><td>'+manuscript.edition_index_list+'</td><tr>');
 
         manuscript_div.append(manuscript_description);
 
         $('#results').append(manuscript_div);
     }
+
 }
+
+function setTableHeight() {
+    var windowHeight = $(window).height();
+    var windowWidth = $(window).width();
+    // console.log('height: ', windowWidth);
+    if(windowWidth > 640){
+        var tableHeight = windowHeight - 400;
+    } else {
+        var tableHeight = windowHeight - 370;
+    }
+    
+    
+    $('#results').css('height', tableHeight + 'px');
+}
+
+$(document).ready(function() {
+    console.log('document ready function');
+    setTimeout(function() {
+        setTableHeight();
+    }, 700);  // A small delay ensures elements are fully rendered
+});
+
+$(window).on('load', function() {
+    console.log('window load function');
+    setTableHeight();
+});
+
+// Adjust height on window resize
+$(window).resize(function() {
+    setTableHeight();
+});
 
 
 async function getSimilarMSbyEditionIndex(id) 

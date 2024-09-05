@@ -14,7 +14,7 @@ if(loc == "https://eclla.hostline.net.pl")
 else if(loc == "http://127.0.0.1")
 {
   pageRoot="http://127.0.0.1:8000";
-  projectId=1;//LP
+  projectId=2;//LP
 }
 else if(loc == "https://indexer.rebold.hostline.net.pl")
 {

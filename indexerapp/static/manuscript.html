@@ -1,13 +1,10 @@
 
-<div x-data="{}" class="manuscriptPage" x-init="manuscript_init()">
-    <h1 class="printIt"><strong x-text="(await getMSInfo()).manuscript.name + ', ' + ((await getMSInfo()).manuscript.rism_id || '')"></strong></h1>
-
-    <!-- <a class="gjs-button" href="/manuscripts/">< See all Manuscripts</a>-->
-    
+<div x-data="{}" class="manuscriptPage" id="manuscriptPages" x-init="manuscript_init()" style="height: calc(100vh - 272px);">
+    <h1 class="printIt text-[#0d1b2a] text-[16px] md:text-[24pt] caudex-bold text-center mt-4 mb-3"><strong x-text="(await getMSInfo()).manuscript.name + ', ' + ((await getMSInfo()).manuscript.rism_id || '')"></strong></h1>
 
     <div class="two_columns">
 
-        <div class="left_column"  id="leftColumn">
+        <div class="left_column w-[49%]"  id="leftColumn">
             <div x-show="(await getMSInfo()).manuscript.iiif_manifest_url == '-'">
                 <div>
                     <div x-show="(await getMSInfo()).manuscript.image == ''">
@@ -27,18 +24,12 @@
             </div>
         </div>
 
-        <div class="resizer" id="resizer"></div>
+        <div class="resizer w-[1%] bg-gray-300" id="resizer"></div>
 
         
-        <div class="right_column" id="rightColumn">
-            <!--
-            <div class="wrap-collabsible">
-                <input id="collapsible1" class="toggle" type="checkbox" checked>
-                <label for="collapsible1" class="lbl-toggle">Main info</label>
-                <div class="collapsible-content">
-                -->
-            <div class="openbox open-lvl-0" x-data="{ open: false }">
-                <button @click="open = ! open" class="toggle" x-bind:opened="open"><img class="button-icon" src="/static/img/icons/info.svg"></img><span class="printIt title">Main info</span></button>
+        <div class="right_column pr-1 md:pr-2 overflow-x-auto overflow-y-scroll" id="rightColumn">
+            <div class="open-lvl-0" x-data="{ open: false }">
+                <button @click="open = ! open" class="w-full py-2 bg-[#795a42] hover:bg-[#997a62] toggle text-white rounded text-white rounded font-semibold drop-shadow mt-2" x-bind:opened="open"><img class="button-icon" src="/static/img/icons/info.svg"></img><span class="printIt title">Main info</span></button>
                 
                 <div class="open-inside" x-show="open" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
                     <table class="printIt">
@@ -85,14 +76,9 @@
                 </div>
             </div>
 
-                <!--
-                </div>
-            </div>
-            -->
-
             <template x-if="(await getCLLAInfo()).data?.length && projectId==1">
-                <div class="openbox open-lvl-0" x-data="{ open: false }">
-                    <button @click="open = ! open" class="toggle" x-bind:opened="open"><img class="button-icon" src="/static/img/icons/books.svg"></img><span class="printIt title">CLLA</span></button>
+                <div class="open-lvl-0" x-data="{ open: false }">
+                    <button @click="open = ! open" class="w-full py-2 bg-[#795a42] hover:bg-[#997a62] toggle text-white rounded text-white rounded font-semibold drop-shadow mt-2" x-bind:opened="open"><img class="button-icon" src="/static/img/icons/books.svg"></img><span class="printIt title">CLLA</span></button>
                     
                     <div class="open-inside" x-show="open" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
                         <div>
@@ -118,8 +104,8 @@
             <br />
 
             <template x-if="(await getCodicologyInfo()).info">
-                <div class="openbox open-lvl-0" x-data="{ open: false }">
-                    <button @click="open = ! open" class="toggle" x-bind:opened="open"><img class="button-icon" src="/static/img/icons/codicology.svg"></img><span class="printIt title">Codicology and paleography</span></button>
+                <div class="open-lvl-0" x-data="{ open: false }">
+                    <button @click="open = ! open" class="w-full py-2 bg-[#795a42] hover:bg-[#997a62] toggle text-white rounded text-white rounded font-semibold drop-shadow mt-2" x-bind:opened="open"><img class="button-icon" src="/static/img/icons/codicology.svg"></img><span class="printIt title">Codicology and paleography</span></button>
                     
                     <div class="open-inside" x-show="open" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
                         <div>
@@ -182,7 +168,7 @@
 
                             <template x-if="(await getWatermarksInfo()).data">
                                 <div class="openbox open-lvl-1" x-data="{ open2: false }">
-                                    <button @click="open2 = ! open2" class="toggle" x-bind:opened="open2"><span class="printIt title">Watermarks</span></button>
+                                    <button @click="open2 = ! open2" class="w-full py-2 bg-[#997a62] toggle hover:bg-[#b9987f] text-white rounded text-white rounded font-semibold drop-shadow mt-2" x-bind:opened="open2"><span class="printIt title">Watermarks</span></button>
                                     
                                     <div class="open-inside"  x-show="open2" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
                                         <div>
@@ -195,7 +181,7 @@
 
                             <template x-if="(await getQuiresInfo()).data?.length">
                                 <div class="openbox open-lvl-1" x-data="{ open2: false }">
-                                    <button @click="open2 = ! open2" class="toggle" x-bind:opened="open2"><span class="printIt title">Quires</span></button>
+                                    <button @click="open2 = ! open2" class="w-full py-2 bg-[#997a62] toggle hover:bg-[#b9987f] text-white rounded text-white rounded font-semibold drop-shadow mt-2" x-bind:opened="open2"><span class="printIt title">Quires</span></button>
                                     
                                     <div class="open-inside"  x-show="open2" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
                                         <table x-init="init_quires_table()" id="quires" class="table printIt table-striped  table-bordered table-hover" style="width:100%"></table>
@@ -206,7 +192,7 @@
 
 
                             <div class="openbox open-lvl-1" x-data="{ open2: false }">
-                                <button @click="open2 = ! open2" class="toggle" x-bind:opened="open2"><span class="printIt title">Layouts</span></button>
+                                <button @click="open2 = ! open2" class="w-full py-2 bg-[#997a62] toggle hover:bg-[#b9987f] text-white rounded text-white rounded font-semibold drop-shadow mt-2" x-bind:opened="open2"><span class="printIt title">Layouts</span></button>
                                 
                                 <div class="open-inside"  x-show="open2" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
                                     <table x-init="init_layouts_table" id="layouts" class="table printIt table-striped  table-bordered table-hover" style="width:100%"></table>
@@ -214,12 +200,12 @@
                             </div>
 
                             <div class="openbox open-lvl-1" x-data="{ open2: false }">
-                                <button @click="open2 = ! open2" class="toggle" x-bind:opened="open2"><span class="printIt title">Scripts</span></button>
+                                <button @click="open2 = ! open2" class="w-full py-2 bg-[#997a62] toggle hover:bg-[#b9987f] text-white rounded text-white rounded font-semibold drop-shadow mt-2" x-bind:opened="open2"><span class="printIt title">Scripts</span></button>
                                 
                                 <div class="open-inside" x-show="open2" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
                                     
                                     <div class="openbox open-lvl-2" x-data="{ open3: false }">
-                                        <button @click="open3 = ! open3" class="toggle" x-bind:opened="open3"><span class="printIt title">Main Hands</span></button>
+                                        <button @click="open3 = ! open3" class="w-full py-2 bg-[#b9987f] hover:bg-[#b99f8b] toggle text-white rounded text-white rounded font-semibold drop-shadow mt-2" x-bind:opened="open3"><span class="printIt title">Main Hands</span></button>
                                         
                                         <div class="open-inside"  x-show="open3" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
                                             <table x-init="init_main_hands()" id="main_hands" class="table printIt table-striped  table-bordered table-hover" style="width:100%"></table>      
@@ -238,7 +224,7 @@
                                     </div>
                                 
                                     <div class="openbox open-lvl-2" x-data="{ open3: false }">
-                                        <button @click="open3 = ! open3" class="toggle" x-bind:opened="open3"><span class="printIt title">Hands of the additions</span></button>
+                                        <button @click="open3 = ! open3" class="w-full py-2 bg-[#b9987f] hover:bg-[#b99f8b] toggle text-white rounded text-white rounded font-semibold drop-shadow mt-2" x-bind:opened="open3"><span class="printIt title">Hands of the additions</span></button>
                                         
                                         <div class="open-inside"  x-show="open3" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
                                             <table x-init="init_additions_hands" id="additions_hands" class="table printIt table-striped  table-bordered table-hover" style="width:100%"></table>   
@@ -250,7 +236,7 @@
 
                             <template x-if="(await getMusicNotationInfo()).data">
                                 <div class="openbox open-lvl-1" x-data="{ open2: false }">
-                                    <button @click="open2 = ! open2" class="toggle" x-bind:opened="open2"><span class="printIt title">Music Notation</span></button>
+                                    <button @click="open2 = ! open2" class="w-full py-2 bg-[#997a62] toggle hover:bg-[#b9987f] text-white rounded text-white rounded font-semibold drop-shadow mt-2" x-bind:opened="open2"><span class="printIt title">Music Notation</span></button>
                                     
                                     <div class="open-inside"  x-show="open2" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
                                         <div>
@@ -269,8 +255,8 @@
             </template>
 
             <template x-if="(await getBindingInfo()).info">
-                <div class="openbox open-lvl-0" x-data="{ open: false }">
-                    <button @click="open = ! open" class="toggle" x-bind:opened="open"><img class="button-icon" src="/static/img/icons/binding.svg"></img><span class="printIt title">Binding</span></button>
+                <div class="open-lvl-0" x-data="{ open: false }">
+                    <button @click="open = ! open" class="w-full py-2 bg-[#795a42] hover:bg-[#997a62] toggle text-white rounded text-white rounded font-semibold drop-shadow mt-2" x-bind:opened="open"><img class="button-icon" src="/static/img/icons/binding.svg"></img><span class="printIt title">Binding</span></button>
                     
                     <div class="open-inside" x-show="open" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
                         <div>
@@ -348,8 +334,8 @@
 
             
             <template x-if="(await getDecorationInfo()).data?.length">
-                <div class="openbox open-lvl-0" x-data="{ open: false }">
-                    <button @click="open = ! open" class="toggle" x-bind:opened="open"><img class="button-icon" src="/static/img/icons/decoration.svg"></img><span class="printIt title">Decoration</span></button>
+                <div class="open-lvl-0" x-data="{ open: false }">
+                    <button @click="open = ! open" class="w-full py-2 bg-[#795a42] hover:bg-[#997a62] toggle text-white rounded text-white rounded font-semibold drop-shadow mt-2" x-bind:opened="open"><img class="button-icon" src="/static/img/icons/decoration.svg"></img><span class="printIt title">Decoration</span></button>
                     
                     <div class="open-inside" x-show="open" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
                         <div>
@@ -374,8 +360,8 @@
             </template>
 
             <template x-if="(await getConditionInfo()).data?.length">
-                <div class="openbox open-lvl-0" x-data="{ open: false }">
-                    <button @click="open = ! open" class="toggle" x-bind:opened="open"><img class="button-icon" src="/static/img/icons/condition.svg"></img><span class="printIt title">Condition</span></button>
+                <div class="open-lvl-0" x-data="{ open: false }">
+                    <button @click="open = ! open" class="w-full py-2 bg-[#795a42] hover:bg-[#997a62] toggle text-white rounded text-white rounded font-semibold drop-shadow mt-2" x-bind:opened="open"><img class="button-icon" src="/static/img/icons/condition.svg"></img><span class="printIt title">Condition</span></button>
                     
                     <div class="open-inside" x-show="open" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
                         <div>
@@ -398,8 +384,8 @@
             </template>
 
 
-            <div class="openbox open-lvl-0" x-data="{ open: false }">
-                <button @click="open = ! open" class="toggle" x-bind:opened="open"><img class="button-icon" src="/static/img/icons/content.svg"></img><span class="printIt title">Content</span></button>
+            <div class="open-lvl-0" x-data="{ open: false }">
+                <button @click="open = ! open" class="w-full py-2 bg-[#795a42] hover:bg-[#997a62] toggle text-white rounded text-white rounded font-semibold drop-shadow mt-2" x-bind:opened="open"><img class="button-icon" src="/static/img/icons/content.svg"></img><span class="printIt title">Content</span></button>
                 
                 <div class="open-inside" x-show="open" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
 
@@ -412,14 +398,14 @@
 
 
             <template x-if="(await getOriginsInfo()).data?.length">
-                <div class="openbox open-lvl-0" x-data="{ open: false }">
-                    <button @click="open = ! open" class="toggle" x-bind:opened="open"><img class="button-icon" src="/static/img/icons/history.svg"></img><span class="printIt title">History of the manuscript</span></button>
+                <div class="open-lvl-0" x-data="{ open: false }">
+                    <button @click="open = ! open" class="w-full py-2 bg-[#795a42] hover:bg-[#997a62] toggle text-white rounded text-white rounded font-semibold drop-shadow mt-2" x-bind:opened="open"><img class="button-icon" src="/static/img/icons/history.svg"></img><span class="printIt title">History of the manuscript</span></button>
                     
                     <div class="open-inside" x-show="open" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
 
 
                         <div class="openbox open-lvl-1" x-data="{ open2: false }">
-                            <button @click="open2 = ! open2" class="toggle" x-bind:opened="open2"><span class="printIt title">Origins and dating</span></button>
+                            <button @click="open2 = ! open2" class="w-full py-2 bg-[#997a62] toggle hover:bg-[#b9987f] text-white rounded text-white rounded font-semibold drop-shadow mt-2" x-bind:opened="open2"><span class="printIt title">Origins and dating</span></button>
                             
                             <div class="open-inside"  x-show="open2" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
                                 <table  x-init="init_origins_table" id="origins" class="table printIt table-striped  table-bordered table-hover" style="width:100%"></table>
@@ -428,9 +414,9 @@
 
                         <template x-if="(await getProvenanceInfo()).data?.length">
                             <div class="openbox open-lvl-1" x-data="{ open2: false }">
-                                <button @click="open2 = ! open2" class="toggle" x-bind:opened="open2"><span class="printIt title">Provenance History</span></button>
+                                <button @click="open2 = ! open2" class="w-full py-2 bg-[#997a62] toggle hover:bg-[#b9987f] text-white rounded text-white rounded font-semibold drop-shadow mt-2" x-bind:opened="open2"><span class="printIt title">Provenance History</span></button>
                                 
-                                <div class="open-inside" x-show="open2" x-on:transitionend="map_refresh()" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
+                                <div class="open-inside" x-show="open2" x-on:transitionstart="map_refresh()" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
                                     <div>
 
                                         <table x-init="init_provenance_table" id="provenance" class="table printIt table-striped  table-bordered table-hover" style="width:100%"></table>
@@ -481,8 +467,8 @@
             </template>
 
             <template x-if="(await getBibliographyInfo()).data?.length">
-                <div class="openbox open-lvl-0" x-data="{ open: false }">
-                    <button @click="open = ! open" class="toggle" x-bind:opened="open"><img class="button-icon" src="/static/img/icons/bibliography.svg"></img><span class="title">Bibliography</span></button>
+                <div class="open-lvl-0" x-data="{ open: false }">
+                    <button @click="open = ! open" class="w-full py-2 bg-[#795a42] hover:bg-[#997a62] toggle text-white rounded font-semibold drop-shadow mt-2" x-bind:opened="open"><img class="button-icon" src="/static/img/icons/bibliography.svg"></img><span class="printIt title">Bibliography</span></button>
                     
                     <div class="open-inside" x-show="open" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
                         
@@ -501,11 +487,81 @@
                 </div>
             </template>
 
-            <a class="action_button" href="#" type="button" id="btnPrint" class="action_button"><img class="button-icon" src="/static/img/icons/print.svg" /> Print</a>
-            <a class="action_button" target="_blank" x-bind:href="(await getTEIUrl())"><img class="button-icon" src="/static/img/icons/xmltei.svg" /> TEI XML File</a>
-
-        
+            <div class="flex gap-x-4">
+                <a class="py-2 px-1 sm:py-4 sm:px-6 bg-[#a14517] hover:bg-[#8e3b11] text-white font-semibold rounded drop-shadow text-base mt-5" href="#" type="button" id="btnPrint"><img class="button-icon" src="/static/img/icons/print.svg" /> Print</a>
+                <a class="py-2 px-1 sm:py-4 sm:px-6 bg-[#a14517] hover:bg-[#8e3b11] text-white font-semibold rounded drop-shadow text-base mt-5" target="_blank" x-bind:href="(await getTEIUrl())"><img class="button-icon" src="/static/img/icons/xmltei.svg" /> TEI XML File</a>
+            </div>
         </div>
     </div>
 </div>
+
+
+
+<style>
+
+    .two_columns {
+        position: relative;
+    }
+
+    .resizer {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 6px;
+        background-color: #ddd;
+        cursor: ew-resize;
+        user-select: none;
+    }
+
+    .left_column {
+        left: 0;
+    }
+    .left_column, .right_column {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        cursor: default;
+    }
+    .right_column {
+        right: 0;
+        width: calc(50% - 6px);
+        overflow-y: auto;
+    }
+
+    table {
+        overflow: auto;
+        display: block;
+    }
+    th {
+        color: #0d1b2a;
+        background-color: #e4dcd8;
+        white-space: nowrap;
+        text-align: right;
+        padding: 0px 4px;
+    }
+    table td {
+        color: #0d1b2a;
+        height: auto !important;
+        border-bottom: none !important;
+    }
+    .MuiFab-primary {
+        background-color: #795a42 !important;
+    }
+    .mirador34.mirador33 {
+        border-top: 2px solid #795a42;
+    }
+
+    .mirador86.mirador87 {
+        outline: 2px solid #795a42;
+        outline-offset: 3px;
+    }
+</style>
+
+
+
+
+
+
 
