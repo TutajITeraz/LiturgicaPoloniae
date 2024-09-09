@@ -676,6 +676,10 @@ video {
   margin: 0.25rem;
 }
 
+.m-3 {
+  margin: 0.75rem;
+}
+
 .mx-3 {
   margin-left: 0.75rem;
   margin-right: 0.75rem;
@@ -800,6 +804,10 @@ video {
 
 .mt-auto {
   margin-top: auto;
+}
+
+.mb-6 {
+  margin-bottom: 1.5rem;
 }
 
 .block {
@@ -954,6 +962,18 @@ video {
 
 .resize {
   resize: both;
+}
+
+.list-inside {
+  list-style-position: inside;
+}
+
+.list-decimal {
+  list-style-type: decimal;
+}
+
+.list-disc {
+  list-style-type: disc;
 }
 
 .grid-cols-1 {
@@ -1240,6 +1260,10 @@ video {
   text-align: center;
 }
 
+.indent-8 {
+  text-indent: 2rem;
+}
+
 .text-\[10pt\] {
   font-size: 10pt;
 }
@@ -1290,6 +1314,14 @@ video {
 
 .text-\[20px\] {
   font-size: 20px;
+}
+
+.text-\[20pt\] {
+  font-size: 20pt;
+}
+
+.text-\[16pt\] {
+  font-size: 16pt;
 }
 
 .font-medium {

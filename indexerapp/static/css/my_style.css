@@ -744,7 +744,7 @@ div.dt-container .dt-input {
 }
 
 .dt-layout-row{
-    font-family: "Young Serif", serif;
+    /* font-family: "Young Serif", serif; */
 }
 .dt-layout-row label{
     font-family: "Young Serif", serif;
@@ -770,9 +770,15 @@ div.dt-container .dt-input {
     justify-content: center;
     align-items: center;
 }
-table tr td {
+
+table {
     width: 100%;
 }
+
+colgroup {
+    width: 100%;
+}
+
 .main_content_data {
     width: 100%;
     font-family: "Young Serif", serif;

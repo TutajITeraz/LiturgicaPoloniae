@@ -244,7 +244,7 @@
                                     
                                     <div class="open-inside"  x-show="open2" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
                                         <div>
-                                            <p x-text="(await getMSInfo()).manuscript.music_notation_comments"></p>
+                                            <p class="m-3 indent-8" x-text="(await getMSInfo()).manuscript.music_notation_comments"></p>
 
                                             <table x-init="init_music_table" id="music_notation" class="table printIt table-striped  table-bordered table-hover" style="width:100%"></table>
                 
@@ -344,13 +344,13 @@
                     <div class="open-inside" x-show="open" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
                         <div>
                             
-                            <p class="printIt" x-text="(await getMSInfo()).manuscript.decoration_comments"></p>
+                            <p class="printIt indent-8 m-3" x-text="(await getMSInfo()).manuscript.decoration_comments"></p>
                     
 
                             <table x-init="init_decoration_table" id="decoration" class="table printIt table-striped  table-bordered table-hover" style="width:100%"></table>
                             
-                            <h2>Comments:</h2>
-                            <ol  class="printIt" >
+                            <h2 class="m-3 text-lg">Comments:</h2>
+                            <ol  class="printIt list-disc list-inside" >
                                 <template x-for="datarow in (await getDecorationInfo()).data">
                                     <li x-text="datarow.comments">
                                     </li>
@@ -376,7 +376,7 @@
                                         <th>
                                             <div class="field-name"><span x-text="name"></span></div>
                                         </th>
-                                        <td>
+                                        <td style="width: 100%;">
                                             <span x-text="value"></span> <!-- <a data-popup="yes" href="{{ ms_comment_add_url_with_parameters }}{{ field }}">+</a>-->
                                         </td>
                                     </tr>
@@ -458,7 +458,7 @@
 
                                         <div id="map" x-init="map_init()"></div>
                                         
-                                        <h3>Comments:</h3>
+                                        <h3 class="m-3 text-lg">Comments:</h3>
                                         <p class="printIt" x-text="(await getOriginsInfo()).data[0].provenance_comments"></p>
 
 
@@ -562,6 +562,8 @@
         outline-offset: 3px;
     }
 
+    /*
+
     #origins td:first-child{
         width: 150px !important;
     }
@@ -573,7 +575,7 @@
     }
     #provenance tr td:nth-child(2) {
         width: 250px;
-    }
+    }*/
 </style>
 
 

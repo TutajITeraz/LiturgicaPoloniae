@@ -972,6 +972,7 @@ function init_provenance_table() {
                 return data.data;
             }
         },
+        "bAutoWidth": false, 
         "columns": [
             { "data": "id", "title": "id" , "visible": false },
             { "data": "date_from", "title": "date_from" , "visible": false },
@@ -983,7 +984,8 @@ function init_provenance_table() {
                     if (row.date_from == row.date_to || row.date_to == '-')
                         return row.date_from;
                     return row.date_from + ' - ' + row.date_to;
-                }
+                },
+                "width": '150px',
             },
             { "data": "place", "title": "Place" },
             { "data": "timeline_sequence", "title": "timeline_sequence", "visible": false },
@@ -1037,8 +1039,9 @@ function displayDebate(dataTable,divToAppend)
     console.log(all_data);
 
     var uniqueValuesDiv = $('<div class="printIt">');
-    var title = $('<h4>Different Opinions:</h4>');
+    var title = $('<h4 class="mt-6">Different Opinions:</h4>');
     uniqueValuesDiv.append(title);
+    uniqueValuesDiv.append('<hr />');
 
     var list = $('<ul>');
 
@@ -1081,13 +1084,13 @@ function displayDebate(dataTable,divToAppend)
         }
 
         //Debate list below
-        var list_item = $('<li>According to:' 
-            +'<div id="debate_'+debate.id+'"><b>'+debate.bibliography+'</b>'
+        var list_item = $('<li>' 
+            +'<div id="debate_'+debate.id+'">According to: <b>'+debate.bibliography+'</b>'
             +'  <span style="display: block;">'
             +'      <u>'+debate.field_name+'</u>'
             +'      is: <b>'+debate.text+'</b>'
             +'  </span>'
-            +'</li>');
+            +'</li><hr />');
         list.append(list_item);
     }
     //////////////////////////////////////////
