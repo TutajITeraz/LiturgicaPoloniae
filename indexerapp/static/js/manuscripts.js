@@ -14,9 +14,12 @@ manuscripts_init = function()
     // rightColumn.style.width = `calc(100% - 305px)`;
     // resizer.style.left =`${newLeftWidth}px`;
 
+    let clearingAllFieldsInProgress = false;
+
     function processFilters(e)
     {
-        manuscripts_table.ajax.reload();
+        if(!clearingAllFieldsInProgress)
+            manuscripts_table.ajax.reload();
     }
 
 
@@ -391,6 +394,8 @@ manuscripts_init = function()
 
     // Function to clear form fields
     function clearFields() {
+
+        clearingAllFieldsInProgress = true;
         // Clear all input fields
         $('input').each(function() {
             if ($(this).attr('type') !== 'checkbox' && $(this).attr('type') !== 'radio') {
@@ -404,6 +409,8 @@ manuscripts_init = function()
         $('.manuscript_filter').each(function() {
             $(this).val("").change(); // Clear Select2 value and trigger change event
         });
+
+        clearingAllFieldsInProgress = false;
 
         processFilters(); 
     }

@@ -55,17 +55,19 @@
                     <template x-if="(await getMSInfo()).debate?.length">
                         <div>
                             <h4 class="printIt" >Different Opinions:</h4>
+                            <hr />
                             <ul>
                                 <template x-for="(comment) in (await getMSInfo()).debate">
                                     <div class="printIt" >
                                         <li>
-                                            According to:
-                                            <div x-bind:id="'debate_'+comment.id"><b x-text="comment.bibliography "></b>,
-                                            <span style="display: block;">
-                                                <u x-text="comment.field_name"></u>
-                                                is: <b  x-text="comment.text "></b>
-                                            </span>
+                                            <div x-bind:id="'debate_'+comment.id">According to:<b x-text="comment.bibliography "></b>,
+                                                <span style="display: block;">
+                                                    <u x-text="comment.field_name"></u>
+                                                    is: <b  x-text="comment.text "></b>
+                                                </span>
+                                            </div>
                                         </li>
+                                        <hr />
                                         <!--<a class="debate-link" x-bind:href="'#debate-'+comment.id" x-bind:title="comment.text">*</a>-->
                                     </div>
                                 </template>
@@ -144,16 +146,18 @@
                             <template x-if="(await getCodicologyInfo()).debate?.length">
                                 <div>
                                     <h4 class="printIt" >Different Opinions:</h4>
+                                    <hr />
                                     <ul>
                                         <template x-for="(comment) in (await getCodicologyInfo()).debate">
                                             <div class="printIt" >
                                                 <li>
-                                                    According to:
-                                                    <div x-bind:id="'debate_'+comment.id"><b x-text="comment.bibliography "></b>,
-                                                    <span style="display: block;">
-                                                        <u x-text="comment.field_name"></u>
-                                                        is: <b  x-text="comment.text "></b>
-                                                    </span>
+                                                    <div x-bind:id="'debate_'+comment.id">According to:<b x-text="comment.bibliography "></b>,
+                                                        <span style="display: block;">
+                                                            <u x-text="comment.field_name"></u>
+                                                            is: <b  x-text="comment.text "></b>
+                                                        </span>
+                                                    </div>
+                                                    <hr />
                                                 </li>
                                                 <!--<a class="debate-link" x-bind:href="'#debate-'+comment.id" x-bind:title="comment.text">*</a>-->
                                             </div>
@@ -488,8 +492,8 @@
             </template>
 
             <div class="flex gap-x-4">
-                <a class="py-2 px-1 sm:py-4 sm:px-6 bg-[#a14517] hover:bg-[#8e3b11] text-white font-semibold rounded drop-shadow text-base mt-5" href="#" type="button" id="btnPrint"><img class="button-icon" src="/static/img/icons/print.svg" /> Print</a>
-                <a class="py-2 px-1 sm:py-4 sm:px-6 bg-[#a14517] hover:bg-[#8e3b11] text-white font-semibold rounded drop-shadow text-base mt-5" target="_blank" x-bind:href="(await getTEIUrl())"><img class="button-icon" src="/static/img/icons/xmltei.svg" /> TEI XML File</a>
+                <a class="py-2 px-1 sm:py-4 sm:px-6 bg-[#795a42] hover:bg-[#997a62] text-white font-semibold rounded drop-shadow text-base mt-5" href="#" type="button" id="btnPrint"><img class="button-icon" src="/static/img/icons/print.svg" /> Print</a>
+                <a class="py-2 px-1 sm:py-4 sm:px-6 bg-[#795a42] hover:bg-[#997a62] text-white font-semibold rounded drop-shadow text-base mt-5" target="_blank" x-bind:href="(await getTEIUrl())"><img class="button-icon" src="/static/img/icons/xmltei.svg" /> TEI XML File</a>
             </div>
         </div>
     </div>
@@ -556,6 +560,19 @@
     .mirador86.mirador87 {
         outline: 2px solid #795a42;
         outline-offset: 3px;
+    }
+
+    #origins td:first-child{
+        width: 150px !important;
+    }
+    #provenance td:first-child{
+        width: 150px !important;
+    }
+    #origins tr td:nth-child(2) {
+        width: 250px;
+    }
+    #provenance tr td:nth-child(2) {
+        width: 250px;
     }
 </style>
 

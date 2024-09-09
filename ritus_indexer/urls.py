@@ -33,7 +33,19 @@ from indexerapp.models import Content
 from iommi.admin import Admin
 
 class IommiAdmin(Admin):
+
     class Meta:
+        """
+        apps__admin_logentry__include = True	
+        apps__contenttypes_contenttype__include = True
+
+        apps__auth_group_permissions__include = True
+        apps__auth_permission__include = True
+        apps__auth_user_groups__include = True
+        apps__auth_user_user_permissions__include = True
+
+        apps__sessions_session__include = True
+        """
         apps__indexerapp_attributedebate__include = True
         apps__indexerapp_bibliography__include = True
         apps__indexerapp_bindingdecorationtypes__include = True
@@ -41,6 +53,7 @@ class IommiAdmin(Admin):
         apps__indexerapp_bindingstyles__include = True
         apps__indexerapp_bindingtypes__include = True
         apps__indexerapp_binding__include = True
+        apps__indexerapp_clla__include = True
         apps__indexerapp_calendar__include = True
         apps__indexerapp_codicology__include = True
         apps__indexerapp_colours__include = True
@@ -65,11 +78,13 @@ class IommiAdmin(Admin):
         apps__indexerapp_manuscriptgenres__include = True
         apps__indexerapp_manuscripthands__include = True
         apps__indexerapp_manuscriptmusicnotations__include = True
+        apps__indexerapp_msprojects__include = True
         apps__indexerapp_manuscriptwatermarks__include = True
         apps__indexerapp_manuscripts__include = True
         apps__indexerapp_musicnotationnames__include = True
         apps__indexerapp_origins__include = True
         apps__indexerapp_places__include = True
+        apps__indexerapp_projects__include = True
         apps__indexerapp_provenance__include = True
         apps__indexerapp_quires__include = True
         apps__indexerapp_ritenames__include = True
@@ -77,6 +92,7 @@ class IommiAdmin(Admin):
         apps__indexerapp_sections__include = True
         apps__indexerapp_subjects__include = True
         apps__indexerapp_timereference__include = True
+        apps__indexerapp_useropenaiapikey__include = True
         apps__indexerapp_watermarks__include = True
         apps__indexerapp_binding_authors__include = True
         apps__indexerapp_calendar_authors__include = True
@@ -96,6 +112,12 @@ class IommiAdmin(Admin):
         apps__indexerapp_watermarks_authors__include = True 
 
 
+    @staticmethod
+    def has_permission(request, operation, model=None, instance=None):
+        # This is the default implementation
+        return request.user.is_staff
+
+
 router = routers.DefaultRouter()
 router.register(r'content', views.ContentViewSet)
 router.register(r'hands', views.ManuscriptHandsViewSet, basename='hands')
@@ -107,6 +129,13 @@ urlpatterns = [
     path('', views.Index.as_view(), name='index'),
     path('ms/', views.manuscript, name='manuscript'),
     path('login/', views.Login.as_view(), name='login'),
+    path('ajax_login/', views.AjaxLoginView.as_view(), name='ajax_login'),
+    path('logout/', views.LogoutView.as_view(), name='logout'),
+    path('ajax_register/', views.AjaxRegisterView.as_view(), name='ajax_register'),
+    path('ajax_change_password/', views.AjaxChangePasswordView.as_view(), name='ajax_change_password'),
+    path('get_api_key/', views.GetAPIKeyView.as_view(), name='get_api_key'),
+    path('set_api_key/', views.SetAPIKeyView.as_view(), name='set_api_key'), 
+
     path('manuscripts/', views.ManuscriptsView.as_view(), name='manuscripts'),
     path('manuscripts/<int:pk>/', views.ManuscriptDetail.as_view(), name='manuscript-detail'),
     #path('autocomplete/', views.AutocompleteView.as_view(), name='content_autocomplete'),
@@ -118,6 +147,9 @@ urlpatterns = [
     path('rites-autocomplete/',views.RiteNamesAutocomplete.as_view(),name='rites-autocomplete'),
     path('manuscripts-autocomplete/',views.ManuscriptsAutocomplete.as_view(),name='manuscripts-autocomplete'),
     path('contributors-autocomplete/',views.ContributorsAutocomplete.as_view(),name='contributors-autocomplete'),
+
+    path('clla-provenance-autocomplete/',views.CllaProvenanceAutocomplete.as_view(),name='clla-provenance-autocomplete'),
+    path('clla-liturgical-genre-autocomplete/',views.CllaLiturgicalGenreAutocomplete.as_view(),name='clla-liturgical-genre-autocomplete'),
 
     path('ms-foreign-id-autocomplete/',views.MSForeignIdAutocomplete.as_view(),name='ms-foreign-id-autocomplete'),
     path('ms-contemporary-repository-place-autocomplete/',views.MSContemporaryRepositoryPlaceAutocomplete.as_view(),name='ms-contemporary-repository-place-autocomplete'),
@@ -135,7 +167,10 @@ urlpatterns = [
     path('binding-styles-autocomplete/',views.BindingStylesAutocomplete.as_view(),name='binding-styles-autocomplete'),
     path('binding-materials-autocomplete/',views.BindingMaterialsAutocomplete.as_view(),name='binding-materials-autocomplete'),
     path('bibliography-title-autocomplete/',views.BibliographyTitleAutocomplete.as_view(),name='bibliography-title-autocomplete'),
-    path('bibliography-author-autocomplete/',views.BibliographyAuthorAutocomplete.as_view(),name='colours-autocomplete'),
+    path('bibliography-author-autocomplete/',views.BibliographyAuthorAutocomplete.as_view(),name='bibliography-author-autocomplete'),
+
+    path('ritenames-autocomplete/',views.RiteNamesAutocomplete.as_view(),name='ritenames-autocomplete'),
+    path('formulas-autocomplete/',views.FormulasAutocomplete.as_view(),name='formulas-autocomplete'),
 
 
     #ajax:
@@ -159,6 +194,10 @@ urlpatterns = [
 
     path('compare_graph/', views.contentCompareGraph.as_view(), name='compare_graph'),
     path('compare_edition_graph/', views.contentCompareEditionGraph.as_view(), name='compare_edition_graph'),
+    path('compare_edition_json/', views.contentCompareEditionJSON.as_view(), name='compare_edition_json'),
+    path('compare_formulas_json/', views.contentCompareJSON.as_view(), name='compare_formulas_json'),
+
+
     path('rites_lookup/', views.MSRitesLookupView.as_view(), name='rites_lookup'),
 
     
@@ -174,6 +213,7 @@ urlpatterns = [
     path('clla_import/', views.CllaImportView.as_view(), name='clla_import'),
 
     path('bibliography_export/', views.BibliographyExportView.as_view(), name="bibliography_export"),
+    path('bibliography_print/', views.BibliographyPrintView.as_view(), name="bibliography_print"),
 
     path('iommi-form-test/', Form.create(auto__model=Manuscripts).as_view()),
     path('iommi-table-test/', Table(auto__model=Content).as_view()),

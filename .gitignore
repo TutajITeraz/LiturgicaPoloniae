@@ -166,3 +166,5 @@ cython_debug/
 indexerapp/migrations/
 ritus_indexer/settings.py
 media/
+tailwindcss-linux-x64
+indexerapp/static/tailwindcss
