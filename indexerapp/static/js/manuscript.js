@@ -206,6 +206,7 @@ function init_layouts_table() {
         "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
         "pagingType": "full_numbers",
         "pageLength": 25,
+        "bAutoWidth": false, 
         "columns": [
             {
                 "data": "graph_img",
@@ -214,9 +215,9 @@ function init_layouts_table() {
                 /*"render": function (data, type, row, meta) {
                     return renderImg(data, type, row, meta);
                 }*/
-                "visible": false
+                "visible": false,
             },
-            { "data": "name", "title": "Name" },
+            { "data": "name", "title": "Name", "width": "5%" },
             { "data": "where_in_ms_from", "title": "Where in MS From", "visible": false },
             { "data": "where_in_ms_to", "title": "Where in MS To", "visible": false },
             {
@@ -238,9 +239,10 @@ function init_layouts_table() {
                     if (row.where_in_ms_from == row.where_in_ms_to || row.where_in_ms_to == '-')
                         return fromText;
                     return fromText + ' - ' + toText;
-                }
+                },
+                "width": "10%"
             },
-            { "data": "how_many_columns", "title": "How Many Columns" },
+            { "data": "how_many_columns", "title": "How Many Columns", "width": "10%" },
             { "data": "lines_per_page_minimum", "title": "Lines per Page (min)", "visible": false },
             { "data": "lines_per_page_maximum", "title": "Lines per Page (max)", "visible": false },
             {
@@ -252,7 +254,8 @@ function init_layouts_table() {
                     } else {
                         return row.lines_per_page_minimum + " - " + row.lines_per_page_maximum;
                     }
-                }
+                },
+                "width": "10%"
             },
             { "data": "written_space_height_max", "title": "Written space height (max)", "visible": false },
             { "data": "written_space_width_max", "title": "Written space width (max)", "visible": false },
@@ -261,15 +264,16 @@ function init_layouts_table() {
                 "title": "Writtern Space max. HxW",
                 "render": function (data, type, row, meta) {
                     return row.written_space_height_max + " mm x " + row.written_space_width_max + " mm";
-                }
+                }, 
+                "width": "10%"
             },
-            { "data": "ruling_method", "title": "Ruling method" },
-            { "data": "distance_between_horizontal_ruling", "title": "Distance between horizontal ruling" },
-            { "data": "distance_between_vertical_ruling", "title": "Distance between vertical ruling" },
+            { "data": "ruling_method", "title": "Ruling method", "width": "10%" },
+            { "data": "distance_between_horizontal_ruling", "title": "Distance between horizontal ruling", "width": "5%" },
+            { "data": "distance_between_vertical_ruling", "title": "Distance between vertical ruling", "width": "5%" },
 
-            { "data": "written_above_the_top_line", "title": "Written above the top line" },
-            { "data": "pricking", "title": "Pricking" },
-            { "data": "comments", "title": "Comments" },
+            { "data": "written_above_the_top_line", "title": "Written above the top line", "width": "10%" },
+            { "data": "pricking", "title": "Pricking", "width": "5%" },
+            { "data": "comments", "title": "Comments", "width": "15%" },
             { "data": "authors", "title": "Authors", "visible": false },
             { "data": "data_contributor", "title": "Data contributor", "visible": false },
         ],
@@ -323,9 +327,10 @@ function init_music_table() {
                 return data.data;
             }
         },
+        "bAutoWidth": false, 
         "columns": [
-            { "data": "music_notation_name", "title": "Music Notation Name" },
-            { "data": "sequence_in_ms", "title": "Sequence in MS" },
+            { "data": "music_notation_name", "title": "Music Notation Name", "width": "13%" },
+            { "data": "sequence_in_ms", "title": "Sequence in MS", "width": "5%" },
             { "data": "where_in_ms_from", "title": "Where in MS From", "visible": false },
             { "data": "where_in_ms_to", "title": "Where in MS To", "visible": false },
             {
@@ -347,14 +352,14 @@ function init_music_table() {
                     if (row.where_in_ms_from == row.where_in_ms_to || row.where_in_ms_to == '-')
                         return fromText;
                     return fromText + ' - ' + toText;
-                }
+                }, "width": "12%"
             },
-            { "data": "dating", "title": "Dating" },
-            { "data": "original", "title": "Original" },
-            { "data": "on_lines", "title": "On Lines" },
-            { "data": "music_custos", "title": "Music Custos" },
-            { "data": "number_of_lines", "title": "Number of Lines" },
-            { "data": "comment", "title": "Comment" },
+            { "data": "dating", "title": "Dating", "width": "15%" },
+            { "data": "original", "title": "Original", "width": "5%" },
+            { "data": "on_lines", "title": "On Lines", "width": "5%" },
+            { "data": "music_custos", "title": "Music Custos", "width": "5%" },
+            { "data": "number_of_lines", "title": "Number of Lines", "width": "5%" },
+            { "data": "comment", "title": "Comment", "width": "40%" },
             { "data": "authors", "title": "Authors", "visible": false },
             { "data": "data_contributor", "title": "Data contributor", "visible": false },
         ],
@@ -389,6 +394,7 @@ function init_content_table() {
         "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
         "pagingType": "full_numbers",
         "pageLength": 10,
+        "bAutoWidth": false, 
         "columns": [
             { "data": "manuscript", "title": "Manuscript ID", "visible": false },
             { "data": "manuscript_name", "title": "Manuscript", "visible": false },
@@ -413,14 +419,15 @@ function init_content_table() {
                     if (row.where_in_ms_from == row.where_in_ms_to || row.where_in_ms_to == '-')
                         return fromText;
                     return fromText + ' - ' + toText;
-                }
+                },
+                "width": "10%" 
             },
-            { "data": "rite_name_from_ms", "title": "Rite name from MS" },
-            { "data": "subsection", "title": "Subsection" },
-            { "data": "function", "title": "Function / Genre" },
-            { "data": "subfunction", "title": "Subgenre" },
-            { "data": "biblical_reference", "title": "Biblical reference" },
-            { "data": "formula_standarized", "title": "Formula (standarized)" },
+            { "data": "rite_name_from_ms", "title": "Rite name from MS", "width": "20%" },
+            { "data": "subsection", "title": "Subsection", "width": "20%"  },
+            { "data": "function", "title": "Function / Genre", "width": "10%"  },
+            { "data": "subfunction", "title": "Subgenre", "width": "10%"  },
+            { "data": "biblical_reference", "title": "Biblical reference", "width": "10%"  },
+            { "data": "formula_standarized", "title": "Formula (standarized)", "width": "40%"  },
             {
                 "data": "formula_text",
                 "title": "Formula (text from MS)",
@@ -428,7 +435,8 @@ function init_content_table() {
                     if (row.music_notation != "-")
                         return row.formula_text + ' (♪)';
                     return row.formula_text;
-                },
+                }, 
+                "width": "40%"
             },
             {
                 "data": "similarity_levenshtein_percent",
@@ -444,15 +452,16 @@ function init_content_table() {
                     else
                         $(td).css("color", "#a66b00");
                 },
+                "width": '60px'
             },
-            { "data": "similarity_by_user", "title": "Similarity (by user)" },
+            { "data": "similarity_by_user", "title": "Similarity (by user)", "width": "5%"  },
             { "data": "original_or_added", "title": "Original or Added", "visible": false },
-            { "data": "quire", "title": "Quire" },
+            { "data": "quire", "title": "Quire", "width": "5%"  },
 
             { "data": "music_notation", "title": "Music Notation", "visible": false },
             { "data": "sequence_in_ms", "title": "Sequence in MS", "visible": false },
             { "data": "original_or_added", "title": "Original or Added", "visible": false },
-            { "data": "proper_texts", "title": "Proper texts" },
+            { "data": "proper_texts", "title": "Proper texts", "width": "5%"  },
 
             { "data": "authors", "title": "Authors", "visible": false },
             { "data": "data_contributor", "title": "Data contributor", "visible": false },
@@ -522,6 +531,7 @@ function init_quires_table() {
         "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
         "pagingType": "full_numbers",
         "pageLength": 25,
+        "bAutoWidth": false, 
         "columns": [
             {
                 "data": "graph_img",
@@ -529,10 +539,11 @@ function init_quires_table() {
                 "title": "Image",
                 "render": function (data, type, row, meta) {
                     return renderImg(data, type, row, meta);
-                }
+                }, 
+                "width": "20%"
             },
-            { "data": "type_of_the_quire", "title": "Quire type" },
-            { "data": "sequence_of_the_quire", "title": "Sequence in MS" },
+            { "data": "type_of_the_quire", "title": "Quire type", "width": "15%" },
+            { "data": "sequence_of_the_quire", "title": "Sequence in MS", "width": "10%" },
             { "data": "where_in_ms_from", "title": "Where in MS (from)", "visible": false },
             { "data": "where_in_ms_to", "title": "Where in MS (to)", "visible": false },
             {
@@ -554,9 +565,10 @@ function init_quires_table() {
                     if (row.where_in_ms_from == row.where_in_ms_to || row.where_in_ms_to == '-')
                         return fromText;
                     return fromText + ' - ' + toText;
-                }
+                },
+                "width": "15%"
             },
-            { "data": "comment", "title": "Comment" },
+            { "data": "comment", "title": "Comment", "width": "40%" },
             { "data": "authors", "title": "Authors", "visible": false },
             { "data": "data_contributor", "title": "Data contributor", "visible": false }
         ],
@@ -701,11 +713,12 @@ function init_origins_table() {
                 return data.data;
             }
         },
+        "bAutoWidth": false, 
         "columns": [
             { "data": "id", "title": "id"  , "visible": false },
-            { "data": "origins_date", "title": "Origins date" },
-            { "data": "origins_place", "title": "Origins place" },
-            { "data": "origins_comment", "title": "Origins comment" },
+            { "data": "origins_date", "title": "Origins date", "width": "10%" },
+            { "data": "origins_place", "title": "Origins place", "width": "30%"  },
+            { "data": "origins_comment", "title": "Origins comment", "width": "60%"  },
             { "data": "provenance_comments", "title": "Provenance comments", "visible": false },
             { "data": "authors", "title": "Authors", "visible": false },
             { "data": "data_contributor", "title": "Data contributor", "visible": false }
@@ -791,10 +804,11 @@ function init_main_hands() {
         "lengthMenu": [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"] ],
         "pagingType": "full_numbers",
         "pageLength": 25,
+        "bAutoWidth": false, 
         "columns": [
-            { "data": "hand", "title": "hand" },
-            { "data": "script_name", "title": "script name" },
-            { "data": "sequence_in_ms", "title": "sequence in ms" },
+            { "data": "hand", "title": "hand", "width": "15%" },
+            { "data": "script_name", "title": "script name", "width": "15%" },
+            { "data": "sequence_in_ms", "title": "sequence in ms", "width": "15%" },
             { "data": "where_in_ms_from", "title": "Where in MS (from)", "visible": false },
             { "data": "where_in_ms_to", "title": "Where in MS (to)", "visible": false },
             {
@@ -816,11 +830,12 @@ function init_main_hands() {
                     if (row.where_in_ms_from == row.where_in_ms_to || row.where_in_ms_to == '-')
                         return fromText;
                     return fromText + ' - ' + toText;
-                }
+                }, 
+                "width": "15%"
             },
             { "data": "is_medieval", "title": "is medieval?", "visible": false },
             { "data": "is_main_text", "name": "is_main_text", "title": "is main text?", "visible": false },
-            { "data": "comment", "title": "comment" },
+            { "data": "comment", "title": "comment", "width": "40%" },
             { "data": "authors", "title": "authors", "visible": false },
             { "data": "data_contributor", "title": "data contributor", "visible": false },
         ],
@@ -873,10 +888,11 @@ function init_additions_hands() {
         "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
         "pagingType": "full_numbers",
         "pageLength": 25,
+        "bAutoWidth": false, 
         "columns": [
-            { "data": "hand", "title": "hand" },
-            { "data": "script_name", "title": "script name" },
-            { "data": "sequence_in_ms", "title": "sequence in ms" },
+            { "data": "hand", "title": "hand", "width": "15%" },
+            { "data": "script_name", "title": "script name", "width": "15%" },
+            { "data": "sequence_in_ms", "title": "sequence in ms", "width": "15%" },
             { "data": "where_in_ms_from", "title": "Where in MS (from)", "visible": false },
             { "data": "where_in_ms_to", "title": "Where in MS (to)", "visible": false },
             {
@@ -898,11 +914,12 @@ function init_additions_hands() {
                     if (row.where_in_ms_from == row.where_in_ms_to || row.where_in_ms_to == '-')
                         return fromText;
                     return fromText + ' - ' + toText;
-                }
+                },
+                "width": "15%"
             },
             { "data": "is_medieval", "title": "is medieval?", "visible": false },
             { "data": "is_main_text", "name": "is_main_text", "title": "is main text?", "visible": false },
-            { "data": "comment", "title": "comment" },
+            { "data": "comment", "title": "comment", "width": "40%" },
             { "data": "authors", "title": "authors", "visible": false },
             { "data": "data_contributor", "title": "data contributor", "visible": false },
         ],
@@ -935,19 +952,21 @@ function init_watermarks_table() {
                 return data.data;
             }
         },
+        "bAutoWidth": false, 
         "columns": [
-            { "data": "name", "title": "name" },
+            { "data": "name", "title": "name", "width": "20%" },
             {
                 "data": "watermark_img",
                 "name": "watermark_img",
                 "title": "image",
                 "render": function (data, type, row, meta) {
                     return renderImg(data, type, row, meta);
-                }
+                },
+                "width": "20%" 
             },
-            { "data": "where_in_manuscript", "title": "where in MS" },
-            { "data": "external_id", "title": "external id" },
-            { "data": "comment", "title": "comment" },
+            { "data": "where_in_manuscript", "title": "where in MS", "width": "10%" },
+            { "data": "external_id", "title": "external id" , "width": "10%"},
+            { "data": "comment", "title": "comment", "width": "40%" },
             { "data": "authors", "title": "authors", "visible": false },
             { "data": "data_contributor", "title": "data contributor", "visible": false },
         ],
@@ -985,11 +1004,11 @@ function init_provenance_table() {
                         return row.date_from;
                     return row.date_from + ' - ' + row.date_to;
                 },
-                "width": '150px',
+                "width": '10%',
             },
-            { "data": "place", "title": "Place" },
+            { "data": "place", "title": "Place", "width": '30%' },
             { "data": "timeline_sequence", "title": "timeline_sequence", "visible": false },
-            { "data": "comment", "title": "comment" },
+            { "data": "comment", "title": "comment", "width": '60%' },
             { "data": "authors", "title": "authors", "visible": false },
             { "data": "data_contributor", "title": "data contributor", "visible": false },
         ],
@@ -1020,10 +1039,11 @@ function init_bibliography_table() {
         "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
         "pagingType": "full_numbers",
         "pageLength": 10,
+        "bAutoWidth": false, 
         "columns": [
-            { "data": "title", "title": "Title" },
-            { "data": "author", "title": "Author" },
-            { "data": "year", "title": "Year" }
+            { "data": "title", "title": "Title", "width": "70%"  },
+            { "data": "author", "title": "Author", "width": "20%" },
+            { "data": "year", "title": "Year", "width": "10%" }
         ]
     });
 }

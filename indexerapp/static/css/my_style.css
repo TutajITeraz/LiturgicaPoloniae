@@ -848,3 +848,8 @@ div.dt-container .dt-search input {
 h4 {
     font-size: 16pt !important;
 }
+
+th {
+    word-wrap: break-word; 
+    white-space: normal; /* Needed for word-wrap to work */
+  }
