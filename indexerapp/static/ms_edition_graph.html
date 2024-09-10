@@ -1,16 +1,17 @@
 
-<div x-init="ms_edition_graph_init()">
-    <h1>MS Edition Compare Graph</h1>
+<div x-init="ms_edition_graph_init()" class="px-2">
+    <h1 class="text-[#0d1b2a] text-[32px] sm:text-[40pt] caudex-bold text-left mt-4 mb-3">MS Edition Compare Graph</h1>
 
-    <label for="ms_select">Manuscripts:</label>
-    <select class="manuscript_filter" name="state" id="ms_select" multiple>
-    </select>
+    <div class="flex my-1 justify-center md:justify-normal">
+        <label for="ms_select">Manuscripts:</label>
+        <select class="manuscript_filter" name="state" id="ms_select" multiple>
+        </select>
 
-    <p>(you can choose multiple manuscripts!)</p>
+        <p>(you can choose multiple manuscripts!)</p>
 
-    
+    </div>
 
-    <div id="chart"></div>
+    <div id="chart" class="overflow-x-auto"></div>
 
 
 </div>

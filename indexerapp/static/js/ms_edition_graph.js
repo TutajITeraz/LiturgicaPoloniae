@@ -7,6 +7,29 @@ ms_edition_graph_init = function()
     let right = urlParams.get('right');
     */
 
+   function setTableHeight() {
+        var windowHeight = $(window).height();
+        var windowWidth = $(window).width();
+        // console.log('height: ', windowWidth);
+        if(windowWidth > 640){
+            var tableHeight = windowHeight - 400;
+        } else {
+            var tableHeight = windowHeight - 370;
+        }
+        
+        
+        $('#chart').css('height', tableHeight + 'px');
+    }
+    setTableHeight();
+
+    // Adjust height on window resize
+    $(window).resize(function() {
+        setTableHeight();
+    });
+
+ 
+
+
     $('.manuscript_filter').select2({
         ajax: {
             url: pageRoot+'/manuscripts-autocomplete/',

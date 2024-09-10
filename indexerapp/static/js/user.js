@@ -3,7 +3,28 @@ user_init = function()
     console.log('assistant');
     fetchAiApiKey();
 
+    function setTableHeight() {
+        var windowHeight = $(window).height();
+        var windowWidth = $(window).width();
+        // console.log('height: ', windowWidth);
+        if(windowWidth > 640){
+            var tableHeight = windowHeight - 250;
+        } else {
+            var tableHeight = windowHeight - 220;
+        }
+        
+        
+        $('#user').css('height', tableHeight + 'px');
+    }
+    setTableHeight();
+
+    // Adjust height on window resize
+    $(window).resize(function() {
+        setTableHeight();
+    });
+
 }
+
 
 
 function fetchAiApiKey() {

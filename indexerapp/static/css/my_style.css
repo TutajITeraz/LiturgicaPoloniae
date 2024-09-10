@@ -277,7 +277,7 @@ table tr {
 
 table td {
     color: #0d1b2a;
-    height: 220px;
+    /*height: 220px;*/
     border-bottom: none !important;
 }
 

@@ -1,6 +1,7 @@
 assistant_init = function()
 {
     console.log('assistant');
+    setTableHeight();
 
 }
 

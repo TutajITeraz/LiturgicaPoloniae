@@ -1,15 +1,17 @@
 
 <div id="user" x-init="user_init()" class="px-2">
-    <div class="flex justify-between items-center">
-        <h1 class="text-[#0d1b2a] text-[32px] sm:text-[40pt] caudex-bold text-left mt-4 mb-3">User Info</h1>
+
+    <h1 class="text-[#0d1b2a] text-[32px] sm:text-[40pt] caudex-bold text-left mt-4 mb-3">User Info</h1>
+
+    
+    <div class="flex items-center">
+        <p class="text-[16pt] text-red-500 py-2 mb-3 mr-10">Login: <strong x-text="getUsername()"></strong></p>
         <a class="py-2 text-white font-semibold shadow drop-shadow-md bg-red-700 rounded w-[200px] hover:bg-red-800 text-center" type="button" x-bind:href="pageRoot+'/logout/'">Logout</a>
     </div>
     
-    <p class="text-lg text-red-500 py-2 mb-3">Login: <strong x-text="getUsername()"></strong></p>
-    
     <div class="flex flex-col sm:grid sm:grid-cols-2 gap-3 px-4">
         <div class="flex flex-col">
-            <h2 class="text-[#0d1b2a] text-base caudex-bold text-left mb-5">AI Assistant settings</h2>
+            <h2 class="text-[16pt] text-[#0d1b2a] text-base caudex-bold text-left mb-5">AI Assistant settings</h2>
             <div>
                 <label for="ai_api_key" class="block mb-2 text-sm font-medium text-gray-900">OpenAI API Key</label>
                 <input type="text" name="ai_api_key" id="ai_api_key" class="p-[5px] border border-gray-300 rounded" placeholder="API Key" />
@@ -17,7 +19,7 @@
             <a class="py-2 text-[#0d1b2a] font-semibold shadow drop-shadow-md bg-[#e8d3c3] rounded w-[200px] hover:bg-[#dec5b2] text-center mt-7" type="button" href="#" onclick="saveAiApiKey()">Save</a>
         </div>
         <div class="flex flex-col mt-10 sm:mt-0">
-            <h2 class="text-[#0d1b2a] text-base caudex-bold text-left mb-5">Change password</h2>
+            <h2 class="text-[16pt] text-[#0d1b2a] text-base caudex-bold text-left mb-5">Change password</h2>
             <div id="error" class="error text-red-700"></div>
             <div>
                 <label for="new_password" class="block mb-2 text-sm font-medium text-gray-900">New Password</label>
@@ -31,10 +33,12 @@
         </div>
     </div>
 
+    <!--
     <h2>Logout</h2>
     <div style="padding-left: 40px;">
         <a class="action_button" type="button" x-bind:href="pageRoot+'/logout/'">Logout</a>
 
     </div>
-
+    -->
+    
 </div>

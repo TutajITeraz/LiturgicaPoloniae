@@ -810,6 +810,10 @@ video {
   margin-bottom: 1.5rem;
 }
 
+.mr-10 {
+  margin-right: 2.5rem;
+}
+
 .block {
   display: block;
 }
