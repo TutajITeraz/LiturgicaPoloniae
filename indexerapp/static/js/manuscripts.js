@@ -25,7 +25,7 @@ manuscripts_init = function()
 
     $('#ms_name_select').select2({
         ajax: {
-            url: pageRoot+'/manuscripts-autocomplete/',
+            url: pageRoot+'/manuscripts-autocomplete-main/?project_id='+projectId,
             dataType: 'json',
             xhrFields: {
                 withCredentials: true
@@ -40,7 +40,7 @@ manuscripts_init = function()
 
     $('#ms_foreign_id_select').select2({
         ajax: {
-            url: pageRoot+'/ms-foreign-id-autocomplete/',
+            url: pageRoot+'/ms-foreign-id-autocomplete/?project_id='+projectId,
             dataType: 'json',
             xhrFields: {
                 withCredentials: true
@@ -73,7 +73,7 @@ manuscripts_init = function()
     // ms_shelfmark_select 'ms-shelf-mark-autocomplete/
     $('#ms_shelfmark_select').select2({
         ajax: {
-            url: pageRoot+'/ms-shelf-mark-autocomplete/',
+            url: pageRoot+'/ms-shelf-mark-autocomplete/?project_id='+projectId,
             dataType: 'json',
             xhrFields: {
                 withCredentials: true
@@ -557,8 +557,8 @@ manuscripts_init = function()
     $('#foliation').on( "change", processFilters );
     $('#pagination').on( "change", processFilters );
 
-    $('#display_as_main_true').on( "change", processFilters );
-    $('#display_as_main_false').on( "change", processFilters );
+    //$('#display_as_main_true').on( "change", processFilters );
+    //$('#display_as_main_false').on( "change", processFilters );
 
     $('#paper_leafs_true').on("change", processFilters);
     $('#parchment_thickness_min').on("change", processFilters);
@@ -741,8 +741,8 @@ manuscripts_init = function()
         d.rite_name_from_ms = $('#rite_name_from_ms').val();
         //d.clla_no = $('#clla_no').val();
 
-        d.display_as_main_true = $('#display_as_main_true').is(':checked');
-        d.display_as_main_false = $('#display_as_main_false').is(':checked');
+        //d.display_as_main_true = $('#display_as_main_true').is(':checked');
+        //d.display_as_main_false = $('#display_as_main_false').is(':checked');
 
         d.projectId = projectId;
     }

@@ -264,7 +264,7 @@ content_init = function()
 
     $('.manuscript_filter').select2({
         ajax: {
-            url: pageRoot+'/manuscripts-autocomplete/',
+            url: pageRoot+'/manuscripts-autocomplete-main/?project_id='+projectId,
             dataType: 'json',
             xhrFields: {
                 withCredentials: true

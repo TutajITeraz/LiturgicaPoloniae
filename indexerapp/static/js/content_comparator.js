@@ -298,7 +298,7 @@ content_comparator_init = function()
 
     $('.manuscript_filter_left').select2({
         ajax: {
-            url: pageRoot+'/manuscripts-autocomplete/',
+            url: pageRoot+'/manuscripts-autocomplete-main/?project_id='+projectId,
             dataType: 'json',
             xhrFields: {
                 withCredentials: true
@@ -541,7 +541,7 @@ content_comparator_init = function()
 
     $('.manuscript_filter_right').select2({
         ajax: {
-            url: pageRoot+'/manuscripts-autocomplete/',
+            url: pageRoot+'/manuscripts-autocomplete-main/?project_id='+projectId,
             dataType: 'json',
             xhrFields: {
                 withCredentials: true

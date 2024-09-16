@@ -19,7 +19,7 @@ else if(loc == "http://127.0.0.1")
 else if(loc == "https://indexer.rebold.hostline.net.pl")
 {
   pageRoot="https://indexer.rebold.hostline.net.pl";
-  projectId=0;//All
+  projectId=2;//All
 }
 else if(loc == "https://lp.hostline.net.pl")
 {

@@ -479,6 +479,9 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
         if projectId != 0:
             queryset = queryset.filter(ms_projects__project__id=projectId)
 
+        #Always only main
+        queryset = queryset.filter(display_as_main=True)
+
         
         #Main search
         search_value = self.request.GET.get('search[value]', None)
@@ -718,10 +721,12 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
         if conservation_true and not conservation_false:
             queryset = queryset.filter(ms_condition__conservation=True)
 
-        if display_as_main_false and not display_as_main_true:
-            queryset = queryset.exclude(display_as_main=True)
-        if display_as_main_true and not display_as_main_false:
-            queryset = queryset.filter(display_as_main=True)
+        #if display_as_main_false and not display_as_main_true:
+        #    queryset = queryset.exclude(display_as_main=True)
+        #if display_as_main_true and not display_as_main_false:
+        #    queryset = queryset.filter(display_as_main=True)
+
+        
 
         #New min/max values:
         binding_height_min = self.request.query_params.get('binding_height_min')
@@ -1417,6 +1422,25 @@ class ContentAutocomplete(autocomplete.Select2QuerySetView):
 
         return qs
 
+class ManuscriptsAutocompleteMain(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # Don't forget to filter out results depending on the visitor !
+        if not self.request.user.is_authenticated:
+            return Manuscripts.objects.none()
+
+        qs = Manuscripts.objects.all()
+
+        projectId = self.request.GET.get('project_id', None)
+        if projectId:
+            qs = qs.filter(ms_projects__project__id=projectId)
+        qs = qs.filter(display_as_main=True)
+
+
+        if self.q:
+            qs = qs.filter(name__icontains=self.q)
+
+        return qs
+
 class ManuscriptsAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         # Don't forget to filter out results depending on the visitor !
@@ -1471,6 +1495,12 @@ class MSForeignIdAutocomplete(autocomplete.Select2QuerySetView):
         # Pobierz unikalne wartości pola foreign_id, które nie są puste
         qs = Manuscripts.objects.exclude(foreign_id__isnull=True).exclude(foreign_id__exact='').values('foreign_id').distinct()
 
+        projectId = self.request.GET.get('project_id', None)
+        if projectId:
+            qs = qs.filter(ms_projects__project__id=projectId)
+        qs = qs.filter(display_as_main=True)
+
+
         # Filtruj wyniki na podstawie wartości wprowadzonej przez użytkownika
         if self.q:
             qs = qs.filter(foreign_id__icontains=self.q)
@@ -1487,6 +1517,11 @@ class MSShelfMarkAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         # Pobierz unikalne wartości pola foreign_id, które nie są puste
         qs = Manuscripts.objects.exclude(shelf_mark__isnull=True).exclude(shelf_mark__exact='').values('shelf_mark').distinct()
+
+        projectId = self.request.GET.get('project_id', None)
+        if projectId:
+            qs = qs.filter(ms_projects__project__id=projectId)
+        qs = qs.filter(display_as_main=True)
 
         # Filtruj wyniki na podstawie wartości wprowadzonej przez użytkownika
         if self.q:
