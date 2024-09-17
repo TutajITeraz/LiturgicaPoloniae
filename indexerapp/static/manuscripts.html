@@ -58,13 +58,17 @@
                                     style="width: 50% !important;"> </select>
                             </div>
                             <div class="flex mx-3 my-1">
-                                <h2 class="w-1/2 flex items-center">Place of origins</h2>
+                                <h2 class="w-1/2 flex items-center">Origin</h2>
                                 <select class="manuscript_filter"
                                     id="ms_place_of_origins_select" 
                                     style="width: 50% !important;"></select>
                             </div>
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Provenance</h2>
+                                <select class="manuscript_filter w-1/2" id="provenance_place_select" multiple style="width: 50% !important;"></select>
+                            </div>
                             <div class="flex mx-3 my-1">
-                                <h2 class="w-1/2 flex items-center">Dating (Ages)</h2>
+                                <h2 class="w-1/2 flex items-center">Dating by centirues</h2>
                                 <div class="flex w-1/2">
                                     <div class="range_input">
                                         <label class="top_level_label range_label" for="ms_dating_min">min.</label>
@@ -77,7 +81,7 @@
                                 </div>
                             </div>
                             <div class="flex mx-3 my-1">
-                                <h2 class="w-1/2 flex items-center">Dating (Years)</h2>
+                                <h2 class="w-1/2 flex items-center">Dating by years</h2>
                                 <div class="flex w-1/2">
                                     <div class="range_input">
                                         <label class="top_level_label range_label" for="ms_dating_years_min">min.</label>
@@ -222,15 +226,28 @@
                                 <select class="manuscript_filter w-1/2" id="parchment_colour_select" style="width: 50% !important;"></select>
                             </div>
                             <div class="flex mx-3 my-1">
-                                <h2 class="w-1/2 flex items-center">Page size (longer edge)</h2>
+                                <h2 class="w-1/2 flex items-center">Page width</h2>
                                 <div class="flex w-1/2">
                                     <div class="range_input">
-                                        <label class="top_level_label range_label" for="page_size_wh_min">min.</label>
-                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="page_size_wh_min" min="0" max="1000" />
+                                        <label class="top_level_label range_label" for="page_size_w_min">min.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="page_size_w_min" min="0" max="1000" />
                                     </div>
                                     <div class="range_input ml-2">
-                                        <label class="top_level_label range_label" for="page_size_wh_max">max.</label>
-                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="page_size_wh_max" min="0" max="1000" />
+                                        <label class="top_level_label range_label" for="page_size_w_max">max.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="page_size_w_max" min="0" max="1000" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Page height</h2>
+                                <div class="flex w-1/2">
+                                    <div class="range_input">
+                                        <label class="top_level_label range_label" for="page_size_h_min">min.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="page_size_h_min" min="0" max="1000" />
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <label class="top_level_label range_label" for="page_size_h_max">max.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="page_size_h_max" min="0" max="1000" />
                                     </div>
                                 </div>
                             </div>
@@ -238,6 +255,7 @@
                                 <h2 class="w-1/2 flex items-center">Main script</h2>
                                 <select class="manuscript_filter w-1/2" id="main_script_select" style="width: 50% !important;"></select>
                             </div>
+                            <!--
                             <div class="flex mx-3 my-1">
                                 <h2 class="w-1/2 flex items-center">How many columns</h2>
                                 <div class="flex w-1/2">
@@ -249,8 +267,25 @@
                                         <label class="top_level_label range_label" for="ms_how_many_columns_max">max.</label>
                                         <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="ms_how_many_columns_max" min="0" max="1000" />
                                     </div>
+                                    
                                 </div>
                             </div>
+                            -->
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">How many columns</h2>
+                                <div class="flex my-1 w-1/2">
+                                    <div class="range_input">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="ms_how_many_columns1" name="ms_how_many_columns1" value="true" checked> <label for="ms_how_many_columns1">1</label>
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="ms_how_many_columns2" name="ms_how_many_columns2" value="true" checked> <label for="ms_how_many_columns2">2</label>
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="ms_how_many_columns3" name="ms_how_many_columns3" value="true" checked> <label for="ms_how_many_columns3">3</label>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="flex mx-3 mt-1 mb-2">
                                 <h2 class="w-1/2 flex items-center">Watermarks</h2>
                                 <div class="flex my-1 w-1/2">
@@ -319,11 +354,11 @@
                             x-transition:leave-start="transform opacity-100 scale-100"
                             x-transition:leave-end="transform opacity-0 scale-90">
                             <div class="flex mx-3 mt-1 mb-2">
-                                <h2 class="w-1/2 flex items-center">Script name</h2>
+                                <h2 class="w-1/2 flex items-center">Script type</h2>
                                 <select class="manuscript_filter w-1/2" id="script_name_select" style="width: 50% !important;"> </select>
                             </div>
                             <div class="flex mx-3 my-1">
-                                <h2 class="w-1/2 flex items-center">Contains additions</h2>
+                                <h2 class="w-1/2 flex items-center">Later hands</h2>
                                 <div class="flex my-1 w-1/2">
                                     <div class="range_input">
                                         <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="is_main_text_false" name="is_main_text_false" value="true" checked> <label for="is_main_text_false">Yes</label>
@@ -367,6 +402,7 @@
                             x-transition:leave="transition ease-in duration-400"
                             x-transition:leave-start="transform opacity-100 scale-100"
                             x-transition:leave-end="transform opacity-0 scale-90">
+                            <!--
                             <div class="flex mx-3 my-1">
                                 <h2 class="w-1/2 flex items-center">Distance between horizontal ruling</h2>
                                 <div class="flex w-1/2">
@@ -393,8 +429,9 @@
                                     </div>
                                 </div>
                             </div>
+                            -->
                             <div class="flex mx-3 my-1">
-                                <h2 class="w-1/2 flex items-center">Lines per page</h2>
+                                <h2 class="w-1/2 flex items-center">Lines / stakes per page</h2>
                                 <div class="flex w-1/2">
                                     <div class="range_input">
                                         <label class="top_level_label range_label" for="ms_lines_per_page_min">min.</label>
@@ -446,7 +483,7 @@
                                 </select>
                             </div>
                             <div class="flex mx-3 my-1">
-                                <h2 class="w-1/2 flex items-center">Written above top line</h2>
+                                <h2 class="w-1/2 flex items-center">Written above the top line</h2>
                                 <div class="flex my-1 w-1/2">
                                     <div class="range_input">
                                         <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="written_above_the_top_line_true" name="written_above_the_top_line_true" value="true" checked> <label for="written_above_the_top_line_true">Yes</label>
@@ -526,7 +563,7 @@
                                 </div>
                             </div>
                             <div class="flex mx-3 my-1">
-                                <h2 class="w-1/2 flex items-center">Binding Date (Ages)</h2>
+                                <h2 class="w-1/2 flex items-center">Binding Date by centuries</h2>
                                 <div class="flex w-1/2">
                                     <div class="range_input">
                                         <label class="top_level_label range_label" for="ms_binding_date_min">min.</label>
@@ -539,7 +576,7 @@
                                 </div>
                             </div>
                             <div class="flex mx-3 mt-1 mb-2">
-                                <h2 class="w-1/2 flex items-center">Place of origin</h2>
+                                <h2 class="w-1/2 flex items-center">Origin</h2>
                                 <select class="manuscript_filter w-1/2" id="binding_place_of_origin_select" style="width: 50% !important;"></select>
                             </div>
                             <div class="flex mx-3 mt-1 mb-2">
@@ -702,30 +739,29 @@
                             </div>
                         </div>
                     </li>
-                    <li x-data="{ province: false }"
-                        @click.away="province = false"
+                    <li x-data="{ decoration: false }"
+                        @click.away="decoration = false"
                         class="md:relative items-center justify-center xl:mb-0 flex">
-                        <button @click="province = !province"
+                        <button @click="decoration = !decoration"
                             id="mega-menu-icons-dropdown-button"
                             data-dropdown-toggle="mega-menu-icons-dropdown"
-                            :class="province ? 'text-[#0d1b2a] underline' : 'hover:underline hover:text-[#070e16]'"
+                            :class="decoration ? 'text-[#0d1b2a] underline' : 'hover:underline hover:text-[#070e16]'"
                             class="w-full h-full text-center young-serif text-[10px] sm:text-xs md:text-[8pt] uppercase">
-                            Provenance
+                            Decoration
 
                         </button>
                         <div id="mega-menu-icons-dropdown"
                             class="absolute flex flex-col z-10 w-full md:w-[28rem] top-[60px] md:top-[30px] text-xs md:text-sm text-[#0d1b2a] bg-[#fef9f6] border border-gray-200 rounded shadow-md left-0 md:right-0 md:left-auto"
-                            x-show="province"
+                            x-show="decoration"
                             x-transition:enter="transition ease-out duration-400"
                             x-transition:enter-start="transform opacity-0 scale-90"
                             x-transition:enter-end="transform opacity-100 scale-100"
                             x-transition:leave="transition ease-in duration-400"
                             x-transition:leave-start="transform opacity-100 scale-100"
                             x-transition:leave-end="transform opacity-0 scale-90">
-                            <div class="flex mx-3 mt-1 mb-2">
-                                <h2 class="w-1/2 flex items-center">Provenance place</h2>
-                                <select class="manuscript_filter w-1/2" id="provenance_place_select" multiple style="width: 50% !important;"></select>
-                            </div>
+
+
+
                         </div>
                     </li>
                     <li x-data="{ bib: false }" @click.away="bib = false"

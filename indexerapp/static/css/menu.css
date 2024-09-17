@@ -304,6 +304,7 @@ input[type="checkbox"]:checked::after {
 
 .subPage {
 	height: 100%;
+	min-height: calc(100vh - 255px - 48px);
 	max-height: calc(100% - 10px);
 }
 

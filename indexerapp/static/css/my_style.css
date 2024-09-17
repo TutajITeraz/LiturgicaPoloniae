@@ -728,6 +728,8 @@ input[type=password] {
 .decorated_right {
     text-align: left;
     color: #2e2e2e;
+    min-width: 120px;
+    display: inline-block;
 }
 
 .dt-info {

@@ -664,6 +664,10 @@ video {
   z-index: 9999;
 }
 
+.z-\[9\] {
+  z-index: 9;
+}
+
 .order-1 {
   order: 1;
 }
@@ -726,12 +730,12 @@ video {
   margin-bottom: 1.25rem;
 }
 
-.mb-8 {
-  margin-bottom: 2rem;
+.mb-6 {
+  margin-bottom: 1.5rem;
 }
 
-.mb-9 {
-  margin-bottom: 2.25rem;
+.mb-8 {
+  margin-bottom: 2rem;
 }
 
 .mb-\[1px\] {
@@ -760,6 +764,10 @@ video {
 
 .mr-1 {
   margin-right: 0.25rem;
+}
+
+.mr-10 {
+  margin-right: 2.5rem;
 }
 
 .mr-5 {
@@ -804,14 +812,6 @@ video {
 
 .mt-auto {
   margin-top: auto;
-}
-
-.mb-6 {
-  margin-bottom: 1.5rem;
-}
-
-.mr-10 {
-  margin-right: 2.5rem;
 }
 
 .block {
@@ -910,12 +910,12 @@ video {
   width: 100%;
 }
 
-.max-w-20 {
-  max-width: 5rem;
+.w-1\/3 {
+  width: 33.333333%;
 }
 
-.max-w-3xl {
-  max-width: 48rem;
+.max-w-20 {
+  max-width: 5rem;
 }
 
 .max-w-5xl {
@@ -970,10 +970,6 @@ video {
 
 .list-inside {
   list-style-position: inside;
-}
-
-.list-decimal {
-  list-style-type: decimal;
 }
 
 .list-disc {
@@ -1060,14 +1056,6 @@ video {
 .divide-\[\#d20000\] > :not([hidden]) ~ :not([hidden]) {
   --tw-divide-opacity: 1;
   border-color: rgb(210 0 0 / var(--tw-divide-opacity));
-}
-
-.justify-self-auto {
-  justify-self: auto;
-}
-
-.justify-self-center {
-  justify-self: center;
 }
 
 .overflow-x-auto {
@@ -1160,11 +1148,6 @@ video {
 .bg-\[\#F2EDE8\] {
   --tw-bg-opacity: 1;
   background-color: rgb(242 237 232 / var(--tw-bg-opacity));
-}
-
-.bg-\[\#a14517\] {
-  --tw-bg-opacity: 1;
-  background-color: rgb(161 69 23 / var(--tw-bg-opacity));
 }
 
 .bg-\[\#b9987f\] {
@@ -1276,12 +1259,16 @@ video {
   font-size: 10px;
 }
 
+.text-\[16pt\] {
+  font-size: 16pt;
+}
+
 .text-\[16px\] {
   font-size: 16px;
 }
 
-.text-\[21px\] {
-  font-size: 21px;
+.text-\[20px\] {
+  font-size: 20px;
 }
 
 .text-\[32px\] {
@@ -1314,18 +1301,6 @@ video {
 .text-xs {
   font-size: 0.75rem;
   line-height: 1rem;
-}
-
-.text-\[20px\] {
-  font-size: 20px;
-}
-
-.text-\[20pt\] {
-  font-size: 20pt;
-}
-
-.text-\[16pt\] {
-  font-size: 16pt;
 }
 
 .font-medium {
@@ -1489,11 +1464,6 @@ video {
 
 .ease-out {
   transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
-}
-
-.hover\:bg-\[\#8e3b11\]:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(142 59 17 / var(--tw-bg-opacity));
 }
 
 .hover\:bg-\[\#997a62\]:hover {

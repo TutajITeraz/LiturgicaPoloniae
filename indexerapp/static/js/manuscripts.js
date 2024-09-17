@@ -530,8 +530,11 @@ manuscripts_init = function()
         });
     });
 
-    $('#ms_how_many_columns_min').on( "change", processFilters );
-    $('#ms_how_many_columns_max').on( "change", processFilters );
+    //$('#ms_how_many_columns_min').on( "change", processFilters );
+    //$('#ms_how_many_columns_max').on( "change", processFilters );
+    $('#ms_how_many_columns1').on( "change", processFilters );
+    $('#ms_how_many_columns2').on( "change", processFilters );
+    $('#ms_how_many_columns3').on( "change", processFilters );
     $('#ms_lines_per_page_min').on( "change", processFilters );
     $('#ms_lines_per_page_max').on( "change", processFilters );
     $('#ms_how_many_quires_min').on( "change", processFilters );
@@ -563,7 +566,8 @@ manuscripts_init = function()
     $('#paper_leafs_true').on("change", processFilters);
     $('#parchment_thickness_min').on("change", processFilters);
     $('#parchment_colour_select').on("change", processFilters);
-    $('#page_size_wh_min').on("change", processFilters);
+    $('#page_size_w_min').on("change", processFilters);
+    $('#page_size_h_min').on("change", processFilters);
     $('#main_script_select').on("change", processFilters);
     $('#watermarks_true').on("change", processFilters);
     $('#type_of_the_quire_select').on("change", processFilters);
@@ -604,7 +608,8 @@ manuscripts_init = function()
 
     $('#paper_leafs_false').on("change", processFilters);
     $('#parchment_thickness_max').on("change", processFilters);
-    $('#page_size_wh_max').on("change", processFilters);
+    $('#page_size_w_max').on("change", processFilters);
+    $('#page_size_h_max').on("change", processFilters);
     $('#watermarks_false').on("change", processFilters);
     $('#is_main_text_false').on("change", processFilters);
     $('#ms_how_many_hands_max').on("change", processFilters);
@@ -637,8 +642,9 @@ manuscripts_init = function()
         d.place_of_origins = $('#ms_place_of_origins_select').select2('data').map(item => item.id).join(';');
         //d.main_script = $('#ms_main_script_select').select2('data').map(item => item.id).join(';');
         //d.binding_date = $('#ms_binding_date_select').select2('data').map(item => item.id).join(';');
-        d.how_many_columns_min = $('#ms_how_many_columns_min').val();
-        d.how_many_columns_max = $('#ms_how_many_columns_max').val();
+        //d.how_many_columns_min = $('#ms_how_many_columns_min').val();
+        //d.how_many_columns_max = $('#ms_how_many_columns_max').val();
+        d.how_many_columns = [$('#ms_how_many_columns1').is(":checked") ? '1' : '', $('#ms_how_many_columns2').is(":checked") ? '2' : '', $('#ms_how_many_columns3').is(":checked") ? '3' : ''].filter(Boolean).join(';');
         d.lines_per_page_min = $('#ms_lines_per_page_min').val();
         d.lines_per_page_max = $('#ms_lines_per_page_max').val();
         d.how_many_quires_min = $('#ms_how_many_quires_min').val();
@@ -675,7 +681,8 @@ manuscripts_init = function()
         d.distance_between_horizontal_ruling_min = $('#distance_between_horizontal_ruling_min').val();
         d.distance_between_vertical_ruling_min = $('#distance_between_vertical_ruling_min').val();
         d.ms_how_many_hands_min = $('#ms_how_many_hands_min').val();
-        d.page_size_wh_min = $('#page_size_wh_min').val();
+        d.page_size_w_min = $('#page_size_w_min').val();
+        d.page_size_h_min = $('#page_size_h_min').val();
         d.parchment_thickness_min = $('#parchment_thickness_min').val();
         d.binding_height_max = $('#binding_height_max').val();
         d.binding_width_max = $('#binding_width_max').val();
@@ -684,9 +691,9 @@ manuscripts_init = function()
         d.distance_between_horizontal_ruling_max = $('#distance_between_horizontal_ruling_max').val();
         d.distance_between_vertical_ruling_max = $('#distance_between_vertical_ruling_max').val();
         d.ms_how_many_hands_max = $('#ms_how_many_hands_max').val();
-        d.page_size_wh_max = $('#page_size_wh_max').val();
+        d.page_size_w_max = $('#page_size_w_max').val();
+        d.page_size_h_max = $('#page_size_h_max').val();
         d.parchment_thickness_max = $('#parchment_thickness_max').val();
-        d.page_size_wh_max = $('#page_size_wh_max').val();
         d.block_size_min = $('#block_size_min').val();
         d.block_size_max = $('#block_size_max').val();
 
@@ -782,20 +789,33 @@ manuscripts_init = function()
             { 
                 "data": "name", "title": "Info",
                 "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
-                        let html = "<h3 class='ms_name'><a href=/static/page.html?p=manuscript&id="+oData.id+">"+oData.name+"</a></h3>"
-                        +"<div class='left_script_content'><div class='ms_foreign_id'>"+oData.foreign_id+"<span class='mspltext'> ("+foreign_id_name+")</span>, "+oData.shelf_mark+"<span class='mspltext'> (Shelf mark)</span></div>"
-                        +"<div class='ms_contemporary_repository_place'><b>Contemporary repository place:</b>"+oData.contemporary_repository_place+"</div>"
-                        +"<div class='ms_place_of_origins'><b>Place of origins:</b>"+oData.place_of_origins+"</div>"
-                        +"<div class='ms_main_script'><b>Main script:</b>"+oData.main_script+"</div>"
-                        +"<div class='ms_dating'><b>Dating:</b>"+oData.dating+"</div></div>"
-                        
-                        +"<div class='right_script_content'><div class='ms_decorated'><span class='decorated_left'>Decorated:</span><span class='decorated_right'>"+oData.decorated+"</span></div>"
-                        +"<div class='ms_music_notation'><span class='decorated_left'>Music notation:</span><span class='decorated_right'>"+oData.music_notation+"</span></div>"
-                        +"<div class='ms_binding_date'><span class='decorated_left'>Binding date:</span><span class='decorated_right'>"+oData.binding_date+"</span></div>"
+                        let html = "<h3 class='ms_name'><a href=/static/page.html?p=manuscript&id="+oData.id+">"+oData.rism_id+" "+oData.name+"</a></h3>"
+                        +"<div class='left_script_content'>"
+                            +"<div class='ms_foreign_id'><span class='mspltext'> "+oData.contemporary_repository_place+':</span> '+oData.foreign_id+"<span class='mspltext'> ("+foreign_id_name+")</span>, "+oData.shelf_mark+"<span class='mspltext'> (Shelf mark)</span></div>"
+                            /*+"<div class='ms_contemporary_repository_place'><b>Contemporary repository place: </b>"+oData.contemporary_repository_place+"</div>"*/
+                            +"<div class='ms_dating'><b>Dating: </b>"+oData.dating+"</div>"
+                            +"<div class='ms_place_of_origins'><b>Place of origins: </b>"+oData.place_of_origins+"</div>"
+                            
+                            +"<div class='ms_place_of_origins'><b>Medieval provenance: </b>"+oData.ms_provenance+"</div>"
+                        +"</div>"
 
-                        +"<div class='ms_how_many_columns_mostly'><span class='decorated_left'>How many columns (mostly):</span><span class='decorated_right'>"+oData.how_many_columns_mostly+"</span></div>"
-                        +"<div class='ms_lines_per_page_usually'><span class='decorated_left'>Lines per page usually:</span><span class='decorated_right'>"+oData.lines_per_page_usually+"</span></div>"
-                        +"<div class='ms_how_many_quires'><span class='decorated_left'>How many quires:</span><span class='decorated_right'>"+oData.how_many_quires+"</span></div></div>"
+                        /*+"<div class='ms_main_script'><b>Main script: </b>"+oData.main_script+"</div>"*/
+                        
+                        +"<div class='right_script_content'>"
+                            +"<div class='ms_folios'><span class='decorated_left'>Number of folios: </span><span class='decorated_right'>"+oData.folios_no+"</span></div>"
+                            +"<div class='ms_measurements'><span class='decorated_left'>Measurements: </span><span class='decorated_right'>"+oData.page_size_max_h+"mm x "+oData.page_size_max_w+"mm</span></div>"
+                            +"<div class='ms_main_script'><span class='decorated_left'>Main script: </span><span class='decorated_right'>"+oData.main_script+"</span></div>"
+
+                            +"<div class='ms_decorated'><span class='decorated_left'>Decorated: </span><span class='decorated_right'>"+oData.decorated+"</span></div>"
+                            +"<div class='ms_music_notation'><span class='decorated_left'>Music notation: </span><span class='decorated_right'>"+oData.music_notation+"</span></div>"
+                            +"<div class='ms_binding_date'><span class='decorated_left'>Binding date: </span><span class='decorated_right'>"+oData.binding_date+"</span></div>"
+
+                            /*
+                            +"<div class='ms_how_many_columns_mostly'><span class='decorated_left'>How many columns (mostly): </span><span class='decorated_right'>"+oData.how_many_columns_mostly+"</span></div>"
+                            +"<div class='ms_lines_per_page_usually'><span class='decorated_left'>Lines per page usually: </span><span class='decorated_right'>"+oData.lines_per_page_usually+"</span></div>"
+                            +"<div class='ms_how_many_quires'><span class='decorated_left'>How many quires: </span><span class='decorated_right'>"+oData.how_many_quires+"</span></div>"
+                            */
+                        +"</div>"
                         
                         ;
 
@@ -807,15 +827,20 @@ manuscripts_init = function()
             "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
                 $(nTd).html("<a href=/static/page.html?p=manuscript&id="+oData.id+">"+oData.name+"</a>");
             }},*/
+            { "data": "rism_id", "title": "rism_id" , visible: false },
+            { "data": "ms_provenance", "title": "ms_provenance" , visible: false },
+            { "data": "folios_no", "title": "folios_no" , visible: false },
+            { "data": "page_size_max_h", "title": "page_size_max_h" , visible: false },
+            { "data": "page_size_max_w", "title": "page_size_max_w" , visible: false },
             { "data": "foreign_id", "title": foreign_id_name , visible: false },
             { "data": "contemporary_repository_place", "title": "Contemporary Repository Place" , visible: false },
             { "data": "shelf_mark", "title": "Shelf Mark" , visible: false },
             { "data": "place_of_origins", "title": "Place of Origins" , visible: false },
             { "data": "dating", "title": "Dating" , visible: false },
             { "data": "main_script", "title": "Main Script" , visible: false },
-            { "data": "how_many_columns_mostly", "title": "How Many Columns Mostly" , visible: false },
+            /*{ "data": "how_many_columns_mostly", "title": "How Many Columns Mostly" , visible: false },
             { "data": "lines_per_page_usually", "title": "Lines per Page Usually" , visible: false },
-            { "data": "how_many_quires", "title": "How Many Quires" , visible: false },
+            { "data": "how_many_quires", "title": "How Many Quires" , visible: false },*/
             { "data": "decorated", "title": "Decorated" , visible: false },
             { "data": "music_notation", "title": "Music Notation" , visible: false },
             { "data": "binding_date", "title": "Binding Date" , visible: false }

@@ -12,6 +12,14 @@ var inputCanvas;
 var inputContext;
 var coordinatesDisplay;
 
+var script = document.createElement('script');
+script.onload = function () {
+    //do stuff with the script
+    console.log('opencv loaded');
+};
+script.src = "https://docs.opencv.org/master/opencv.js";
+document.head.appendChild(script); //or something of the likes
+
 hands_init = function()
 {
     outputCanvas = document.getElementById('outputCanvas');

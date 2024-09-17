@@ -426,8 +426,10 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
         binding_date = self.request.query_params.get('binding_date')
 
         # Pobierz wartości zapytań dla minimalnych i maksymalnych wartości
-        how_many_columns_min = self.request.query_params.get('how_many_columns_min')
-        how_many_columns_max = self.request.query_params.get('how_many_columns_max')
+        #how_many_columns_min = self.request.query_params.get('how_many_columns_min')
+        #how_many_columns_max = self.request.query_params.get('how_many_columns_max')
+        how_many_columns = self.request.query_params.get('how_many_columns')
+        
         lines_per_page_min = self.request.query_params.get('lines_per_page_min')
         lines_per_page_max = self.request.query_params.get('lines_per_page_max')
         how_many_quires_min = self.request.query_params.get('how_many_quires_min')
@@ -524,20 +526,23 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
         if binding_date:
             binding_date_ids = binding_date.split(';')
             queryset = queryset.filter(binding_date__in=binding_date_ids)
+        if how_many_columns:
+            how_many_columns_ids = how_many_columns.split(';')
+            queryset = queryset.filter(how_many_columns_mostly__in=how_many_columns_ids)
         
 
 
         # Filtruj po minimalnych wartościach, jeśli są dostarczone
-        if how_many_columns_min and how_many_columns_min.isdigit():
-            queryset = queryset.filter(how_many_columns_mostly__gte=int(how_many_columns_min))
+        #if how_many_columns_min and how_many_columns_min.isdigit():
+        #    queryset = queryset.filter(how_many_columns_mostly__gte=int(how_many_columns_min))
         if lines_per_page_min and lines_per_page_min.isdigit():
             queryset = queryset.filter(lines_per_page_usually__gte=int(lines_per_page_min))
         if how_many_quires_min and how_many_quires_min.isdigit():
             queryset = queryset.filter(how_many_quires__gte=int(how_many_quires_min))
 
         # Filtruj po maksymalnych wartościach, jeśli są dostarczone
-        if how_many_columns_max and how_many_columns_max.isdigit():
-            queryset = queryset.filter(how_many_columns_mostly__lte=int(how_many_columns_max))
+        #if how_many_columns_max and how_many_columns_max.isdigit():
+        #    queryset = queryset.filter(how_many_columns_mostly__lte=int(how_many_columns_max))
         if lines_per_page_max and lines_per_page_max.isdigit():
             queryset = queryset.filter(lines_per_page_usually__lte=int(lines_per_page_max))
         if how_many_quires_max and how_many_quires_max.isdigit():
@@ -736,7 +741,8 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
         distance_between_horizontal_ruling_min = self.request.query_params.get('distance_between_horizontal_ruling_min')
         distance_between_vertical_ruling_min = self.request.query_params.get('distance_between_vertical_ruling_min')
         ms_how_many_hands_min = self.request.query_params.get('ms_how_many_hands_min')
-        page_size_wh_min = self.request.query_params.get('page_size_wh_min')
+        page_size_w_min = self.request.query_params.get('page_size_w_min')
+        page_size_h_min = self.request.query_params.get('page_size_h_min')
         parchment_thickness_min = self.request.query_params.get('parchment_thickness_min')
         binding_height_max = self.request.query_params.get('binding_height_max')
         binding_width_max = self.request.query_params.get('binding_width_max')
@@ -745,7 +751,8 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
         distance_between_horizontal_ruling_max = self.request.query_params.get('distance_between_horizontal_ruling_max')
         distance_between_vertical_ruling_max = self.request.query_params.get('distance_between_vertical_ruling_max')
         ms_how_many_hands_max = self.request.query_params.get('ms_how_many_hands_max')
-        page_size_wh_max = self.request.query_params.get('page_size_wh_max')
+        page_size_w_max = self.request.query_params.get('page_size_w_max')
+        page_size_h_max = self.request.query_params.get('page_size_h_max')
         parchment_thickness_max = self.request.query_params.get('parchment_thickness_max')
         block_size_min = self.request.query_params.get('block_size_min')
         block_size_max = self.request.query_params.get('block_size_max')
@@ -785,17 +792,26 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
         if ms_how_many_hands_max and ms_how_many_hands_max.isdigit():
             queryset = queryset.annotate(num_hands=Count('ms_hands')).filter(num_hands__lte=int(ms_how_many_hands_max))
 
-        if page_size_wh_min and page_size_wh_min.isdigit():
+        if page_size_w_min and page_size_w_min.isdigit():
             queryset = queryset.filter(
-                Q(ms_codicology__page_size_max_height__gte=int(page_size_wh_min)) &
-                Q(ms_codicology__page_size_max_width__gte=int(page_size_wh_min))
+                Q(ms_codicology__page_size_max_width__gte=int(page_size_w_min))
             )
 
-        if page_size_wh_max and page_size_wh_max.isdigit():
+        if page_size_w_max and page_size_w_max.isdigit():
             queryset = queryset.filter(
-                Q(ms_codicology__page_size_max_height__lte=int(page_size_wh_max)) &
-                Q(ms_codicology__page_size_max_width__lte=int(page_size_wh_max))
+                Q(ms_codicology__page_size_max_width__lte=int(page_size_w_max))
             )
+
+        if page_size_h_min and page_size_h_min.isdigit():
+            queryset = queryset.filter(
+                Q(ms_codicology__page_size_max_height__gte=int(page_size_h_min))
+            )
+
+        if page_size_h_max and page_size_h_max.isdigit():
+            queryset = queryset.filter(
+                Q(ms_codicology__page_size_max_height__lte=int(page_size_h_max))
+            )
+
 
         if parchment_thickness_min and float(parchment_thickness_min):
             queryset = queryset.filter(ms_codicology__parchment_thickness_min__gte=float(parchment_thickness_min))

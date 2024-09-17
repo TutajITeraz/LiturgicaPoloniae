@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from decimal import Decimal
 
-from .models import RiteNames, Content, Manuscripts, Contributors, Quires, ManuscriptHands, Hands, ScriptNames, Contributors, Places, TimeReference, ScriptNames, Sections, ContentFunctions, ManuscriptMusicNotations, EditionContent
+from .models import RiteNames, Provenance, Content, Manuscripts, Contributors, Quires, ManuscriptHands, Hands, ScriptNames, Contributors, Places, TimeReference, ScriptNames, Sections, ContentFunctions, ManuscriptMusicNotations, EditionContent
 
 
 class RiteNamesSerializer(serializers.ModelSerializer):
@@ -43,6 +43,31 @@ class PlacesSerializer(serializers.ModelSerializer):
         model = Places
         fields = ['name']  # Include any other fields you want
 
+
+class PlacesSerializerNoCountry(serializers.ModelSerializer):
+
+    class Meta:
+        model = Places
+        fields = (
+            'city_today_eng', 'repository_today_eng',
+        )
+        
+    def to_representation(self, instance):
+    # Override to_representation to return initials instead of the full name
+        return f"{instance.city_today_eng}, {instance.repository_today_eng}."
+
+class PlacesSerializerOnlyCountry(serializers.ModelSerializer):
+
+    class Meta:
+        model = Places
+        fields = (
+            'country_today_eng',
+        )
+        
+    def to_representation(self, instance):
+    # Override to_representation to return initials instead of the full name
+        return f"{country_today_eng}."
+
 class TimeReferenceSerializer(serializers.ModelSerializer):
     name = serializers.CharField(source='__str__', read_only=True)
 
@@ -82,13 +107,31 @@ class QuiresSerializer(serializers.ModelSerializer):
         model = Quires
         fields = '__all__'
 
+class ProvenanceSerializer(serializers.ModelSerializer):
+    place = PlacesSerializer()
+
+    class Meta:
+        model = Provenance
+        fields = ('date_from', 'date_to', 'place', 'timeline_sequence')
+    
+    def to_representation(self, instance):
+        # Use the PlacesSerializerNoCountry to serialize the place
+        place_rep = self.fields['place'].to_representation(instance.place)
+        
+        # Create a string combining the serialized place and dates
+        date_from = instance.date_from.time_description if instance.date_from else "?"
+        date_to = instance.date_to.time_description if instance.date_to else "?"
+        
+        return f"{place_rep} ({date_from} - {date_to})"
+
 class ManuscriptsSerializer(serializers.ModelSerializer):
     contemporary_repository_place = PlacesSerializer()
     dating = TimeReferenceSerializer()
-    place_of_origins = PlacesSerializer()
+    place_of_origins = PlacesSerializerNoCountry()
     main_script = ScriptNamesSerializer()
     binding_date = TimeReferenceSerializer()
     binding_place = PlacesSerializer()
+    #ms_provenance = ProvenanceSerializer(many=True)
 
     class Meta:
         model = Manuscripts
@@ -96,6 +139,7 @@ class ManuscriptsSerializer(serializers.ModelSerializer):
             'id',
             'name',
             'foreign_id',
+            'rism_id',
             'image',
             'contemporary_repository_place',
             'shelf_mark',
@@ -110,16 +154,35 @@ class ManuscriptsSerializer(serializers.ModelSerializer):
             'music_notation',
             'binding_date',
             'binding_place',
+            'ms_provenance',
         )
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         # Convert contributors to a comma-separated list of initials
         representation['contemporary_repository_place'] = str(instance.contemporary_repository_place)
         representation['dating'] = str(instance.dating)
-        representation['place_of_origins'] = str(instance.place_of_origins)
         representation['main_script'] = str(instance.main_script)
         representation['binding_date'] = str(instance.binding_date)
         representation['binding_place'] = str(instance.binding_place)
+
+        # Get all Provenance objects for the manuscript, ordered by 'timeline_sequence'
+        provenances = instance.ms_provenance.all().order_by('timeline_sequence')
+
+        representation['ms_provenance']= ''
+        if len(provenances) > 0 :
+            representation['ms_provenance']= provenances[0].place.country_today_eng
+
+        representation['folios_no'] = '-'
+        representation['page_size_max_h'] = '-'
+        representation['page_size_max_w'] = '-'
+        codicology = instance.ms_codicology.all()
+        if len(codicology) > 0:
+            if codicology[0].number_of_paper_leaves and codicology[0].number_of_parchment_folios:
+                representation['folios_no'] = codicology[0].number_of_paper_leaves + codicology[0].number_of_parchment_folios
+            representation['page_size_max_h'] = codicology[0].page_size_max_height
+            representation['page_size_max_w'] = codicology[0].page_size_max_width
+
+
 
         return representation
 
