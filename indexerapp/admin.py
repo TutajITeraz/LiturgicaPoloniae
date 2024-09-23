@@ -226,6 +226,17 @@ class ManuscriptBindingMaterialsInline(admin.TabularInline):
         models.TextField: {'widget': Textarea(attrs={'rows':3, 'cols':40})},
     }
 
+class ManuscriptBindingComponentsInline(admin.TabularInline):
+    model = ManuscriptBindingComponents
+    extra = 0
+
+    show_change_link=True
+
+    formfield_overrides = {
+        models.CharField: {'widget': TextInput(attrs={'size':'20'})},
+        models.TextField: {'widget': Textarea(attrs={'rows':3, 'cols':40})},
+    }
+
 class ManuscriptGenresInline(admin.TabularInline):
     model = ManuscriptGenres
     extra = 0
@@ -398,7 +409,7 @@ class ManuscriptsAdmin(admin.ModelAdmin):
 
 class ManuscriptsAdmin(CustomDebateableAdmin):
 
-    inlines = [ManuscriptBibliographyInline, OriginsInline, ProvenanceInline, ManuscriptBindingMaterialsInline, ManuscriptGenresInline ]
+    inlines = [ManuscriptBibliographyInline, OriginsInline, ProvenanceInline, ManuscriptBindingMaterialsInline, ManuscriptBindingComponentsInline, ManuscriptGenresInline ]
 
     list_display= [field.name for field in Manuscripts._meta.fields
                              #if not isinstance(field, models.ForeignKey)
@@ -636,6 +647,19 @@ class BindingMaterialsAdmin(admin.ModelAdmin):
 class ManuscriptBindingMaterialsAdmin(CustomDebateableAdmin):
     list_display=  ['id','manuscript','material']
 
+
+#BindingComponents
+class BindingComponentsAdmin(admin.ModelAdmin):
+    list_display=  [field.name for field in BindingComponents._meta.fields
+                             #if not isinstance(field, models.ForeignKey)
+                             ]
+
+#ManuscriptBindingComponents
+class ManuscriptBindingComponentsAdmin(admin.ModelAdmin):
+    list_display=  [field.name for field in ManuscriptBindingComponents._meta.fields
+                             #if not isinstance(field, models.ForeignKey)
+                             ]
+
 #BindingDecorationTypes
 class BindingDecorationTypesAdmin(admin.ModelAdmin):
     list_display=  [field.name for field in BindingDecorationTypes._meta.fields
@@ -834,6 +858,8 @@ admin.site.register(ManuscriptBindingDecorations,ManuscriptBindingDecorationsAdm
 admin.site.register(BindingDecorationTypes,BindingDecorationTypesAdmin)
 admin.site.register(ManuscriptBindingMaterials,ManuscriptBindingMaterialsAdmin)
 admin.site.register(BindingMaterials,BindingMaterialsAdmin)
+admin.site.register(BindingComponents,BindingComponentsAdmin)
+admin.site.register(ManuscriptBindingComponents,ManuscriptBindingComponentsAdmin)
 admin.site.register(Binding,BindingAdmin)
 admin.site.register(BindingStyles,BindingStylesAdmin)
 admin.site.register(BindingTypes,BindingTypesAdmin)

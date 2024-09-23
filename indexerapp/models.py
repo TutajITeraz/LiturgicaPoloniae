@@ -1090,7 +1090,26 @@ class ManuscriptBindingDecorations(models.Model):
     def __str__(self): 
         return str(self.manuscript)  + '/' + str(self.decoration)
 
+class BindingComponents(models.Model):
+    name = models.CharField(max_length=64) 
 
+    class Meta:
+        db_table = 'binding_components'
+        verbose_name_plural = 'Binding Components'
+
+    def __str__(self): 
+        return self.name
+
+class ManuscriptBindingComponents(models.Model):
+    manuscript = models.ForeignKey(Manuscripts, models.DO_NOTHING, related_name='ms_binding_components')
+    component = models.ForeignKey(BindingComponents, models.CASCADE)
+
+    class Meta:
+        db_table = 'manuscript_binding_components'
+        verbose_name_plural = 'Manuscript Binding Components'
+
+    def __str__(self): 
+        return str(self.manuscript)  + '/' + str(self.component)
 
 class Binding(models.Model):
     manuscript = models.ForeignKey(Manuscripts, models.DO_NOTHING, related_name='ms_binding')
@@ -1102,6 +1121,8 @@ class Binding(models.Model):
     place_of_origins = models.ForeignKey(Places, models.DO_NOTHING, blank=True, null=True)
     type_of_binding = models.ForeignKey(BindingTypes, models.DO_NOTHING, null=True)
     style_of_binding = models.ForeignKey(BindingStyles, models.DO_NOTHING, null=True)
+    category = models.CharField(max_length=12,choices=[("original", "original"),("early", "early modern"),("historical", "Historical rebinding"),("conservation", "Conservation binding"),("restored", "Restored binding")], blank=True, null=True)
+
     #materials #many-to-one
     #type of decoration #many-to-one
     decoration_comment = models.TextField(blank=True, null=True)
@@ -1128,6 +1149,7 @@ class Hands(models.Model):
     rism = models.CharField(max_length=50,blank=True, null=True)
     dating = models.ForeignKey(TimeReference, models.DO_NOTHING, blank=True, null=True)
     name = models.CharField(max_length=64,blank=True, null=True)
+    is_identified = models.BooleanField(null=True)
 
     class Meta:
         db_table = 'hands'

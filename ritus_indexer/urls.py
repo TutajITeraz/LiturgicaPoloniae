@@ -164,9 +164,15 @@ urlpatterns = [
     path('colours-autocomplete/',views.ColoursAutocomplete.as_view(),name='colours-autocomplete'),
     path('script-names-autocomplete/',views.ScriptNamesAutocomplete.as_view(),name='script-names-autocomplete'),
     path('places-autocomplete/',views.PlacesAutocomplete.as_view(),name='places-autocomplete'),
+    path('places-countries-autocomplete/',views.PlacesCountriesAutocomplete.as_view(),name='places-countries-autocomplete'),
+    
     path('binding-types-autocomplete/',views.BindingTypesAutocomplete.as_view(),name='binding-types-autocomplete'),
     path('binding-styles-autocomplete/',views.BindingStylesAutocomplete.as_view(),name='binding-styles-autocomplete'),
     path('binding-materials-autocomplete/',views.BindingMaterialsAutocomplete.as_view(),name='binding-materials-autocomplete'),
+    path('binding-decoration-type-autocomplete/',views.BindingDecorationTypeAutocomplete.as_view(),name='binding-decoration-type-autocomplete/'),
+    path('binding-components-autocomplete/',views.BindingComponentsAutocomplete.as_view(),name='binding-components-autocomplete/'),
+    path('binding-category-autocomplete/',views.BindingCategoryAutocomplete.as_view(),name='binding-category-autocomplete/'),
+
     path('bibliography-title-autocomplete/',views.BibliographyTitleAutocomplete.as_view(),name='bibliography-title-autocomplete'),
     path('bibliography-author-autocomplete/',views.BibliographyAuthorAutocomplete.as_view(),name='bibliography-author-autocomplete'),
 

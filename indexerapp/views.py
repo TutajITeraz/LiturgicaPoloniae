@@ -8,7 +8,7 @@ from django.contrib.auth import login, authenticate
 
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Manuscripts, AttributeDebate, Content, Formulas, Subjects, RiteNames, ManuscriptMusicNotations, Provenance, Codicology, Layouts, TimeReference, Bibliography, EditionContent, BindingTypes, BindingStyles, BindingMaterials, Colours, Clla, Projects, MSProjects, UserOpenAIAPIKey
+from .models import Manuscripts, AttributeDebate, Content, Formulas, Subjects, RiteNames, ManuscriptMusicNotations, Provenance, Codicology, Layouts, TimeReference, Bibliography, EditionContent, BindingTypes, BindingStyles, BindingMaterials, Colours, Clla, Projects, MSProjects, BindingDecorationTypes, BindingComponents, Binding, ManuscriptBindingComponents,  UserOpenAIAPIKey
 from django.http import JsonResponse
 from django.contrib.contenttypes.models import ContentType
 
@@ -448,6 +448,8 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
 
         binding_date_min = self.request.query_params.get('binding_date_min')
         binding_date_max = self.request.query_params.get('binding_date_max')
+        binding_date_years_min = self.request.query_params.get('binding_date_years_min')
+        binding_date_years_max = self.request.query_params.get('binding_date_years_max')
 
 
         decoration_true = self.request.query_params.get('decoration_true')
@@ -553,6 +555,12 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
 
         if binding_date_max and binding_date_max.isdigit():
             queryset = queryset.filter(Q(binding_date__century_from__lte=int(binding_date_max)) | Q(binding_date__century_to__lte=int(binding_date_max)))
+        
+        if binding_date_years_min and binding_date_years_min.isdigit():
+            queryset = queryset.filter(Q(binding_date__year_from__gte=int(binding_date_years_min)) | Q(binding_date__year_to__gte=int(binding_date_years_min)))
+
+        if binding_date_years_max and binding_date_years_max.isdigit():
+            queryset = queryset.filter(Q(binding_date__year_from__lte=int(binding_date_years_max)) | Q(binding_date__year_to__lte=int(binding_date_years_max)))
 
         if dating_min and dating_min.isdigit():
             queryset = queryset.filter(Q(dating__century_from__gte=int(dating_min)) | Q(dating__century_to__gte=int(dating_min)))
@@ -621,6 +629,7 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
         paper_leafs_true = self.request.query_params.get('paper_leafs_true')
         watermarks_true = self.request.query_params.get('watermarks_true')
         is_main_text_true = self.request.query_params.get('is_main_text_true')
+        is_hand_identified_true = self.request.query_params.get('is_hand_identified_true')
         written_above_the_top_line_true = self.request.query_params.get('written_above_the_top_line_true')
         binding_decoration_true = self.request.query_params.get('binding_decoration_true')
         parchment_shrinkage_true = self.request.query_params.get('parchment_shrinkage_true')
@@ -634,6 +643,7 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
         paper_leafs_false = self.request.query_params.get('paper_leafs_false')
         watermarks_false = self.request.query_params.get('watermarks_false')
         is_main_text_false = self.request.query_params.get('is_main_text_false')
+        is_hand_identified_false = self.request.query_params.get('is_hand_identified_false')
         written_above_the_top_line_false = self.request.query_params.get('written_above_the_top_line_false')
         binding_decoration_false = self.request.query_params.get('binding_decoration_false')
         parchment_shrinkage_false = self.request.query_params.get('parchment_shrinkage_false')
@@ -647,6 +657,7 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
         paper_leafs_true = True if paper_leafs_true == 'true' else False if paper_leafs_true == 'false' else None
         watermarks_true = True if watermarks_true == 'true' else False if watermarks_true == 'false' else None
         is_main_text_true = True if is_main_text_true == 'true' else False if is_main_text_true == 'false' else None
+        is_hand_identified_true = True if is_hand_identified_true == 'true' else False if is_hand_identified_true == 'false' else None
         written_above_the_top_line_true = True if written_above_the_top_line_true == 'true' else False if written_above_the_top_line_true == 'false' else None
         binding_decoration_true = True if binding_decoration_true == 'true' else False if binding_decoration_true == 'false' else None
         parchment_shrinkage_true = True if parchment_shrinkage_true == 'true' else False if parchment_shrinkage_true == 'false' else None
@@ -660,6 +671,7 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
         paper_leafs_false = True if paper_leafs_false == 'true' else False if paper_leafs_false == 'false' else None
         watermarks_false = True if watermarks_false == 'true' else False if watermarks_false == 'false' else None
         is_main_text_false = True if is_main_text_false == 'true' else False if is_main_text_false == 'false' else None
+        is_hand_identified_false = True if is_hand_identified_false == 'true' else False if is_hand_identified_false == 'false' else None
         written_above_the_top_line_false = True if written_above_the_top_line_false == 'true' else False if written_above_the_top_line_false == 'false' else None
         binding_decoration_false = True if binding_decoration_false == 'true' else False if binding_decoration_false == 'false' else None
         parchment_shrinkage_false = True if parchment_shrinkage_false == 'true' else False if parchment_shrinkage_false == 'false' else None
@@ -685,6 +697,13 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(ms_hands__is_main_text=False)
         if is_main_text_true and not is_main_text_false:
             queryset = queryset.exclude(ms_hands__is_main_text=False)
+
+        if is_hand_identified_false and not is_hand_identified_true:
+            queryset = queryset.annotate(has_identified_hands=Count('ms_hands', filter=Q(ms_hands__hand__is_identified=True))) \
+                            .filter(has_identified_hands=0)  # Manuscripts with no identified hands
+
+        if is_hand_identified_true and not is_hand_identified_false:
+            queryset = queryset.filter(ms_hands__hand__is_identified=True).distinct()  # Manuscripts with at least one identified hand
 
         if written_above_the_top_line_false and not written_above_the_top_line_true:
             queryset = queryset.filter(ms_layouts__written_above_the_top_line=False)
@@ -788,9 +807,11 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(ms_layouts__distance_between_vertical_ruling__lte=int(distance_between_vertical_ruling_max))
 
         if ms_how_many_hands_min and ms_how_many_hands_min.isdigit():
-            queryset = queryset.annotate(num_hands=Count('ms_hands')).filter(num_hands__gte=int(ms_how_many_hands_min))
+            queryset = queryset.annotate(num_hands=Count('ms_hands', filter=Q(ms_hands__is_main_text=True))) \
+                            .filter(num_hands__gte=int(ms_how_many_hands_min))
         if ms_how_many_hands_max and ms_how_many_hands_max.isdigit():
-            queryset = queryset.annotate(num_hands=Count('ms_hands')).filter(num_hands__lte=int(ms_how_many_hands_max))
+            queryset = queryset.annotate(num_hands=Count('ms_hands', filter=Q(ms_hands__is_main_text=True))) \
+                            .filter(num_hands__lte=int(ms_how_many_hands_max))
 
         if page_size_w_min and page_size_w_min.isdigit():
             queryset = queryset.filter(
@@ -835,10 +856,14 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
         binding_type_select = self.request.query_params.get('binding_type_select')
         binding_style_select = self.request.query_params.get('binding_style_select')
         binding_material_select = self.request.query_params.get('binding_material_select')
+        binding_components_select = self.request.query_params.get('binding_components_select')
+        binding_category_select = self.request.query_params.get('binding_category_select')
+        binding_decoration_type_select = self.request.query_params.get('binding_decoration_select')
         formula_select = self.request.query_params.get('formula_select')
         rite_select = self.request.query_params.get('rite_select')
         damage_select = self.request.query_params.get('damage_select')
         provenance_place_select = self.request.query_params.get('provenance_place_select')
+        provenance_place_countries_select = self.request.query_params.get('provenance_place_countries_select')
         title_select = self.request.query_params.get('title_select')
         author_select = self.request.query_params.get('author_select')
 
@@ -880,6 +905,18 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
             binding_material_select_ids = binding_material_select.split(';')
             for q in binding_material_select_ids:
                 queryset = queryset.filter(ms_binding_materials__material=q)
+        if binding_components_select: 
+            binding_components_select_ids = binding_components_select.split(';')
+            for q in binding_components_select_ids:
+                queryset = queryset.filter(ms_binding_components__component=q)
+        if binding_category_select: 
+            binding_category_select_ids = binding_category_select.split(';')
+            for q in binding_category_select_ids:
+                queryset = queryset.filter(ms_binding__category=q)
+        if binding_decoration_type_select: 
+            binding_decoration_type_select_ids = binding_decoration_type_select.split(';')
+            for q in binding_decoration_type_select_ids:
+                queryset = queryset.filter(ms_binding_decorations__decoration=q)
         if formula_select: 
             formula_select_ids = formula_select.split(';')
             for q in formula_select_ids:
@@ -895,6 +932,10 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
             provenance_place_select_ids = provenance_place_select.split(';')
             for q in provenance_place_select_ids:
                 queryset = queryset.filter(ms_provenance__place=q)
+        if provenance_place_countries_select: 
+            provenance_place_countries_select_ids = provenance_place_countries_select.split(';')
+            for q in provenance_place_countries_select_ids:
+                queryset = queryset.filter(ms_provenance__place__country_today_eng=q)
         if title_select: 
             title_select_ids = title_select.split(';')
             for q in title_select_ids:
@@ -1610,7 +1651,26 @@ class MSPlaceOfOriginsAutocomplete(autocomplete.Select2QuerySetView):
 
     def get_result_label(self, item):
         # Zwróć etykietę wyniku jako str() z obiektu Places
-        return str(item)
+        name = ''
+
+        if item.city_historic_eng:
+            name+=item.city_historic_eng
+        elif item.city_today_eng:
+            name+= item.city_today_eng
+
+        if item.repository_historic_eng:
+            if len(name)>1:
+                name+=', '
+            name+=item.repository_historic_eng
+        elif item.repository_today_eng:
+            if len(name)>1:
+                name+=', '
+            name+=item.repository_today_eng
+
+        if len(name)<1:
+            name = str(item)
+
+        return name
 
 class MSMainScriptAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
@@ -1750,7 +1810,58 @@ class BindingMaterialsAutocomplete(autocomplete.Select2QuerySetView):
             qs = qs.filter(name__icontains=self.q)
 
         return qs
-    
+
+class BindingDecorationTypeAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # Don't forget to filter out results depending on the visitor !
+        if not self.request.user.is_authenticated:
+            return BindingDecorationTypes.objects.none()
+
+        qs = BindingDecorationTypes.objects.all()
+
+        if self.q:
+            qs = qs.filter(name__icontains=self.q)
+
+        return qs
+
+class BindingComponentsAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # Don't forget to filter out results depending on the visitor !
+        if not self.request.user.is_authenticated:
+            return BindingComponents.objects.none()
+
+        qs = BindingComponents.objects.all()
+
+        if self.q:
+            qs = qs.filter(name__icontains=self.q)
+
+        return qs
+
+class BindingCategoryAutocomplete(autocomplete.Select2ListView):
+    def get_list(self):
+        # Retrieve the choices dynamically from the Binding model
+        categories = Binding._meta.get_field('category').choices
+        
+        # If there's a query (self.q), filter the list of choices
+        if self.q:
+            return [category for category in categories if self.q.lower() in category[1].lower()]
+
+        # Return all categories if no query is provided
+        return categories
+
+    def get(self, request, *args, **kwargs):
+        # Get the filtered list of categories
+        categories = self.get_list()
+
+        # Format the choices as required by Select2 (id, text)
+        results = [{"id": category[0], "text": category[1]} for category in categories]
+        
+        # Return the results as JSON response
+        return JsonResponse({
+            "results": results
+        })
+
+
 class BibliographyTitleAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         # Don't forget to filter out results depending on the visitor !
@@ -1846,7 +1957,58 @@ class PlacesAutocomplete(autocomplete.Select2QuerySetView):
 
         return qs
 
-        
+
+class PlacesCountriesAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return Places.objects.none()
+
+        qs = Places.objects.all()
+
+        if self.q:
+            qs = qs.filter(
+                Q(country_today_eng__icontains=self.q) |
+                Q(country_today_local_language__icontains=self.q) |
+                Q(country_historic_eng__icontains=self.q) |
+                Q(country_historic_local_language__icontains=self.q) |
+                Q(country_historic_latin__icontains=self.q)
+            )
+
+        # Group by the country fields to get unique results
+        qs = qs.values(
+            'country_today_eng'
+        ).distinct()
+
+        return qs
+
+    def get_result_label(self, item):
+        # Adjusting to handle dictionaries returned by `values()`
+        if item.get('country_today_eng'):
+            return item['country_today_eng']
+        if item.get('country_today_local_language'):
+            return item['country_today_local_language']
+        if item.get('country_historic_eng'):
+            return item['country_historic_eng']
+        if item.get('country_historic_local_language'):
+            return item['country_historic_local_language']
+        if item.get('country_historic_latin'):
+            return item['country_historic_latin']
+
+        return '-'
+
+    def get_result_value(self, item):
+        # Use country_today_eng as the unique identifier for the value
+        return item.get('country_today_eng') or item.get('country_today_local_language') or \
+               item.get('country_historic_eng') or item.get('country_historic_local_language') or \
+               item.get('country_historic_latin')
+
+    def get_selected_result_label(self, item):
+        # Use the same logic as get_result_label for the selected value
+        return self.get_result_label(item)
+
+
+
+        return '-'
 
 @method_decorator(csrf_exempt, name='dispatch')
 class ContentImportView(View):

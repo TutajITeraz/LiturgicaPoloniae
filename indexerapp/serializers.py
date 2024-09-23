@@ -170,7 +170,8 @@ class ManuscriptsSerializer(serializers.ModelSerializer):
 
         representation['ms_provenance']= ''
         if len(provenances) > 0 :
-            representation['ms_provenance']= provenances[0].place.country_today_eng
+            if provenances[0].place:
+                representation['ms_provenance']= provenances[0].place.country_today_eng
 
         representation['folios_no'] = '-'
         representation['page_size_max_h'] = '-'

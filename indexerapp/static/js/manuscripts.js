@@ -276,6 +276,48 @@ manuscripts_init = function()
     });
     //$('#binding_material_select').on('select2:select', processFilters);
 
+    $('#binding_decoration_select').select2({
+        ajax: {
+            url: pageRoot+'/binding-decoration-type-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
+            // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
+          },
+          allowClear: true,
+          placeholder: '',
+    });
+    //$('#binding_decoration_select').on('select2:select', processFilters);
+
+    $('#binding_components_select').select2({
+        ajax: {
+            url: pageRoot+'/binding-components-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
+            // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
+          },
+          allowClear: true,
+          placeholder: '',
+    });
+    //$('#binding_components_select').on('select2:select', processFilters);
+
+    $('#binding_category_select').select2({
+        ajax: {
+            url: pageRoot+'/binding-category-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
+            // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
+          },
+          allowClear: true,
+          placeholder: '',
+    });
+    //$('#binding_category_select').on('select2:select', processFilters);
+
 
     $('#formula_select').select2({
         ajax: {
@@ -310,6 +352,19 @@ manuscripts_init = function()
     $('#provenance_place_select').select2({
         ajax: {
             url: pageRoot+'/places-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
+            // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
+          },
+          allowClear: true,
+          placeholder: '',
+    });
+
+    $('#provenance_place_countries_select').select2({
+        ajax: {
+            url: pageRoot+'/places-countries-autocomplete/',
             dataType: 'json',
             xhrFields: {
                 withCredentials: true
@@ -557,6 +612,8 @@ manuscripts_init = function()
     $('#number_of_parchment_folios_max').on("change", processFilters);
     $('#ms_binding_date_min').on("change", processFilters);
     $('#ms_binding_date_max').on("change", processFilters);
+    $('#ms_binding_date_years_min').on("change", processFilters);
+    $('#ms_binding_date_years_max').on("change", processFilters);
     $('#foliation').on( "change", processFilters );
     $('#pagination').on( "change", processFilters );
 
@@ -573,6 +630,7 @@ manuscripts_init = function()
     $('#type_of_the_quire_select').on("change", processFilters);
     $('#script_name_select').on("change", processFilters);
     $('#is_main_text_true').on("change", processFilters);
+    $('#is_hand_identified_true').on("change", processFilters);
     $('#ms_how_many_hands_min').on("change", processFilters);
     $('#distance_between_horizontal_ruling_min').on("change", processFilters);
     $('#distance_between_vertical_ruling_min').on("change", processFilters);
@@ -589,6 +647,9 @@ manuscripts_init = function()
     $('#binding_type_select').on("change", processFilters);
     $('#binding_style_select').on("change", processFilters);
     $('#binding_material_select').on("change", processFilters);
+    $('#binding_decoration_select').on("change", processFilters);
+    $('#binding_components_select').on("change", processFilters);
+    $('#binding_category_select').on("change", processFilters);
     $('#formula_select').on("change", processFilters);
     $('#rite_select').on("change", processFilters);
     $('#binding_decoration_true').on("change", processFilters);
@@ -600,6 +661,7 @@ manuscripts_init = function()
     $('#powdering_or_cracking_paint_layer_true').on("change", processFilters);
     $('#conservation_true').on("change", processFilters);
     $('#provenance_place_select').on("change", processFilters);
+    $('#provenance_place_countries_select').on("change", processFilters);
     $('#title_select').on("change", processFilters);
     $('#author_select').on("change", processFilters);
     $('#clla_liturgical_genre_select').on("change", processFilters);
@@ -612,6 +674,7 @@ manuscripts_init = function()
     $('#page_size_h_max').on("change", processFilters);
     $('#watermarks_false').on("change", processFilters);
     $('#is_main_text_false').on("change", processFilters);
+    $('#is_hand_identified_false').on("change", processFilters);
     $('#ms_how_many_hands_max').on("change", processFilters);
     $('#distance_between_horizontal_ruling_max').on("change", processFilters);
     $('#distance_between_vertical_ruling_max').on("change", processFilters);
@@ -672,6 +735,8 @@ manuscripts_init = function()
 
         d.binding_date_min = $('#ms_binding_date_min').val();
         d.binding_date_max = $('#ms_binding_date_max').val();
+        d.binding_date_years_min = $('#ms_binding_date_years_min').val();
+        d.binding_date_years_max = $('#ms_binding_date_years_max').val();
 
         //New min/max:
         d.binding_height_min = $('#binding_height_min').val();
@@ -701,6 +766,7 @@ manuscripts_init = function()
         d.paper_leafs_true = $('#paper_leafs_true').is(':checked');
         d.watermarks_true = $('#watermarks_true').is(':checked');
         d.is_main_text_true = $('#is_main_text_true').is(':checked');
+        d.is_hand_identified_true = $('#is_hand_identified_true').is(':checked');
         d.written_above_the_top_line_true = $('#written_above_the_top_line_true').is(':checked');
         d.binding_decoration_true = $('#binding_decoration_true').is(':checked');
         d.parchment_shrinkage_true = $('#parchment_shrinkage_true').is(':checked');
@@ -712,6 +778,7 @@ manuscripts_init = function()
         d.paper_leafs_false = $('#paper_leafs_false').is(':checked');
         d.watermarks_false = $('#watermarks_false').is(':checked');
         d.is_main_text_false = $('#is_main_text_false').is(':checked');
+        d.is_hand_identified_false = $('#is_hand_identified_false').is(':checked');
         d.written_above_the_top_line_false = $('#written_above_the_top_line_false').is(':checked');
         d.binding_decoration_false = $('#binding_decoration_false').is(':checked');
         d.parchment_shrinkage_false = $('#parchment_shrinkage_false').is(':checked');
@@ -733,10 +800,14 @@ manuscripts_init = function()
         d.binding_type_select = $('#binding_type_select').select2('data').map(item => item.id).join(';');
         d.binding_style_select = $('#binding_style_select').select2('data').map(item => item.id).join(';');
         d.binding_material_select = $('#binding_material_select').select2('data').map(item => item.id).join(';');
+        d.binding_decoration_select = $('#binding_decoration_select').select2('data').map(item => item.id).join(';');
+        d.binding_components_select = $('#binding_components_select').select2('data').map(item => item.id).join(';');
+        d.binding_category_select = $('#binding_category_select').select2('data').map(item => item.id).join(';');
         d.formula_select = $('#formula_select').select2('data').map(item => item.id).join(';');
         d.rite_select = $('#rite_select').select2('data').map(item => item.id).join(';');
         d.damage_select = $('#damage_select').select2('data').map(item => item.id).join(';');
         d.provenance_place_select = $('#provenance_place_select').select2('data').map(item => item.id).join(';');
+        d.provenance_place_countries_select = $('#provenance_place_countries_select').select2('data').map(item => item.id).join(';');
         d.title_select = $('#title_select').select2('data').map(item => item.id).join(';');
         //Special case (authors does not have .id)
         d.author_select = $('#author_select').select2('data').map(item => item.text).join(';');

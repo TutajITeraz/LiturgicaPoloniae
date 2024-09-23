@@ -8,7 +8,7 @@
         <div class="flex flex-wrap items-center justify-between mx-auto">
 
             <div id="mega-menu-icons" class="items-center justify-between w-full flex customShadow border-t border-gray-200">
-                <ul class="w-full my-4 font-medium relative divide-x divide-[#c32f27] text-[#0d1b2a] grid grid-cols-4 md:grid-cols-6 xl:grid-cols-12 gap-y-1">
+                <ul class="w-full my-4 font-medium relative divide-x divide-[#c32f27] text-[#0d1b2a] grid grid-cols-4 md:grid-cols-6 xl:grid-cols-11 gap-y-1">
                     <li class="items-center justify-center xl:mb-0 flex">
                         <button id="clearFieldsButton" class="w-full h-full text-center young-serif whitespace-nowrap text-[#0d1b2a] uppercase hover:underline hover:text-[#070e16] text-[8pt]" style="line-height: 16px;">
                             See All
@@ -66,6 +66,10 @@
                             <div class="flex mx-3 mt-1 mb-2">
                                 <h2 class="w-1/2 flex items-center">Provenance</h2>
                                 <select class="manuscript_filter w-1/2" id="provenance_place_select" multiple style="width: 50% !important;"></select>
+                            </div>
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Provenance countries</h2>
+                                <select class="manuscript_filter w-1/2" id="provenance_place_countries_select" multiple style="width: 50% !important;"></select>
                             </div>
                             <div class="flex mx-3 my-1">
                                 <h2 class="w-1/2 flex items-center">Dating by centirues</h2>
@@ -172,6 +176,19 @@
                                         <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="ms_how_many_quires_max" min="0" max="100" />
                                     </div>
                                 </div>
+                            </div>
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Quires included in MS</h2>
+                                <select class="manuscript_filter w-1/2" id="type_of_the_quire_select" multiple style="width: 50% !important;">
+                                    <option value="bifolium">bifolium</option>
+                                    <option value="binion">binion</option>
+                                    <option value="ternion">ternion</option>
+                                    <option value="quaternion">quaternion</option>
+                                    <option value="quinternion">quinternion</option>
+                                    <option value="seksternion">seksternion</option>
+                                    <option value="septernion">septernion</option>
+                                    <option value="okternion">okternion</option>
+                                </select>
                             </div>
                             <div class="flex mx-3 my-1">
                                 <h2 class="w-1/2 flex items-center">Foliation or pagination</h2>
@@ -299,6 +316,7 @@
                             </div>
                         </div>
                     </li>
+                    <!--
                     <li x-data="{ queries: false }"
                         @click.away="queries = false"
                         class="md:relative items-center justify-center xl:mb-0 flex">
@@ -319,21 +337,9 @@
                             x-transition:leave="transition ease-in duration-400"
                             x-transition:leave-start="transform opacity-100 scale-100"
                             x-transition:leave-end="transform opacity-0 scale-90">
-                            <div class="flex mx-3 mt-1 mb-2">
-                                <h2 class="w-1/2 flex items-center">Quires type</h2>
-                                <select class="manuscript_filter w-1/2" id="type_of_the_quire_select" style="width: 50% !important;">
-                                    <option value="bifolium">bifolium</option>
-                                    <option value="binion">binion</option>
-                                    <option value="ternion">ternion</option>
-                                    <option value="quaternion">quaternion</option>
-                                    <option value="quinternion">quinternion</option>
-                                    <option value="seksternion">seksternion</option>
-                                    <option value="septernion">septernion</option>
-                                    <option value="okternion">okternion</option>
-                                </select>
-                            </div>
+
                         </div>
-                    </li>
+                    </li>-->
                     <li x-data="{ script: false }" @click.away="script = false"
                         class="md:relative items-center justify-center xl:mb-0 flex">
                         <button @click="script = !script"
@@ -358,6 +364,19 @@
                                 <select class="manuscript_filter w-1/2" id="script_name_select" style="width: 50% !important;"> </select>
                             </div>
                             <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">How many hands involved</h2>
+                                <div class="flex w-1/2">
+                                    <div class="range_input">
+                                        <label class="top_level_label range_label" for="ms_how_many_hands_min">min.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="ms_how_many_hands_min" min="0" max="10" />
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <label class="top_level_label range_label" for="ms_how_many_hands_max">max.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="ms_how_many_hands_max" min="0" max="10" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 my-1">
                                 <h2 class="w-1/2 flex items-center">Later hands</h2>
                                 <div class="flex my-1 w-1/2">
                                     <div class="range_input">
@@ -369,15 +388,13 @@
                                 </div>
                             </div>
                             <div class="flex mx-3 my-1">
-                                <h2 class="w-1/2 flex items-center">How many hands involved</h2>
-                                <div class="flex w-1/2">
+                                <h2 class="w-1/2 flex items-center">Identified hands</h2>
+                                <div class="flex my-1 w-1/2">
                                     <div class="range_input">
-                                        <label class="top_level_label range_label" for="ms_how_many_hands_min">min.</label>
-                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="ms_how_many_hands_min" min="0" max="10" />
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="is_hand_identified_true" name="is_hand_identified_true" value="true" checked> <label for="is_hand_identified_true">Yes</label>
                                     </div>
                                     <div class="range_input ml-2">
-                                        <label class="top_level_label range_label" for="ms_how_many_hands_max">max.</label>
-                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="ms_how_many_hands_max" min="0" max="10" />
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="is_hand_identified_false" name="is_hand_identified_false" value="true" checked> <label for="is_hand_identified_false">No</label>
                                     </div>
                                 </div>
                             </div>
@@ -524,7 +541,72 @@
                             x-transition:leave-start="transform opacity-100 scale-100"
                             x-transition:leave-end="transform opacity-0 scale-90">
                             <div class="flex mx-3 my-1">
-                                <h2 class="w-1/2 flex items-center">Binding height</h2>
+                                <h2 class="w-1/2 flex items-center">Date by centuries</h2>
+                                <div class="flex w-1/2">
+                                    <div class="range_input">
+                                        <label class="top_level_label range_label" for="ms_binding_date_min">min.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="ms_binding_date_min" min="0" max="22" />
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <label class="top_level_label range_label" for="ms_binding_date_max">max.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="ms_binding_date_max" min="0" max="22" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Date by years</h2>
+                                <div class="flex w-1/2">
+                                    <div class="range_input">
+                                        <label class="top_level_label range_label" for="ms_binding_date_years_min">min.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="ms_binding_date_years_min" min="0" max="22" />
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <label class="top_level_label range_label" for="ms_binding_date_years_max">max.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="ms_binding_date_years_max" min="0" max="22" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Origin</h2>
+                                <select class="manuscript_filter w-1/2" id="binding_place_of_origin_select" style="width: 50% !important;"></select>
+                            </div>
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Type</h2>
+                                <select class="manuscript_filter w-1/2" id="binding_type_select" style="width: 50% !important;"></select>
+                            </div>
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Style</h2>
+                                <select class="manuscript_filter w-1/2" id="binding_style_select" multiple style="width: 50% !important;"></select>
+                            </div>
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Material</h2>
+                                <select class="manuscript_filter w-1/2" id="binding_material_select" multiple style="width: 50% !important;"></select>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Decoration</h2>
+                                <div class="flex my-1 w-1/2">
+                                    <div class="range_input">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="binding_decoration_true" name="binding_decoration_true" value="true" checked> <label for="binding_decoration_true">Yes</label>
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="binding_decoration_false" name="binding_decoration_false" value="true" checked> <label for="binding_decoration_false">No</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Decoration type</h2>
+                                <select class="manuscript_filter w-1/2" id="binding_decoration_select" multiple style="width: 50% !important;"></select>
+                            </div>
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Components</h2>
+                                <select class="manuscript_filter w-1/2" id="binding_components_select" multiple style="width: 50% !important;"></select>
+                            </div>
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Category</h2>
+                                <select class="manuscript_filter w-1/2" id="binding_category_select" style="width: 50% !important;"></select>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Height</h2>
                                 <div class="flex w-1/2">
                                     <div class="range_input">
                                         <label class="top_level_label range_label" for="binding_height_min">min.</label>
@@ -537,7 +619,7 @@
                                 </div>
                             </div>
                             <div class="flex mx-3 my-1">
-                                <h2 class="w-1/2 flex items-center">Binding width</h2>
+                                <h2 class="w-1/2 flex items-center">Width</h2>
                                 <div class="flex w-1/2">
                                     <div class="range_input">
                                         <label class="top_level_label range_label" for="binding_width_min">min.</label>
@@ -559,46 +641,6 @@
                                     <div class="range_input ml-2">
                                         <label class="top_level_label range_label" for="block_size_max">max.</label>
                                         <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="block_size_max" min="0" max="100" />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex mx-3 my-1">
-                                <h2 class="w-1/2 flex items-center">Binding Date by centuries</h2>
-                                <div class="flex w-1/2">
-                                    <div class="range_input">
-                                        <label class="top_level_label range_label" for="ms_binding_date_min">min.</label>
-                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="ms_binding_date_min" min="0" max="22" />
-                                    </div>
-                                    <div class="range_input ml-2">
-                                        <label class="top_level_label range_label" for="ms_binding_date_max">max.</label>
-                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="ms_binding_date_max" min="0" max="22" />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex mx-3 mt-1 mb-2">
-                                <h2 class="w-1/2 flex items-center">Origin</h2>
-                                <select class="manuscript_filter w-1/2" id="binding_place_of_origin_select" style="width: 50% !important;"></select>
-                            </div>
-                            <div class="flex mx-3 mt-1 mb-2">
-                                <h2 class="w-1/2 flex items-center">Type</h2>
-                                <select class="manuscript_filter w-1/2" id="binding_type_select" style="width: 50% !important;"></select>
-                            </div>
-                            <div class="flex mx-3 mt-1 mb-2">
-                                <h2 class="w-1/2 flex items-center">Style</h2>
-                                <select class="manuscript_filter w-1/2" id="binding_style_select" style="width: 50% !important;"></select>
-                            </div>
-                            <div class="flex mx-3 mt-1 mb-2">
-                                <h2 class="w-1/2 flex items-center">Material</h2>
-                                <select class="manuscript_filter w-1/2" id="binding_material_select" style="width: 50% !important;"></select>
-                            </div>
-                            <div class="flex mx-3 my-1">
-                                <h2 class="w-1/2 flex items-center">Binding decoration</h2>
-                                <div class="flex my-1 w-1/2">
-                                    <div class="range_input">
-                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="binding_decoration_true" name="binding_decoration_true" value="true" checked> <label for="binding_decoration_true">Yes</label>
-                                    </div>
-                                    <div class="range_input ml-2">
-                                        <input class="mr-1 h-5 w-5 bg-gray-50 cursor-pointer text-[#1895cd] border border-[#bbb]" type="checkbox" id="binding_decoration_false" name="binding_decoration_false" value="true" checked> <label for="binding_decoration_false">No</label>
                                     </div>
                                 </div>
                             </div>
