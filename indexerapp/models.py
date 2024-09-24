@@ -523,10 +523,10 @@ class Content(models.Model):
 
 class TimeReference(models.Model):
     time_description = models.CharField(max_length=64)
-    century_from = models.IntegerField(blank=True, null=True)
-    century_to = models.IntegerField(blank=True, null=True)
-    year_from = models.IntegerField(blank=True, null=True)
-    year_to = models.IntegerField(blank=True, null=True)
+    century_from = models.IntegerField()
+    century_to = models.IntegerField()
+    year_from = models.IntegerField()
+    year_to = models.IntegerField()
 
     class Meta:
         #managed = False
