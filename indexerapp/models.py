@@ -1130,6 +1130,7 @@ class Binding(models.Model):
     #type of decoration #many-to-one
     decoration_comment = models.TextField(blank=True, null=True)
     general_comments = models.TextField(blank=True, null=True)
+    characteristic_of_components = models.TextField(blank=True, null=True)
 
     #MANUSCRIPT ID		TYPE OF BINDING	STYLE OF BINDING
     #DECORATION COMMENT	GENERAL COMMENTS

@@ -1251,11 +1251,29 @@ class BindingAjaxView(View):
             decorations_str += m['decoration'] +", "
         decorations_str = decorations_str[:-2]
 
+        if len(decorations_str) < 2:
+            decorations_str = "No" 
+
+
+        #Binding components:
+        components_queryset = ms_instance.ms_binding_components.all()
+        components_dict = [get_obj_dictionary(entry, skip_fields) for entry in components_queryset]
+
+        components_str = ""
+
+        for m in components_dict:
+            components_str += m['component'] +", "
+        components_str = components_str[:-2]
+
+        if len(components_str) < 2:
+            components_str = "No" 
+
         data = {}
 
         if len(info_dict) > 0:
             info_dict[0]['materials'] = materials_str
             info_dict[0]['decorations'] = decorations_str
+            info_dict[0]['components'] = components_str
 
 
             # Create the response dictionary
