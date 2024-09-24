@@ -540,8 +540,8 @@ function sendToServer() {
             if(!row.binding_place)
                 row.binding_place =''
 
-            if(!row.place_of_origins)
-                row.place_of_origins=''
+            if(!row.place_of_origin)
+                row.place_of_origin=''
         
         });
     }

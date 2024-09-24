@@ -100,8 +100,8 @@ manuscripts_init = function()
     });
     $('#ms_dating_select').on('select2:select', processFilters);
     */
-    // ms_place_of_origins_select ms-place-of-origins-autocomplete/
-    $('#ms_place_of_origins_select').select2({
+    // ms_place_of_origin_select ms-place-of-origins-autocomplete/
+    $('#ms_place_of_origin_select').select2({
         ajax: {
             url: pageRoot+'/ms-place-of-origins-autocomplete/',
             dataType: 'json',
@@ -113,7 +113,7 @@ manuscripts_init = function()
           allowClear: true,
           placeholder: '',
     });
-    $('#ms_place_of_origins_select').on('select2:select', processFilters);
+    $('#ms_place_of_origin_select').on('select2:select', processFilters);
 
     // ms_main_script_select ms-main-script-autocomplete/
     /*
@@ -710,7 +710,7 @@ manuscripts_init = function()
         d.contemporary_repository_place = $('#ms_contemporary_repository_place_select').select2('data').map(item => item.id).join(';');
         d.shelfmark = $('#ms_shelfmark_select').select2('data').map(item => item.id).join(';');
         //jd.dating = $('#ms_dating_select').select2('data').map(item => item.id).join(';');
-        d.place_of_origins = $('#ms_place_of_origins_select').select2('data').map(item => item.id).join(';');
+        d.place_of_origin = $('#ms_place_of_origin_select').select2('data').map(item => item.id).join(';');
         //d.main_script = $('#ms_main_script_select').select2('data').map(item => item.id).join(';');
         //d.binding_date = $('#ms_binding_date_select').select2('data').map(item => item.id).join(';');
         //d.how_many_columns_min = $('#ms_how_many_columns_min').val();
@@ -879,9 +879,9 @@ manuscripts_init = function()
                             +"<div class='ms_foreign_id'><span class='mspltext'> "+oData.contemporary_repository_place+':</span> '+oData.foreign_id+"<span class='mspltext'> ("+foreign_id_name+")</span>, "+oData.shelf_mark+"<span class='mspltext'> (Shelf mark)</span></div>"
                             /*+"<div class='ms_contemporary_repository_place'><b>Contemporary repository place: </b>"+oData.contemporary_repository_place+"</div>"*/
                             +"<div class='ms_dating'><b>Dating: </b>"+oData.dating+"</div>"
-                            +"<div class='ms_place_of_origins'><b>Place of origins: </b>"+oData.place_of_origins+"</div>"
+                            +"<div class='ms_place_of_origin'><b>Place of origin: </b>"+oData.place_of_origin+"</div>"
                             
-                            +"<div class='ms_place_of_origins'><b>Medieval provenance: </b>"+oData.ms_provenance+"</div>"
+                            +"<div class='ms_place_of_origin'><b>Medieval provenance: </b>"+oData.ms_provenance+"</div>"
                         +"</div>"
 
                         /*+"<div class='ms_main_script'><b>Main script: </b>"+oData.main_script+"</div>"*/
@@ -920,7 +920,7 @@ manuscripts_init = function()
             { "data": "foreign_id", "title": foreign_id_name , visible: false },
             { "data": "contemporary_repository_place", "title": "Contemporary Repository Place" , visible: false },
             { "data": "shelf_mark", "title": "Shelf Mark" , visible: false },
-            { "data": "place_of_origins", "title": "Place of Origins" , visible: false },
+            { "data": "place_of_origin", "title": "Place of origin" , visible: false },
             { "data": "dating", "title": "Dating" , visible: false },
             { "data": "main_script", "title": "Main Script" , visible: false },
             /*{ "data": "how_many_columns_mostly", "title": "How Many Columns Mostly" , visible: false },

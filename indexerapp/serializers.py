@@ -127,7 +127,7 @@ class ProvenanceSerializer(serializers.ModelSerializer):
 class ManuscriptsSerializer(serializers.ModelSerializer):
     contemporary_repository_place = PlacesSerializer()
     dating = TimeReferenceSerializer()
-    place_of_origins = PlacesSerializerNoCountry()
+    place_of_origin = PlacesSerializerNoCountry()
     main_script = ScriptNamesSerializer()
     binding_date = TimeReferenceSerializer()
     binding_place = PlacesSerializer()
@@ -144,7 +144,7 @@ class ManuscriptsSerializer(serializers.ModelSerializer):
             'contemporary_repository_place',
             'shelf_mark',
             'dating',
-            'place_of_origins',
+            'place_of_origin',
             'main_script',
             'how_many_columns_mostly',
             'lines_per_page_usually',

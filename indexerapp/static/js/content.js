@@ -118,7 +118,7 @@ content_init = function()
                     +"<div class='ms_main_script'><b>Biblical reference: </b>"+oData.biblical_reference+"</div>"
                     +"<div class='ms_main_script'><b>Similarity (levenshtein): </b><span style='color:"+similardata+"'>"+ oData.similarity_levenshtein_percent +"%</span></div>"
                     +"<div class='ms_main_script'><b>Similarity (by user): </b>"+oData.similarity_by_user+"</div>"
-                    +"<div class='ms_place_of_origins'><b>Sequence in MS: </b>"+oData.sequence_in_ms+"</div>"
+                    +"<div class='ms_place_of_origin'><b>Sequence in MS: </b>"+oData.sequence_in_ms+"</div>"
                     +"<div class='ms_main_script'><b>Proper texts: </b>"+oData.proper_texts+"</div>"
                     
                     

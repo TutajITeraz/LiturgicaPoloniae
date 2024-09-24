@@ -421,7 +421,7 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
         contemporary_repository_place = self.request.query_params.get('contemporary_repository_place')
         shelfmark = self.request.query_params.get('shelfmark')
         dating = self.request.query_params.get('dating')
-        place_of_origins = self.request.query_params.get('place_of_origins')
+        place_of_origin = self.request.query_params.get('place_of_origin')
         main_script = self.request.query_params.get('main_script')
         binding_date = self.request.query_params.get('binding_date')
 
@@ -519,9 +519,9 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
         if dating:
             dating_ids = dating.split(';')
             queryset = queryset.filter(dating__in=dating_ids)
-        if place_of_origins:
-            place_of_origins_ids = place_of_origins.split(';')
-            queryset = queryset.filter(place_of_origins__in=place_of_origins_ids)
+        if place_of_origin:
+            place_of_origin_ids = place_of_origin.split(';')
+            queryset = queryset.filter(place_of_origin__in=place_of_origin_ids)
         if main_script:
             main_script_ids = main_script.split(';')
             queryset = queryset.filter(main_script__in=main_script_ids)
@@ -922,7 +922,7 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
                 queryset = queryset.filter(ms_layouts__pricking=q)
         if binding_place_of_origin_select: 
             binding_place_of_origin_select_ids = binding_place_of_origin_select.split(';')
-            queryset = queryset.filter(ms_binding__place_of_origins__in=binding_place_of_origin_select_ids)
+            queryset = queryset.filter(ms_binding__place_of_origin__in=binding_place_of_origin_select_ids)
         if binding_type_select: 
             binding_type_select_ids = binding_type_select.split(';')
             queryset = queryset.filter(ms_binding__type_of_binding__in=binding_type_select_ids)
@@ -1663,7 +1663,7 @@ class MSDatingAutocomplete(autocomplete.Select2QuerySetView):
 class MSPlaceOfOriginsAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         # Pobierz wszystkie unikalne contemporary_repository_place
-        qs = Places.objects.exclude(manuscripts_origin__place_of_origins=None).distinct()
+        qs = Places.objects.exclude(manuscripts_origin__place_of_origin=None).distinct()
         # Filtrowanie wyników na podstawie wprowadzonego zapytania (self.q)
         if self.q:
             # Tworzymy listę warunków dla filtrowania po dowolnym polu
@@ -2249,17 +2249,17 @@ class ManuscriptsImportView(View):
                 print('contemporary repository place in row:')
                 print(row['contemporary_repository_place'])                
 
-                print('place_of_origins in row:')
-                print(row['place_of_origins'])   
+                print('place_of_origin in row:')
+                print(row['place_of_origin'])   
 
-                if row['place_of_origins']:
-                    new_place_of_origins = self.get_id_by_name('Places', row.get('place_of_origins'), 'repository_today_eng')
-                    if new_place_of_origins == None and row['place_of_origins'] != None :
-                        return JsonResponse({'info': 'error: could not find value "'+row['place_of_origins']+'" in table Places'}, status=200)
-                    row['place_of_origins'] = new_place_of_origins 
+                if row['place_of_origin']:
+                    new_place_of_origin = self.get_id_by_name('Places', row.get('place_of_origin'), 'repository_today_eng')
+                    if new_place_of_origin == None and row['place_of_origin'] != None :
+                        return JsonResponse({'info': 'error: could not find value "'+row['place_of_origin']+'" in table Places'}, status=200)
+                    row['place_of_origin'] = new_place_of_origin 
                 
-                print('place_of_origins in row:')
-                print(row['place_of_origins'])   
+                print('place_of_origin in row:')
+                print(row['place_of_origin'])   
 
                 if row['main_script']:
                     new_main_script = self.get_id_by_name('ScriptNames', row.get('main_script'), 'name')
@@ -2319,8 +2319,8 @@ class ManuscriptsImportView(View):
                     common_name = row.get('common_name'),
                     dating_id = row.get('dating'),
                     dating_comment = row.get('dating_comment'),
-                    place_of_origins_id = row.get('place_of_origins'),
-                    place_of_origins_comment = row.get('place_of_origins_comment'),
+                    place_of_origin_id = row.get('place_of_origin'),
+                    place_of_origin_comment = row.get('place_of_origin_comment'),
                     main_script_id = row.get('main_script'),
                     how_many_columns_mostly = row.get('how_many_columns_mostly'),
                     lines_per_page_usually =  row.get('lines_per_page_usually'),
@@ -3536,11 +3536,11 @@ class ManuscriptTEIView(View):
             orig_date_element.set("notAfter", str(manuscript.dating.year_to))
             orig_date_element.text = manuscript.dating.time_description
 
-        if manuscript.place_of_origins:
+        if manuscript.place_of_origin:
             orig_place_element = SubElement(dating_element, "origPlace")
             country_element = SubElement(orig_place_element, "country")
-            country_element.set("key", "place_" + str(manuscript.place_of_origins.id))
-            country_element.text = str(manuscript.place_of_origins)
+            country_element.set("key", "place_" + str(manuscript.place_of_origin.id))
+            country_element.text = str(manuscript.place_of_origin)
 
 
         if codicology:
