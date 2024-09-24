@@ -294,6 +294,9 @@ class Condition(models.Model):
     powdering_or_cracking_paint_layer = models.BooleanField(null=True)
     conservation = models.BooleanField(null=True)
     conservation_date = models.ForeignKey('TimeReference', models.DO_NOTHING, related_name='%(class)s_conservation_dating', null=True)
+    darkening = models.BooleanField(null=True)
+    water_staining = models.BooleanField(null=True)
+    historic_repairs = models.BooleanField(null=True)
 
     comments = models.TextField(blank=True, null=True)
 
