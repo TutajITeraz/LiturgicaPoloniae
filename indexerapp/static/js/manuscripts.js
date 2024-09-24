@@ -655,7 +655,7 @@ manuscripts_init = function()
     $('#binding_decoration_true').on("change", processFilters);
     $('#damage_select').on("change", processFilters);
     $('#parchment_shrinkage_true').on("change", processFilters);
-    $('#illegible_text_fragments_true').on("change", processFilters);
+    $('#illegible_text_true').on("change", processFilters);
     $('#ink_corrosion_true').on("change", processFilters);
     $('#copper_corrosion_true').on("change", processFilters);
     $('#powdering_or_cracking_paint_layer_true').on("change", processFilters);
@@ -685,7 +685,7 @@ manuscripts_init = function()
     $('#binding_width_max').on("change", processFilters);
     $('#binding_decoration_false').on("change", processFilters);
     $('#parchment_shrinkage_false').on("change", processFilters);
-    $('#illegible_text_fragments_false').on("change", processFilters);
+    $('#illegible_text_false').on("change", processFilters);
     $('#ink_corrosion_false').on("change", processFilters);
     $('#copper_corrosion_false').on("change", processFilters);
     $('#powdering_or_cracking_paint_layer_false').on("change", processFilters);
@@ -694,6 +694,14 @@ manuscripts_init = function()
     $('#clla_no').on("change", processFilters);
 
     $('#rite_name_from_ms').on("change", processFilters);
+
+    $('#darkening_true').on("change", processFilters);
+    $('#darkening_false').on("change", processFilters);
+    $('#water_staining_true').on("change", processFilters);
+    $('#water_staining_false').on("change", processFilters);
+    $('#historic_repairs_true').on("change", processFilters);
+    $('#historic_repairs_false').on("change", processFilters);
+
 
     var getFilterData = function(d)
     {    
@@ -770,7 +778,7 @@ manuscripts_init = function()
         d.written_above_the_top_line_true = $('#written_above_the_top_line_true').is(':checked');
         d.binding_decoration_true = $('#binding_decoration_true').is(':checked');
         d.parchment_shrinkage_true = $('#parchment_shrinkage_true').is(':checked');
-        d.illegible_text_fragments_true = $('#illegible_text_fragments_true').is(':checked');
+        d.illegible_text_true = $('#illegible_text_true').is(':checked');
         d.ink_corrosion_true = $('#ink_corrosion_true').is(':checked');
         d.copper_corrosion_true = $('#copper_corrosion_true').is(':checked');
         d.powdering_or_cracking_paint_layer_true = $('#powdering_or_cracking_paint_layer_true').is(':checked');
@@ -782,12 +790,18 @@ manuscripts_init = function()
         d.written_above_the_top_line_false = $('#written_above_the_top_line_false').is(':checked');
         d.binding_decoration_false = $('#binding_decoration_false').is(':checked');
         d.parchment_shrinkage_false = $('#parchment_shrinkage_false').is(':checked');
-        d.illegible_text_fragments_false = $('#illegible_text_fragments_false').is(':checked');
+        d.illegible_text_false = $('#illegible_text_false').is(':checked');
         d.ink_corrosion_false = $('#ink_corrosion_false').is(':checked');
         d.copper_corrosion_false = $('#copper_corrosion_false').is(':checked');
         d.powdering_or_cracking_paint_layer_false = $('#powdering_or_cracking_paint_layer_false').is(':checked');
         d.conservation_false = $('#conservation_false').is(':checked');
-        
+
+        d.darkening_true = $('#darkening_true').is(':checked');
+        d.darkening_false = $('#darkening_false').is(':checked');
+        d.water_staining_true = $('#water_staining_true').is(':checked');
+        d.water_staining_false = $('#water_staining_false').is(':checked');        
+        d.historic_repairs_true = $('#historic_repairs_true').is(':checked');
+        d.historic_repairs_false = $('#historic_repairs_false').is(':checked');
 
         //New Select:
         d.parchment_colour_select = $('#parchment_colour_select').select2('data').map(item => item.id).join(';');

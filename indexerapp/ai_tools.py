@@ -121,7 +121,7 @@ This is the db structure:
 "condition","id","bigint"
 "condition","damage","varchar"
 "condition","parchment_shrinkage","tinyint"
-"condition","illegible_text_fragments","tinyint"
+"condition","illegible_text","tinyint"
 "condition","ink_corrosion","tinyint"
 "condition","copper_corrosion","tinyint"
 "condition","powdering_or_cracking_paint_layer","tinyint"

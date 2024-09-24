@@ -633,11 +633,14 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
         written_above_the_top_line_true = self.request.query_params.get('written_above_the_top_line_true')
         binding_decoration_true = self.request.query_params.get('binding_decoration_true')
         parchment_shrinkage_true = self.request.query_params.get('parchment_shrinkage_true')
-        illegible_text_fragments_true = self.request.query_params.get('illegible_text_fragments_true')
+        illegible_text_true = self.request.query_params.get('illegible_text_true')
         ink_corrosion_true = self.request.query_params.get('ink_corrosion_true')
         copper_corrosion_true = self.request.query_params.get('copper_corrosion_true')
         powdering_or_cracking_paint_layer_true = self.request.query_params.get('powdering_or_cracking_paint_layer_true')
         conservation_true = self.request.query_params.get('conservation_true')
+        darkening_true = self.request.query_params.get('darkening_true')
+        water_staining_true = self.request.query_params.get('water_staining_true')
+        historic_repairs_true = self.request.query_params.get('historic_repairs_true')
         display_as_main_true = self.request.query_params.get('display_as_main_true')
         
         paper_leafs_false = self.request.query_params.get('paper_leafs_false')
@@ -647,11 +650,14 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
         written_above_the_top_line_false = self.request.query_params.get('written_above_the_top_line_false')
         binding_decoration_false = self.request.query_params.get('binding_decoration_false')
         parchment_shrinkage_false = self.request.query_params.get('parchment_shrinkage_false')
-        illegible_text_fragments_false = self.request.query_params.get('illegible_text_fragments_false')
+        illegible_text_false = self.request.query_params.get('illegible_text_false')
         ink_corrosion_false = self.request.query_params.get('ink_corrosion_false')
         copper_corrosion_false = self.request.query_params.get('copper_corrosion_false')
         powdering_or_cracking_paint_layer_false = self.request.query_params.get('powdering_or_cracking_paint_layer_false')
         conservation_false = self.request.query_params.get('conservation_false')
+        darkening_false = self.request.query_params.get('darkening_false')
+        water_staining_false = self.request.query_params.get('water_staining_false')
+        historic_repairs_false = self.request.query_params.get('historic_repairs_false')
         display_as_main_false = self.request.query_params.get('display_as_main_false')
         
         paper_leafs_true = True if paper_leafs_true == 'true' else False if paper_leafs_true == 'false' else None
@@ -661,7 +667,7 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
         written_above_the_top_line_true = True if written_above_the_top_line_true == 'true' else False if written_above_the_top_line_true == 'false' else None
         binding_decoration_true = True if binding_decoration_true == 'true' else False if binding_decoration_true == 'false' else None
         parchment_shrinkage_true = True if parchment_shrinkage_true == 'true' else False if parchment_shrinkage_true == 'false' else None
-        illegible_text_fragments_true = True if illegible_text_fragments_true == 'true' else False if binding_decoration_true == 'false' else None
+        illegible_text_true = True if illegible_text_true == 'true' else False if binding_decoration_true == 'false' else None
         ink_corrosion_true = True if ink_corrosion_true == 'true' else False if ink_corrosion_true == 'false' else None
         copper_corrosion_true = True if copper_corrosion_true == 'true' else False if copper_corrosion_true == 'false' else None
         powdering_or_cracking_paint_layer_true = True if powdering_or_cracking_paint_layer_true == 'true' else False if powdering_or_cracking_paint_layer_true == 'false' else None
@@ -675,14 +681,21 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
         written_above_the_top_line_false = True if written_above_the_top_line_false == 'true' else False if written_above_the_top_line_false == 'false' else None
         binding_decoration_false = True if binding_decoration_false == 'true' else False if binding_decoration_false == 'false' else None
         parchment_shrinkage_false = True if parchment_shrinkage_false == 'true' else False if parchment_shrinkage_false == 'false' else None
-        illegible_text_fragments_false = True if illegible_text_fragments_false == 'true' else False if illegible_text_fragments_false == 'false' else None
+        illegible_text_false = True if illegible_text_false == 'true' else False if illegible_text_false == 'false' else None
         ink_corrosion_false = True if ink_corrosion_false == 'true' else False if ink_corrosion_false == 'false' else None
         copper_corrosion_false = True if copper_corrosion_false == 'true' else False if copper_corrosion_false == 'false' else None
         powdering_or_cracking_paint_layer_false = True if powdering_or_cracking_paint_layer_false == 'true' else False if powdering_or_cracking_paint_layer_false == 'false' else None
         conservation_false = True if conservation_false == 'true' else False if conservation_false == 'false' else None
         display_as_main_false = True if display_as_main_false == 'true' else False if display_as_main_false == 'false' else None
 
-        
+        darkening_true = True if darkening_true == 'true' else False if darkening_true == 'false' else None
+        darkening_false = True if darkening_false == 'true' else False if darkening_false == 'false' else None
+        water_staining_true = True if water_staining_true == 'true' else False if water_staining_true == 'false' else None
+        water_staining_false = True if water_staining_false == 'true' else False if water_staining_false == 'false' else None
+        historic_repairs_true = True if historic_repairs_true == 'true' else False if historic_repairs_true == 'false' else None
+        historic_repairs_false = True if historic_repairs_false == 'true' else False if historic_repairs_false == 'false' else None
+
+
         if paper_leafs_false and not paper_leafs_true:
             queryset = queryset.exclude(ms_codicology__number_of_paper_leaves__gt=0)
         if paper_leafs_true and not paper_leafs_false:
@@ -720,10 +733,10 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
         if parchment_shrinkage_true and not parchment_shrinkage_false:
             queryset = queryset.filter(ms_condition__parchment_shrinkage=True)
         
-        if illegible_text_fragments_false and not illegible_text_fragments_true:
-            queryset = queryset.filter(ms_condition__illegible_text_fragments=False)
-        if illegible_text_fragments_true and not illegible_text_fragments_false:
-            queryset = queryset.filter(ms_condition__illegible_text_fragments=True)
+        if illegible_text_false and not illegible_text_true:
+            queryset = queryset.filter(ms_condition__illegible_text=False)
+        if illegible_text_true and not illegible_text_false:
+            queryset = queryset.filter(ms_condition__illegible_text=True)
         
         if ink_corrosion_false and not ink_corrosion_true:
             queryset = queryset.filter(ms_condition__ink_corrosion=False)
@@ -744,6 +757,21 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(ms_condition__conservation=False)
         if conservation_true and not conservation_false:
             queryset = queryset.filter(ms_condition__conservation=True)
+
+        if darkening_false and not darkening_true:
+            queryset = queryset.filter(ms_condition__darkening=False)
+        if darkening_true and not darkening_false:
+            queryset = queryset.filter(ms_condition__darkening=True)
+
+        if water_staining_false and not water_staining_true:
+            queryset = queryset.filter(ms_condition__water_staining=False)
+        if water_staining_true and not water_staining_false:
+            queryset = queryset.filter(ms_condition__water_staining=True)
+
+        if historic_repairs_false and not historic_repairs_true:
+            queryset = queryset.filter(ms_condition__historic_repairs=False)
+        if historic_repairs_true and not historic_repairs_false:
+            queryset = queryset.filter(ms_condition__historic_repairs=True)
 
         #if display_as_main_false and not display_as_main_true:
         #    queryset = queryset.exclude(display_as_main=True)

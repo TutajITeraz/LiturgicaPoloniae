@@ -288,7 +288,7 @@ class Condition(models.Model):
     damage = models.CharField(max_length=10,choices=[("very", "very damaged"),("average", "average damaged"),("slightly","slightly damaged")], blank=True, null=True)
 
     parchment_shrinkage = models.BooleanField(null=True)
-    illegible_text_fragments = models.BooleanField(null=True)
+    illegible_text = models.BooleanField(null=True)
     ink_corrosion = models.BooleanField(null=True)
     copper_corrosion = models.BooleanField(null=True)
     powdering_or_cracking_paint_layer = models.BooleanField(null=True)

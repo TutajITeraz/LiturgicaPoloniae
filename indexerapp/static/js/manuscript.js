@@ -686,7 +686,7 @@ var condition_table = $('#condition').DataTable({
     "columns": [
         { "data": "damage", "title": "Damage" },
         { "data": "parchment_shrinkage", "title": "Parchment shrinkage" },
-        { "data": "illegible_text_fragments", "title": "Illegible text fragments" },
+        { "data": "illegible_text", "title": "illegible_text" },
         { "data": "ink_corrosion", "title": "Ink corrosion" },
         { "data": "copper_corrosion", "title": "Copper corrosion" },
         { "data": "powdering_or_cracking_paint_layer", "title": "Powdering or cracking paint layer" },
