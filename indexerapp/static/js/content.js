@@ -76,6 +76,7 @@ content_init = function()
         },
         "processing": false,
         "serverSide": true,
+        "stateSave": false,
         "lengthMenu": [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"] ],
         "pagingType": "full_numbers",
         "pageLength": 25,
@@ -97,43 +98,76 @@ content_init = function()
                     }
 
                     let where_in_ms = oData.where_in_ms_from;
-                    if(oData.where_in_ms_to != oData.where_in_ms_from)
+                    if(oData.where_in_ms_to != oData.where_in_ms_from && oData.where_in_ms_to != '-' )
                         where_in_ms+=" - "+oData.where_in_ms_to;
 
-                    let html = "<h3 class='ms_name'>"+oData.manuscript_name+"</h3>"
+                    let html = "";
 
-                    +"<h3 class='formula_standarize'>Rite name from MS: <span class='formula_standarize_text'>"+oData.rite_name_from_ms+"</span></h3>"
-                    +"<h3 class='formula_standarize'>Subrite name from MS: <span class='formula_standarize_text'>"+oData.subrite_name_from_ms+"</span></h3>"
-                    +"<h3 class='formula_standarize'>Formula (standarized):<span class='formula_standarize_text'>"+oData.formula_standarized+"</span></h3>"
-                    +"<h3 class='formula_standarize'>Formula (text from MS):<span class='formula_standarize_text'>"+oData.formula_text+"</span></h3>"
+                    if ( ! $('.manuscript_filter').val() ){
+                        html = "<h3 class='formula_standarize'>MS Name: <span class='manuscript_name'><b>"+oData.manuscript_name+"</b></span></h3>"
+                    }
 
-
-                    +"<div class='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-2'>"
-                    +"<div class='ms_contemporary_repository_place'><b>Where in MS : </b>"+where_in_ms+" - "+"</div>"
-                    +"<div class='ms_main_script'><b>Subsection: </b>"+oData.subsection+"</div>"
-                    +"<div class='ms_main_script'><b>Function / Genre: </b>"+oData.function+"</div>"
-                    +"<div class='ms_dating'><b>Quire: </b>"+oData.quire+"</div>"
+                    //html += /*"<h3 class='ms_name'>"+oData.manuscript_name+"</h3>"*/
+                    /*"<h3 class='formula_standarize'><b>MS Name:</b><span class='manuscript_name'>"+oData.manuscript_name+"</span></h3>"
                     
 
-                    +"<div class='ms_main_script'><b>Biblical reference: </b>"+oData.biblical_reference+"</div>"
-                    +"<div class='ms_main_script'><b>Similarity (levenshtein): </b><span style='color:"+similardata+"'>"+ oData.similarity_levenshtein_percent +"%</span></div>"
-                    +"<div class='ms_main_script'><b>Similarity (by user): </b>"+oData.similarity_by_user+"</div>"
-                    +"<div class='ms_place_of_origin'><b>Sequence in MS: </b>"+oData.sequence_in_ms+"</div>"
-                    +"<div class='ms_main_script'><b>Proper texts: </b>"+oData.proper_texts+"</div>"
+                    +*/
+                    
+                    if (oData.rite_name_from_ms !='')
+                        html += "<h3 class='formula_standarize'>Rite name from MS: <span class='formula_standarize_text'><b>"+oData.rite_name_from_ms+"</b></span></h3>"
+                    if (oData.subrite_name_from_ms !='-')
+                        html += "<h3 class='formula_standarize'>Subrite name from MS: <span class='formula_standarize_text'><b>"+oData.subrite_name_from_ms+"</b></span></h3>"
+                    if (oData.formula_standarized !='')
+                        html += "<h3 class='formula_standarize'>Formula (standarized): <span class='formula_standarize_text'><b>"+oData.formula_standarized+"</b></span></h3>"
+                    if (oData.formula_text !='')
+                        html += "<h3 class='formula_standarize'>Formula (text from MS): <span class='formula_standarize_text'><b>"+oData.formula_text+"</b></span></h3>"
+
+
+                    html += "<div class='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-2'>"
+
+                    if (where_in_ms !='-')
+                        html += "<div class='ms_contemporary_repository_place'><b>Where in MS : </b>"+where_in_ms+"</div>"
+                    if (oData.subsection !='-')
+                        html += "<div class='ms_main_script'><b>Subsection: </b>"+oData.subsection+"</div>"
+                    if (oData.function !='-')
+                        html += "<div class='ms_main_script'><b>Function / Genre: </b>"+oData.function+"</div>"
+                    if (oData.quire !='-')
+                        html += "<div class='ms_dating'><b>Quire: </b>"+oData.quire+"</div>"
+                    
+
+                    if (oData.biblical_reference !='-')
+                        html += "<div class='ms_main_script'><b>Biblical reference: </b>"+oData.biblical_reference+"</div>"
+                    if (oData.similarity_levenshtein_percent !='-')
+                        html += "<div class='ms_main_script'><b>Similarity (levenshtein): </b><span style='color:"+similardata+"'>"+ oData.similarity_levenshtein_percent +"%</span></div>"
+                    if (oData.similarity_by_user !='-')
+                        html += "<div class='ms_main_script'><b>Similarity (by user): </b>"+oData.similarity_by_user+"</div>"
+                    if (oData.sequence_in_ms !='-')
+                        html += "<div class='ms_place_of_origin'><b>Sequence in MS: </b>"+oData.sequence_in_ms+"</div>"
+                    if (oData.proper_texts !='-')
+                        html += "<div class='ms_main_script'><b>Proper texts: </b>"+oData.proper_texts+"</div>"
                     
                     
-                    +"<div class='ms_decorated'><b>Music Notation: </b><span class='decorated_right'>"+oData.music_notation+"</span></div>"
-                    +"<div class='ms_main_script'><b>Subgenre: </b>"+oData.subfunction+"</div>"
-                    +"<div class='ms_main_script'><b>Edition Index: </b>"+oData.edition_index+"</div>"
-                    +"<div class='ms_main_script'><b>Edition Subindex: </b>"+oData.edition_subindex+"</div>"
-                    +"<div class='ms_main_script'><b>Authors: </b>"+oData.authors+"</div>"
-                    +"<div class='ms_how_many_quires'><b>Data contributor: </b><span class='decorated_right'>"+oData.data_contributor+"</span></div>"
-                    +"</div>"
+                    if (oData.music_notation !='-')
+                        html += "<div class='ms_decorated'><b>Music Notation: </b><span class='decorated_right'>"+oData.music_notation+"</span></div>"
+                    if (oData.subfunction !='-')
+                        html += "<div class='ms_main_script'><b>Subgenre: </b>"+oData.subfunction+"</div>"
+                    if (oData.edition_index !='-')
+                        html += "<div class='ms_main_script'><b>Edition Index: </b>"+oData.edition_index+"</div>"
+                    if (oData.edition_subindex !='-')
+                        html += "<div class='ms_main_script'><b>Edition Subindex: </b>"+oData.edition_subindex+"</div>"
+                    if (oData.authors !='')
+                        html += "<div class='ms_main_script'><b>Authors: </b>"+oData.authors+"</div>"
+                    if (oData.data_contributor !='-')
+                        html += "<div class='ms_how_many_quires'><b>Data contributor: </b><span class='decorated_right'>"+oData.data_contributor+"</span></div>"
+                    
+                    html += "</div>"
                     
                     ;
 
                     $(nTd).html(html);
             }},
+
+            { "data": "sequence_in_ms", "title": "Sequence in MS", searchable: false , "visible": false },
 
             { "data": "manuscript_name", "title": "Manuscript" , searchable: false , "visible": false },
             { "data": "where_in_ms_from", "title": "Where in MS (from)" , "visible": false },
@@ -167,7 +201,6 @@ content_init = function()
             { "data": "music_notation", "title": "Music Notation", searchable: false , "visible": false },
 
 
-            { "data": "sequence_in_ms", "title": "Sequence in MS", searchable: false , "visible": false },
 
             { "data": "proper_texts", "title": "Proper texts", searchable: false , "visible": false },
 
@@ -180,6 +213,11 @@ content_init = function()
             { "data": "data_contributor", "title": "Data contributor", searchable: false , "visible": false }
             // Add more columns as needed
         ],
+        /*
+        "order": [
+            { "name": "sequence_in_ms", "dir": "desc" },
+        ],*/
+        order: [[2, 'asc']],// sequence in ms
         "createdRow": function(row, data, dataIndex) {
             if (data.original_or_added == "ORIGINAL") {
                 $(row).addClass('medieval-row');

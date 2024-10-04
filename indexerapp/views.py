@@ -336,6 +336,22 @@ class CustomDatatablesFilterBackend(DatatablesFilterBackend):
         if where_max is not None:
             queryset = queryset.filter(where_in_ms_from__lte=where_max)
 
+        
+        ##Order
+        order_column_index = int(request.query_params.get('order[0][column]', 0))
+        order_column_name = request.query_params.get(f'columns[{order_column_index}][data]', 'name')
+        order_direction = request.query_params.get('order[0][dir]', 'asc')
+        print("--------------------------------------------")
+        print(order_column_index)
+        print(order_column_name)
+        print(order_direction)
+        print("--------------------------------------------")
+        # Apply ordering to queryset
+        if order_direction == 'asc':
+            queryset = queryset.order_by(order_column_name)
+        else:
+            queryset = queryset.order_by(f'-{order_column_name}')
+
         return queryset
 
 class ContentGlobalFilter(DatatablesFilterSet):
