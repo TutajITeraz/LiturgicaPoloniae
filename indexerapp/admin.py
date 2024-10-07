@@ -120,6 +120,15 @@ class DecorationSubjectsForm(forms.ModelForm):
             'subject': autocomplete.ModelSelect2(url='subject-autocomplete', attrs={'style': 'width: 200px;'})
         }
 
+class DecorationColoursForm(forms.ModelForm):
+    class Meta:
+        model = Colours
+        fields = ('__all__')
+        widgets = {
+            'colour': autocomplete.ModelSelect2(url='colours-autocomplete', attrs={'style': 'width: 200px;'})
+        }
+
+
 class EditionContentForm(forms.ModelForm):
     class Meta:
         model = EditionContent
@@ -173,6 +182,20 @@ class DecorationSubjectsInline(admin.StackedInline):
     extra = 0
 
     form = DecorationSubjectsForm
+
+    show_change_link=True
+
+    formfield_overrides = {
+        models.CharField: {'widget': TextInput(attrs={'size':'20'})},
+        models.TextField: {'widget': Textarea(attrs={'rows':3, 'cols':40})},
+    }
+
+# New inlines
+class DecorationColoursInline(admin.StackedInline):
+    model = DecorationColours
+    extra = 0
+
+    form = DecorationColoursForm
 
     show_change_link=True
 
@@ -764,9 +787,9 @@ class SubjectsAdmin(admin.ModelAdmin):
                              ]
 
 
-#DecorationCharacteristics
-class DecorationCharacteristicsAdmin(admin.ModelAdmin):
-    list_display=  [field.name for field in DecorationCharacteristics._meta.fields
+#Characteristics
+class CharacteristicsAdmin(admin.ModelAdmin):
+    list_display=  [field.name for field in Characteristics._meta.fields
                              #if not isinstance(field, models.ForeignKey)
                              ]
 
@@ -798,14 +821,26 @@ class DecorationForm(forms.ModelForm):
 
         }
 
+
+class DecorationForm(forms.ModelForm):
+    class Meta:
+        model = Decoration
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Filter decoration_type to only show DecorationTypes with no parent_type
+        self.fields['decoration_type'].queryset = DecorationTypes.objects.filter(parent_type__isnull=True)
+
+        # Filter decoration_subtype to only show DecorationTypes with a parent_type
+        self.fields['decoration_subtype'].queryset = DecorationTypes.objects.filter(parent_type__isnull=False)
+
+
 class DecorationAdmin(CustomDebateableAdmin):
     form = DecorationForm
+    inlines = [DecorationSubjectsInline, DecorationColoursInline]
 
-    inlines = [DecorationSubjectsInline]
-
-    list_display=  [field.name for field in Decoration._meta.fields
-                             #if not isinstance(field, models.ForeignKey)
-                             ]
+    list_display=  ['id','manuscript','original_or_added', 'where_in_ms_from', 'where_in_ms_to', 'decoration_type', 'decoration_subtype', 'ornamented_text' ]
 
     list_display = ["where_in_ms_start" if x == "where_in_ms_from" else x for x in list_display]
     list_display = ["where_in_ms_end" if x == "where_in_ms_to" else x for x in list_display]
@@ -816,6 +851,14 @@ class DecorationSubjectsAdmin(CustomDebateableAdmin):
     form = DecorationSubjectsForm
 
     list_display=  [field.name for field in DecorationSubjects._meta.fields
+                             #if not isinstance(field, models.ForeignKey)
+                             ]
+
+class DecorationColoursAdmin(CustomDebateableAdmin):
+
+    form = DecorationColoursForm
+
+    list_display=  [field.name for field in DecorationColours._meta.fields
                              #if not isinstance(field, models.ForeignKey)
                              ]
 
@@ -874,13 +917,14 @@ admin.site.register(AttributeDebate,AttributeDebateAdmin)
 
 admin.site.register(DecorationTypes,DecorationTypesAdmin)
 admin.site.register(DecorationTechniques,DecorationTechniquesAdmin)
-admin.site.register(DecorationCharacteristics,DecorationCharacteristicsAdmin)
+admin.site.register(Characteristics,CharacteristicsAdmin)
 admin.site.register(Subjects,SubjectsAdmin)
 admin.site.register(Colours,ColoursAdmin)
 admin.site.register(FeastRanks,FeastRanksAdmin)
 admin.site.register(Decoration,DecorationAdmin)
 admin.site.register(Calendar,CalendarAdmin)
 admin.site.register(DecorationSubjects,DecorationSubjectsAdmin)
+admin.site.register(DecorationColours,DecorationColoursAdmin)
 admin.site.register(ManuscriptBibliography,ManuscriptBibliographyAdmin)
 admin.site.register(Layouts,LayoutsAdmin)
 admin.site.register(UserOpenAIAPIKey,UserOpenAIAPIKeyAdmin)

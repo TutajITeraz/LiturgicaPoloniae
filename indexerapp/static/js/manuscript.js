@@ -598,14 +598,37 @@ function init_decoration_table() {
             { "data": "id", "title": "id"  , "visible": false },
             { "data": "decoration_type", "title": "Decoration type"  , "visible": false },
             { "data": "decoration_subtype", "title": "Decoration subtype" },
-            { "data": "size_height", "title": "Size - height", "visible": false },
-            { "data": "size_width", "title": "Size - width", "visible": false },
+            { "data": "size_height_min", "title": "Size - height min", "visible": false },
+            { "data": "size_height_max", "title": "Size - height max", "visible": false },
+            { "data": "size_width_min", "title": "Size - width min", "visible": false },
+            { "data": "size_width_max", "title": "Size - width max", "visible": false },
             {
-                "data": "size",
-                "title": "Size HxW",
+                "data": "width",
+                "title": "Width",
                 "render": function (data, type, row, meta) {
-                    if (row.size_height != '-' || row.size_height != '-')
-                        return row.size_height + " mm x " + row.size_width + " mm";
+                    if (row.size_width_min != '-' && row.size_width_max != '-' && row.size_width_min != row.size_width_max)
+                        return row.size_width_min + " mm - " + row.size_width_max + " mm";
+                    else if (row.size_width_min != '-' && row.size_width_max != '-' ) // min == max
+                        return row.size_width_min + " mm ";
+                    else if (row.size_width_min != '-')
+                        return row.size_width_min  + " mm"
+                    else if (row.size_width_max != '-')
+                        return row.size_width_max + " mm"
+                    return '-';
+                }
+            },
+            {
+                "data": "height",
+                "title": "Height",
+                "render": function (data, type, row, meta) {
+                    if (row.size_height_min != '-' && row.size_height_max != '-' && row.size_height_min != row.size_height_max)
+                        return row.size_height_min + " mm - " + row.size_height_max + " mm";
+                    else if (row.size_height_min != '-' && row.size_height_max != '-' ) // min == max
+                        return row.size_height_min + " mm ";
+                    else if (row.size_height_min != '-')
+                        return row.size_height_min  + " mm"
+                    else if (row.size_height_max != '-')
+                        return row.size_height_max + " mm"
                     return '-';
                 }
             },
@@ -632,12 +655,12 @@ function init_decoration_table() {
                     return fromText + ' - ' + toText;
                 }
             },
-            { "data": "location_characteristic", "title": "Location Characteristic" },
+            { "data": "location_on_the_page", "title": "Location on the page" },
             { "data": "original_or_added", "title": "Original or added" },
             { "data": "monochrome_or_colour", "title": "Monochrome or colour" },
             { "data": "characteristic", "title": "Decoration characteristic" },
             { "data": "technique", "title": "Technique" },
-            { "data": "initials", "title": "Initials" },
+            { "data": "ornamented_text", "title": "Ornamented text" },
             //{ "data": "comments", "title": "Comments" },
             { "data": "authors", "title": "Authors", "visible": false },
             { "data": "data_contributor", "title": "Data contributor", "visible": false },

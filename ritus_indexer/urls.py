@@ -62,7 +62,7 @@ class IommiAdmin(Admin):
         apps__indexerapp_contentfunctions__include = True
         apps__indexerapp_contributors__include = True
         apps__indexerapp_decoration__include = True
-        apps__indexerapp_decorationcharacteristics__include = True
+        apps__indexerapp_characteristics__include = True
         apps__indexerapp_decorationsubjects__include = True
         apps__indexerapp_decorationtechniques__include = True
         apps__indexerapp_decorationtypes__include = True

@@ -61,13 +61,13 @@ class DecorationTechniques(models.Model):
     def __str__(self):
         return self.name
 
-class DecorationCharacteristics(models.Model):
+class Characteristics(models.Model):
     name = models.CharField(max_length=128)
 
     class Meta:
         #managed = False
-        db_table = 'decoration_characteristics'
-        verbose_name_plural = 'Decoration Characteristics'
+        db_table = 'characteristics'
+        verbose_name_plural = 'Characteristics'
 
     def __str__(self):
         return self.name
@@ -85,7 +85,10 @@ class Subjects(models.Model):
 
 class Colours(models.Model):
     name = models.CharField(max_length=128)
-    rgb = models.CharField(max_length=8)
+    rgb = models.CharField(max_length=8, blank=True, null=True)
+    
+    parent_colour = models.ForeignKey("self",models.CASCADE, blank=True, null=True)
+
 
     class Meta:
         #managed = False
@@ -174,6 +177,21 @@ class DecorationSubjects(models.Model):
     def __str__(self):
         return str(self.decoration) +" / "+ str(self.subject)
 
+
+#[ ]TODO Decoration Subjects as inline in Decoration
+class DecorationColours(models.Model):
+    decoration = models.ForeignKey('Decoration', models.DO_NOTHING, related_name='decoration_colours')
+    colour = models.ForeignKey('Colours', models.DO_NOTHING, related_name='decoration_colour')
+
+    class Meta:
+        #managed = False
+        db_table = 'decoration_colours'
+        verbose_name_plural = 'Decoration Colours'
+
+    def __str__(self):
+        return str(self.decoration) +" / "+ str(self.colour)
+
+
 class Decoration(models.Model):
     manuscript = models.ForeignKey('Manuscripts', models.DO_NOTHING, related_name='ms_decorations')
     original_or_added = models.CharField(max_length=10,choices=[("ORIGINAL", "original"),("ADDED", "added")], blank=True, null=True)
@@ -184,25 +202,27 @@ class Decoration(models.Model):
 
     where_in_ms_from = models.DecimalField(max_digits=5, decimal_places=1)
     where_in_ms_to = models.DecimalField(max_digits=5, decimal_places=1)
-    location_characteristic = models.CharField(max_length=128, blank=True, null=True)
+    location_on_the_page = models.CharField(max_length=10,choices=[("WITHIN", "within the column "),("MARGIN", "on the margin"),("IN_TEXT", "in the text line")], blank=True, null=True)
 
     decoration_type = models.ForeignKey('DecorationTypes', models.DO_NOTHING, related_name='decoration_type')
-    decoration_subtype = models.ForeignKey('DecorationTypes', models.DO_NOTHING, related_name='decoration_subtype')
+    decoration_subtype = models.ForeignKey('DecorationTypes', models.DO_NOTHING, related_name='decoration_subtype',blank=True, null=True)
 
-    size_characteristic = models.CharField(max_length=10,choices=[("SMALL1", "small (1-line)"),("SMALL2", "small (2-lines)"),("SMALL3", "small (3-lines)"),("LARGE", "large"),("FULL", "full"),("PARTIAL", "partial"),("3SIDES", "three-sides"),("1COLUMN", "one column"),("2COLUMNS", "two columns")], blank=True, null=True)
+    size_characteristic = models.CharField(max_length=10,choices=[("SMALL", "small"),("1LINE", "1-line"),("3LINES", "2-lines"),("3LINES", "3-lines"),("1SYSTEM", "1-system"),("2SYSTEMS", "2-systems"),("FULL", "full page")], blank=True, null=True)
+    size_height_min = models.PositiveIntegerField(blank=True, null=True)
+    size_height_max = models.PositiveIntegerField(blank=True, null=True)
+
+    size_width_min = models.PositiveIntegerField(blank=True, null=True)
+    size_width_max = models.PositiveIntegerField(blank=True, null=True)
     
-    size_height = models.PositiveIntegerField(blank=True, null=True)
-    size_width = models.PositiveIntegerField(blank=True, null=True)
-    
-    decoration_colour = models.ForeignKey('Colours', models.DO_NOTHING, related_name='decoration_colour', blank=True, null=True)
+    #decoration_colour = models.ForeignKey('Colours', models.DO_NOTHING, related_name='decoration_colour', blank=True, null=True)
 
-    monochrome_or_colour = models.CharField(max_length=2,choices=[("M", "monochromatic"),("C", "in colour")], blank=True, null=True)
+    monochrome_or_colour = models.CharField(max_length=2,choices=[("M", "monochromatic"),("B", "bicolor"),("C", "in colour")], blank=True, null=True)
 
-    characteristic = models.ForeignKey('DecorationCharacteristics', models.DO_NOTHING, related_name='decoration_characteristic', blank=True, null=True)
+    characteristic = models.ForeignKey('Characteristics', models.DO_NOTHING, related_name='decoration_characteristic', blank=True, null=True)
     technique = models.ForeignKey('DecorationTechniques', models.DO_NOTHING, related_name='decoration_technique')
 
     #subject = models.ForeignKey('Subjects', models.DO_NOTHING, related_name='decoration_subject')
-    initials = models.CharField(max_length=128, blank=True, null=True)
+    ornamented_text = models.CharField(max_length=128, blank=True, null=True)
 
     rite_name_standarized = models.ForeignKey('RiteNames', models.DO_NOTHING, null=True, blank=True)
 

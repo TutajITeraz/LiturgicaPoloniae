@@ -53,7 +53,6 @@ class PlacesSerializerNoCountry(serializers.ModelSerializer):
         )
         
     def to_representation(self, instance):
-    # Override to_representation to return initials instead of the full name
         return f"{instance.city_today_eng}, {instance.repository_today_eng}."
 
 class PlacesSerializerOnlyCountry(serializers.ModelSerializer):
@@ -65,7 +64,6 @@ class PlacesSerializerOnlyCountry(serializers.ModelSerializer):
         )
         
     def to_representation(self, instance):
-    # Override to_representation to return initials instead of the full name
         return f"{country_today_eng}."
 
 class TimeReferenceSerializer(serializers.ModelSerializer):
