@@ -128,6 +128,13 @@ class DecorationColoursForm(forms.ModelForm):
             'colour': autocomplete.ModelSelect2(url='colours-autocomplete', attrs={'style': 'width: 200px;'})
         }
 
+class DecorationCharacteristicsForm(forms.ModelForm):
+    class Meta:
+        model = Characteristics
+        fields = ('__all__')
+        widgets = {
+            'colour': autocomplete.ModelSelect2(url='characteristics-autocomplete', attrs={'style': 'width: 200px;'})
+        }
 
 class EditionContentForm(forms.ModelForm):
     class Meta:
@@ -196,6 +203,20 @@ class DecorationColoursInline(admin.StackedInline):
     extra = 0
 
     form = DecorationColoursForm
+
+    show_change_link=True
+
+    formfield_overrides = {
+        models.CharField: {'widget': TextInput(attrs={'size':'20'})},
+        models.TextField: {'widget': Textarea(attrs={'rows':3, 'cols':40})},
+    }
+
+# New inlines
+class DecorationCharacteristicsInline(admin.StackedInline):
+    model = DecorationCharacteristics
+    extra = 0
+
+    form = DecorationCharacteristicsForm
 
     show_change_link=True
 
@@ -838,7 +859,7 @@ class DecorationForm(forms.ModelForm):
 
 class DecorationAdmin(CustomDebateableAdmin):
     form = DecorationForm
-    inlines = [DecorationSubjectsInline, DecorationColoursInline]
+    inlines = [DecorationSubjectsInline, DecorationColoursInline, DecorationCharacteristicsInline]
 
     list_display=  ['id','manuscript','original_or_added', 'where_in_ms_from', 'where_in_ms_to', 'decoration_type', 'decoration_subtype', 'ornamented_text' ]
 
@@ -862,6 +883,14 @@ class DecorationColoursAdmin(CustomDebateableAdmin):
                              #if not isinstance(field, models.ForeignKey)
                              ]
 
+class DecorationCharacteristicsAdmin(CustomDebateableAdmin):
+
+    form = DecorationCharacteristicsForm
+
+    list_display=  [field.name for field in DecorationCharacteristics._meta.fields
+                             #if not isinstance(field, models.ForeignKey)
+                             ]
+                             
 class ManuscriptBibliographyAdmin(CustomDebateableAdmin):
     list_display=  [field.name for field in ManuscriptBibliography._meta.fields
                              #if not isinstance(field, models.ForeignKey)
@@ -925,6 +954,7 @@ admin.site.register(Decoration,DecorationAdmin)
 admin.site.register(Calendar,CalendarAdmin)
 admin.site.register(DecorationSubjects,DecorationSubjectsAdmin)
 admin.site.register(DecorationColours,DecorationColoursAdmin)
+admin.site.register(DecorationCharacteristics,DecorationCharacteristicsAdmin)
 admin.site.register(ManuscriptBibliography,ManuscriptBibliographyAdmin)
 admin.site.register(Layouts,LayoutsAdmin)
 admin.site.register(UserOpenAIAPIKey,UserOpenAIAPIKeyAdmin)

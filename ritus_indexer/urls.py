@@ -165,7 +165,8 @@ urlpatterns = [
     path('script-names-autocomplete/',views.ScriptNamesAutocomplete.as_view(),name='script-names-autocomplete'),
     path('places-autocomplete/',views.PlacesAutocomplete.as_view(),name='places-autocomplete'),
     path('places-countries-autocomplete/',views.PlacesCountriesAutocomplete.as_view(),name='places-countries-autocomplete'),
-    
+    path('characteristics-autocomplete/',views.CharacteristicsAutocomplete.as_view(),name='characteristics-autocomplete'),
+
     path('binding-types-autocomplete/',views.BindingTypesAutocomplete.as_view(),name='binding-types-autocomplete'),
     path('binding-styles-autocomplete/',views.BindingStylesAutocomplete.as_view(),name='binding-styles-autocomplete'),
     path('binding-materials-autocomplete/',views.BindingMaterialsAutocomplete.as_view(),name='binding-materials-autocomplete'),

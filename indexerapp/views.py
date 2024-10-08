@@ -1821,6 +1821,19 @@ class ColoursAutocomplete(autocomplete.Select2QuerySetView):
 
         return qs
 
+class CharacteristicsAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # Don't forget to filter out results depending on the visitor !
+        if not self.request.user.is_authenticated:
+            return Characteristics.objects.none()
+
+        qs = Characteristics.objects.all()
+
+        if self.q:
+            qs = qs.filter(name__icontains=self.q)
+
+        return qs
+
 class ScriptNamesAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         # Don't forget to filter out results depending on the visitor !

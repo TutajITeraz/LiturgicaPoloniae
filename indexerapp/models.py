@@ -164,7 +164,6 @@ class Calendar(models.Model):
     def __str__(self):
         return self.latin_name
 
-#[ ]TODO Decoration Subjects as inline in Decoration
 class DecorationSubjects(models.Model):
     decoration = models.ForeignKey('Decoration', models.DO_NOTHING, related_name='decoration_subject')
     subject = models.ForeignKey('Subjects', models.DO_NOTHING, related_name='decoration_subject')
@@ -178,7 +177,6 @@ class DecorationSubjects(models.Model):
         return str(self.decoration) +" / "+ str(self.subject)
 
 
-#[ ]TODO Decoration Subjects as inline in Decoration
 class DecorationColours(models.Model):
     decoration = models.ForeignKey('Decoration', models.DO_NOTHING, related_name='decoration_colours')
     colour = models.ForeignKey('Colours', models.DO_NOTHING, related_name='decoration_colour')
@@ -191,6 +189,17 @@ class DecorationColours(models.Model):
     def __str__(self):
         return str(self.decoration) +" / "+ str(self.colour)
 
+class DecorationCharacteristics(models.Model):
+    decoration = models.ForeignKey('Decoration', models.DO_NOTHING, related_name='decoration_characteristics')
+    characteristics = models.ForeignKey('Characteristics', models.DO_NOTHING, related_name='decoration_colour')
+
+    class Meta:
+        #managed = False
+        db_table = 'decoration_characteristics'
+        verbose_name_plural = 'Decoration characteristics'
+
+    def __str__(self):
+        return str(self.decoration) +" / "+ str(self.characteristics)
 
 class Decoration(models.Model):
     manuscript = models.ForeignKey('Manuscripts', models.DO_NOTHING, related_name='ms_decorations')
@@ -218,8 +227,8 @@ class Decoration(models.Model):
 
     monochrome_or_colour = models.CharField(max_length=2,choices=[("M", "monochromatic"),("B", "bicolor"),("C", "in colour")], blank=True, null=True)
 
-    characteristic = models.ForeignKey('Characteristics', models.DO_NOTHING, related_name='decoration_characteristic', blank=True, null=True)
-    technique = models.ForeignKey('DecorationTechniques', models.DO_NOTHING, related_name='decoration_technique')
+    #characteristic = models.ForeignKey('Characteristics', models.DO_NOTHING, related_name='decoration_characteristic', blank=True, null=True)
+    technique = models.ForeignKey('DecorationTechniques', models.DO_NOTHING, related_name='decoration_technique', blank=True, null=True)
 
     #subject = models.ForeignKey('Subjects', models.DO_NOTHING, related_name='decoration_subject')
     ornamented_text = models.CharField(max_length=128, blank=True, null=True)
