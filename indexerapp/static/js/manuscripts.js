@@ -434,6 +434,106 @@ manuscripts_init = function()
           placeholder: '',
     });
 
+
+    /////////////////////////// DECORATION SELECT //////////////////////////////
+    $('#decoration_type_select').select2({
+        ajax: {
+            url: pageRoot+'/decoration-type-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
+          },
+          allowClear: true,
+          placeholder: '',
+    });
+    $('#decoration_subtype_select').select2({
+        ajax: {
+            url: pageRoot+'/decoration-subtype-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
+          },
+          allowClear: true,
+          placeholder: '',
+    });
+    $('#technique_select').select2({
+        ajax: {
+            url: pageRoot+'/decoration-techniques-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
+          },
+          allowClear: true,
+          placeholder: '',
+    });
+    $('#ornamented_text_select').select2({
+        ajax: {
+            url: pageRoot+'/decoration-ornamented_text-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
+          },
+          allowClear: true,
+          placeholder: '',
+    });
+    $('#decoration_subject_select').select2({
+        ajax: {
+            url: pageRoot+'/subject-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
+          },
+          allowClear: true,
+          placeholder: '',
+    });
+    $('#decoration_colours_select').select2({
+        ajax: {
+            url: pageRoot+'/colours-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
+          },
+          allowClear: true,
+          placeholder: '',
+    });
+    $('#decoration_characteristics_select').select2({
+        ajax: {
+            url: pageRoot+'/characteristics-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
+          },
+          allowClear: true,
+          placeholder: '',
+    });
+
+    
+    //explicitly added options:
+    $('#location_on_the_page_select').select2({
+          allowClear: true,
+          placeholder: '',
+    });
+    $('#monochrome_or_colour_select').select2({
+        allowClear: true,
+        placeholder: '',
+    });
+    $('#size_characteristic_select').select2({
+        allowClear: true,
+        placeholder: '',
+    });
+    $('#original_or_added_select').select2({
+        allowClear: true,
+        placeholder: '',
+    });
+
+
     //Unselecting:
 
     $('select').on('select2:unselecting', function() {
@@ -541,6 +641,7 @@ manuscripts_init = function()
 
     $(document).ready(function() {
         clearFields();
+        
         // setTableHeight();
 
         var windowWidth = $(window).width();
@@ -666,6 +767,27 @@ manuscripts_init = function()
     $('#author_select').on("change", processFilters);
     $('#clla_liturgical_genre_select').on("change", processFilters);
     $('#clla_provenance_place_select').on("change", processFilters);
+
+    $('#original_or_added_select').on("change", processFilters);
+    $('#location_on_the_page_select').on("change", processFilters);
+    $('#decoration_type_select').on("change", processFilters);
+    $('#decoration_subtype_select').on("change", processFilters);
+    $('#size_characteristic_select').on("change", processFilters);
+    $('#monochrome_or_colour_select').on("change", processFilters);
+    $('#technique_select').on("change", processFilters);
+    $('#ornamented_text_select').on("change", processFilters);
+    $('#decoration_subject_select').on("change", processFilters);
+    $('#decoration_colours_select').on("change", processFilters);
+    $('#decoration_characteristics_select').on("change", processFilters);
+
+    $('#decoration_size_height_min').on("change", processFilters);
+    $('#decoration_size_height_max').on("change", processFilters);
+    $('#decoration_size_width_min').on("change", processFilters);
+    $('#decoration_size_width_max').on("change", processFilters);
+    $('#decoration_addition_date_min').on("change", processFilters);
+    $('#decoration_addition_date_max').on("change", processFilters);
+    $('#decoration_addition_date_years_min').on("change", processFilters);
+    $('#decoration_addition_date_years_max').on("change", processFilters);
 
 
     $('#paper_leafs_false').on("change", processFilters);
@@ -828,6 +950,33 @@ manuscripts_init = function()
 
         //d.clla_liturgical_genre_select = $('#clla_liturgical_genre_select').select2('data').map(item => item.text).join(';');
         //d.clla_provenance_place_select = $('#clla_provenance_place_select').select2('data').map(item => item.text).join(';');
+
+
+
+        d.original_or_added_select = $('#original_or_added_select').select2('data').map(item => item.id).join(';');
+        d.location_on_the_page_select = $('#location_on_the_page_select').select2('data').map(item => item.id).join(';');
+        d.decoration_type_select = $('#decoration_type_select').select2('data').map(item => item.id).join(';');
+        d.decoration_subtype_select = $('#decoration_subtype_select').select2('data').map(item => item.id).join(';');
+        d.size_characteristic_select = $('#size_characteristic_select').select2('data').map(item => item.id).join(';');
+        d.monochrome_or_colour_select = $('#monochrome_or_colour_select').select2('data').map(item => item.id).join(';');
+        d.technique_select = $('#technique_select').select2('data').map(item => item.id).join(';');
+        d.ornamented_text_select = $('#ornamented_text_select').select2('data').map(item => item.id).join(';');
+        d.decoration_subject_select = $('#decoration_subject_select').select2('data').map(item => item.id).join(';');
+        d.decoration_colours_select = $('#decoration_colours_select').select2('data').map(item => item.id).join(';');
+        d.decoration_characteristics_select = $('#decoration_characteristics_select').select2('data').map(item => item.id).join(';');
+
+        d.binding_date_years_max = $('#ms_binding_date_years_max').val();
+
+        
+        d.decoration_size_height_min = $('#decoration_size_height_min').val();
+        d.decoration_size_height_max = $('#decoration_size_height_max').val();
+        d.decoration_size_width_min = $('#decoration_size_width_min').val();
+        d.decoration_size_width_max = $('#decoration_size_width_max').val();
+        d.decoration_addition_date_min = $('#decoration_addition_date_min').val();
+        d.decoration_addition_date_max = $('#decoration_addition_date_max').val();
+        d.decoration_addition_date_years_min = $('#decoration_addition_date_years_min').val();
+        d.decoration_addition_date_years_max = $('#decoration_addition_date_years_max').val();
+        
 
         d.formula_text = $('#formula_text').val();
         d.rite_name_from_ms = $('#rite_name_from_ms').val();

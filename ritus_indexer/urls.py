@@ -180,6 +180,13 @@ urlpatterns = [
     path('ritenames-autocomplete/',views.RiteNamesAutocomplete.as_view(),name='ritenames-autocomplete'),
     path('formulas-autocomplete/',views.FormulasAutocomplete.as_view(),name='formulas-autocomplete'),
 
+    #New [ ]TODO:
+    path('decoration-type-autocomplete/',views.DecorationTypeAutocomplete.as_view(),name='decoration-type-autocomplete'),
+    path('decoration-subtype-autocomplete/',views.DecorationSubtypeAutocomplete.as_view(),name='decoration-subtype-autocomplete'),
+    #DecorationTechniques
+    path('decoration-techniques-autocomplete/',views.DecorationTechniquesAutocomplete.as_view(),name='decoration-techniques-autocomplete'),
+    path('decoration-ornamented_text-autocomplete/',views.DecorationOrnamentedTextAutocomplete.as_view(),name='decoration-ornamented_text-autocomplete'),
+
 
     #ajax:
     path('main_info/', views.MainInfoAjaxView.as_view(), name='main_info'),
@@ -228,6 +235,7 @@ urlpatterns = [
     path('iommi-admin/', include(IommiAdmin.urls())),
 
     path('ms_tei/',views.ManuscriptTEIView.as_view(), name='ms_tei'),
+    path('manuscript_tei/', views.ManuscriptTEI.as_view(), name='manuscript_tei_xml'),
 
 
     path('ms_music_notation/<int:pk>/', views.MSMusicNotationView.as_view(), name='ms_music_notation'),

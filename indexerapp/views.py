@@ -8,7 +8,7 @@ from django.contrib.auth import login, authenticate
 
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Manuscripts, AttributeDebate, Content, Formulas, Subjects, RiteNames, ManuscriptMusicNotations, Provenance, Codicology, Layouts, TimeReference, Bibliography, EditionContent, BindingTypes, BindingStyles, BindingMaterials, Colours, Clla, Projects, MSProjects, BindingDecorationTypes, BindingComponents, Binding, ManuscriptBindingComponents,  UserOpenAIAPIKey
+from .models import Manuscripts, AttributeDebate, Decoration, Content, Formulas, Subjects, Characteristics, DecorationTechniques, RiteNames, ManuscriptMusicNotations, Provenance, Codicology, Layouts, TimeReference, Bibliography, EditionContent, BindingTypes, BindingStyles, BindingMaterials, Colours, Clla, Projects, MSProjects, DecorationTypes, BindingDecorationTypes, BindingComponents, Binding, ManuscriptBindingComponents,  UserOpenAIAPIKey
 from django.http import JsonResponse
 from django.contrib.contenttypes.models import ContentType
 
@@ -67,6 +67,10 @@ import io
 
 #For TEI:
 from xml.etree.ElementTree import Element, SubElement, tostring
+#For TEI XML Template:
+from django.views.generic import TemplateView
+from django.template.loader import render_to_string
+
 
 #for Registration:
 from django.contrib.auth.models import User, Group
@@ -888,6 +892,36 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
         if block_size_max and block_size_max.isdigit():
             queryset = queryset.filter(ms_binding__block_max__lte=int(block_size_max))
 
+        
+        #Decoration min/max:
+        decoration_size_height_min = self.request.query_params.get('decoration_size_height_min')
+        decoration_size_height_max = self.request.query_params.get('decoration_size_height_max')
+        decoration_size_width_min = self.request.query_params.get('decoration_size_width_min')
+        decoration_size_width_max = self.request.query_params.get('decoration_size_width_max')
+        decoration_addition_date_min = self.request.query_params.get('decoration_addition_date_min')
+        decoration_addition_date_max = self.request.query_params.get('decoration_addition_date_max')
+        decoration_addition_date_years_min = self.request.query_params.get('decoration_addition_date_years_min')
+        decoration_addition_date_years_max = self.request.query_params.get('decoration_addition_date_years_max')
+
+        if decoration_size_height_min and decoration_size_height_min.isdigit():
+            queryset = queryset.filter(ms_decorations__size_height_min__gte=int(decoration_size_height_min))
+        if decoration_size_height_max and decoration_size_height_max.isdigit():
+            queryset = queryset.filter(ms_decorations__size_height_max__lte=int(decoration_size_height_max))
+
+        if decoration_size_width_min and decoration_size_width_min.isdigit():
+            queryset = queryset.filter(ms_decorations__size_width_min__gte=int(decoration_size_width_min))
+        if decoration_size_width_max and decoration_size_width_max.isdigit():
+            queryset = queryset.filter(ms_decorations__size_width_max__lte=int(decoration_size_width_max))
+
+        if decoration_addition_date_min and decoration_addition_date_min.isdigit():
+            queryset = queryset.filter(ms_decorations__date_of_the_addition__century_from__gte=int(decoration_addition_date_min))
+        if decoration_addition_date_max and decoration_addition_date_max.isdigit():
+            queryset = queryset.filter(ms_decorations__date_of_the_addition__century_from__lte=int(decoration_addition_date_max))
+
+        if decoration_addition_date_years_min and decoration_addition_date_years_min.isdigit():
+            queryset = queryset.filter(ms_decorations__date_of_the_addition__year_from__gte=int(decoration_addition_date_years_min))
+        if decoration_addition_date_years_max and decoration_addition_date_years_max.isdigit():
+            queryset = queryset.filter(ms_decorations__date_of_the_addition__year_to__lte=int(decoration_addition_date_years_max))
 
         #New select values:
         parchment_colour_select = self.request.query_params.get('parchment_colour_select')
@@ -910,6 +944,19 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
         provenance_place_countries_select = self.request.query_params.get('provenance_place_countries_select')
         title_select = self.request.query_params.get('title_select')
         author_select = self.request.query_params.get('author_select')
+
+        #New decotation:
+        original_or_added_select = self.request.query_params.get('original_or_added_select')
+        location_on_the_page_select = self.request.query_params.get('location_on_the_page_select')
+        decoration_type_select = self.request.query_params.get('decoration_type_select')
+        decoration_subtype_select = self.request.query_params.get('decoration_subtype_select')
+        size_characteristic_select = self.request.query_params.get('size_characteristic_select')
+        monochrome_or_colour_select = self.request.query_params.get('monochrome_or_colour_select')
+        technique_select = self.request.query_params.get('technique_select')
+        ornamented_text_select = self.request.query_params.get('ornamented_text_select')
+        decoration_subject_select = self.request.query_params.get('decoration_subject_select')
+        decoration_colours_select = self.request.query_params.get('decoration_colours_select')
+        decoration_characteristics_select = self.request.query_params.get('decoration_characteristics_select')
 
         clla_liturgical_genre_select = self.request.query_params.get('clla_liturgical_genre_select')
         clla_provenance_place_select = self.request.query_params.get('clla_provenance_place_select')
@@ -997,6 +1044,64 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
             clla_provenance_place_select_ids = clla_provenance_place_select.split(';')
             for q in clla_provenance_place_select_ids:
                 queryset = queryset.filter(ms_clla__provenance=q)
+
+        if original_or_added_select: 
+            original_or_added_select_ids = original_or_added_select.split(';')
+            #queryset = queryset.filter(ms_decorations__original_or_added__in=original_or_added_select_ids)
+            for q in original_or_added_select_ids:
+                queryset = queryset.filter(ms_decorations__original_or_added=q)
+        if location_on_the_page_select: 
+            location_on_the_page_select_ids = location_on_the_page_select.split(';')
+            #queryset = queryset.filter(ms_decorations__location_on_the_page__in=location_on_the_page_select_ids)
+            for q in location_on_the_page_select_ids:
+                queryset = queryset.filter(ms_decorations__location_on_the_page=q)
+
+        if decoration_type_select: 
+            decoration_type_select_ids = decoration_type_select.split(';')
+            #queryset = queryset.filter(ms_decorations__decoration_type__in=decoration_type_select_ids)
+            for q in decoration_type_select_ids:
+                queryset = queryset.filter(ms_decorations__decoration_type=q)
+        if decoration_subtype_select: 
+            decoration_subtype_select_ids = decoration_subtype_select.split(';')
+            #queryset = queryset.filter(ms_decorations__decoration_subtype__in=decoration_subtype_select_ids)
+            for q in decoration_subtype_select_ids:
+                queryset = queryset.filter(ms_decorations__decoration_subtype=q)
+
+        if size_characteristic_select: 
+            size_characteristic_select_ids = size_characteristic_select.split(';')
+            #queryset = queryset.filter(ms_decorations__size_characteristic__in=size_characteristic_select_ids)
+            for q in size_characteristic_select_ids:
+                queryset = queryset.filter(ms_decorations__size_characteristic=q)
+        if monochrome_or_colour_select: 
+            monochrome_or_colour_select_ids = monochrome_or_colour_select.split(';')
+            #queryset = queryset.filter(ms_decorations__monochrome_or_colour__in=monochrome_or_colour_select_ids)
+            for q in monochrome_or_colour_select_ids:
+                queryset = queryset.filter(ms_decorations__monochrome_or_colour=q)
+        if technique_select: 
+            technique_select_ids = technique_select.split(';')
+            #queryset = queryset.filter(ms_decorations__technique__in=technique_select_ids)
+            for q in technique_select_ids:
+                queryset = queryset.filter(ms_decorations__technique=q)
+        if ornamented_text_select: 
+            ornamented_text_select_ids = ornamented_text_select.split(';')
+            #queryset = queryset.filter(ms_decorations__ornamented_text__in=ornamented_text_select_ids)
+            for q in ornamented_text_select_ids:
+                queryset = queryset.filter(ms_decorations__ornamented_text=q)
+        if decoration_subject_select: 
+            decoration_subject_select_ids = decoration_subject_select.split(';')
+            #queryset = queryset.filter(ms_decorations__decoration_subjects__subject__in=decoration_subject_select_ids)
+            for q in decoration_subject_select_ids:
+                queryset = queryset.filter(ms_decorations__decoration_subjects__subject=q)
+        if decoration_colours_select: 
+            decoration_colours_select_ids = decoration_colours_select.split(';')
+            #queryset = queryset.filter(ms_decorations__decoration_colours__colour__in=decoration_colours_select_ids)
+            for q in decoration_colours_select_ids:
+                queryset = queryset.filter(ms_decorations__decoration_colours__colour=q)
+        if decoration_characteristics_select: 
+            decoration_characteristics_select_ids = decoration_characteristics_select.split(';')
+            #queryset = queryset.filter(ms_decorations__decoration_characteristics__characteristics__in=decoration_characteristics_select_ids)
+            for q in decoration_characteristics_select_ids:
+                queryset = queryset.filter(ms_decorations__decoration_characteristics__characteristics=q)
 
 
         if len(formula_text)>1:
@@ -1122,10 +1227,29 @@ class LayoutsAjaxView(View):
 class DecorationAjaxView(View):
     def get(self, request, *args, **kwargs):
         pk = self.request.GET.get('ms')
+        decoration_type = self.request.GET.get('decoration_type')
+
         ms_instance = get_object_or_404(Manuscripts, id=pk)
         skip_fields = ['manuscript']  # Add any other fields to skip
         info_queryset = ms_instance.ms_decorations.all()
-        info_dict = [get_obj_dictionary(entry, skip_fields) for entry in info_queryset]
+
+        if decoration_type and len(decoration_type)>3 :
+            info_queryset = info_queryset.filter(decoration_type__name=decoration_type)
+
+        info_dict = []
+        for entry in info_queryset:
+            obj_dict = get_obj_dictionary(entry, skip_fields)
+            
+            # Fetching related subjects, colours, and characteristics
+            obj_dict['decoration_subjects'] = [str(sub.subject) for sub in entry.decoration_subjects.all()]
+            obj_dict['decoration_colours'] = [str(col.colour) for col in entry.decoration_colours.all()]
+            obj_dict['decoration_characteristics'] = [str(char.characteristics) for char in entry.decoration_characteristics.all()]
+            
+            obj_dict['entry_date'] = entry.entry_date.strftime('%Y-%m-%d')  # format date as string
+
+
+            info_dict.append(obj_dict)
+
 
         debate = []
         for instance in info_queryset:
@@ -1834,6 +1958,70 @@ class CharacteristicsAutocomplete(autocomplete.Select2QuerySetView):
 
         return qs
 
+#################################
+class DecorationTypeAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # Don't forget to filter out results depending on the visitor !
+        if not self.request.user.is_authenticated:
+            return DecorationTypes.objects.none()
+
+        qs = DecorationTypes.objects.all()
+        qs = qs.filter(parent_type__isnull=True)
+
+        if self.q:
+            qs = qs.filter(name__icontains=self.q)
+
+        return qs
+
+class DecorationSubtypeAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # Don't forget to filter out results depending on the visitor !
+        if not self.request.user.is_authenticated:
+            return DecorationTypes.objects.none()
+
+        qs = DecorationTypes.objects.all()
+        qs = qs.filter(parent_type__isnull=False)
+
+        if self.q:
+            qs = qs.filter(name__icontains=self.q)
+
+        return qs
+
+class DecorationTechniquesAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # Don't forget to filter out results depending on the visitor !
+        if not self.request.user.is_authenticated:
+            return DecorationTechniques.objects.none()
+
+        qs = DecorationTechniques.objects.all()
+
+        if self.q:
+            qs = qs.filter(name__icontains=self.q)
+
+        return qs
+
+class DecorationOrnamentedTextAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return Decoration.objects.none()
+
+        # Get distinct ornamented_text values        
+        qs = Decoration.objects.exclude(ornamented_text__isnull=True).exclude(ornamented_text__exact='').values('ornamented_text').distinct()
+
+        # Filter by ornamented_text if there's a search query
+        if self.q:
+            qs = qs.filter(ornamented_text__icontains=self.q)
+
+        return qs
+
+
+    def get_result_value(self, item):
+        return str(item['ornamented_text'])
+
+    def get_result_label(self, item):
+        return str(item['ornamented_text'])
+
+######################################
 class ScriptNamesAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         # Don't forget to filter out results depending on the visitor !
@@ -3603,3 +3791,33 @@ class ManuscriptTEIView(View):
 
         xml_content = xml_header + tostring(root, encoding="unicode")  
         return HttpResponse(xml_content, content_type="application/xml")
+
+class ManuscriptTEI(TemplateView):
+    template_name = 'manuscript.xml'  # Path to your template
+
+    def get(self, request, *args, **kwargs):
+        # Get ms_id from the GET parameters
+        ms_id = request.GET.get('ms')
+
+        # Retrieve manuscript from the database or return 404 if not found
+        manuscript = get_object_or_404(Manuscripts, id=ms_id)
+
+        # Render the XML template with the manuscript data
+        context = self.get_context_data(manuscript=manuscript)
+        xml_content = render_to_string(self.template_name, context)
+
+        # Prepare the response as XML
+        response = HttpResponse(xml_content, content_type="application/xml")
+        
+        #Uncomment for download:
+        #response['Content-Disposition'] = f'attachment; filename="manuscript_{ms_id}.xml"'
+        response['Content-Disposition'] = 'inline'  # Display inline instead of downloading
+
+
+        return response
+
+    # Optionally, you can override get_context_data to provide context
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['manuscript'] = kwargs['manuscript']
+        return context

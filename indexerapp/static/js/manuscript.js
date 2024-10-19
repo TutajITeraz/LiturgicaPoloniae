@@ -231,10 +231,10 @@ function init_layouts_table() {
                     let toText = row.where_in_ms_to;
 
                     //if(fromIndex)
-                    fromText = '<a  onclick="goToCanvasByLabel(\'' + row.where_in_ms_from + '\')">' + row.where_in_ms_from + '</a>';
+                    fromText = '<b><a  onclick="goToCanvasByLabel(\'' + row.where_in_ms_from + '\')">' + row.where_in_ms_from + '</a></b>';
 
                     //if(toIndex)
-                    toText = '<a  onclick="goToCanvasByLabel(\'' + row.where_in_ms_to + '\')">' + row.where_in_ms_to + '</a>';
+                    toText = '<b><a  onclick="goToCanvasByLabel(\'' + row.where_in_ms_to + '\')">' + row.where_in_ms_to + '</a></b>';
 
                     if (row.where_in_ms_from == row.where_in_ms_to || row.where_in_ms_to == '-')
                         return fromText;
@@ -344,10 +344,10 @@ function init_music_table() {
                     let toText = row.where_in_ms_to;
 
                     //if(fromIndex)
-                    fromText = '<a  onclick="goToCanvasByLabel(\'' + row.where_in_ms_from + '\')">' + row.where_in_ms_from + '</a>';
+                    fromText = '<b><a  onclick="goToCanvasByLabel(\'' + row.where_in_ms_from + '\')">' + row.where_in_ms_from + '</a></b>';
 
                     //if(toIndex)
-                    toText = '<a  onclick="goToCanvasByLabel(\'' + row.where_in_ms_to + '\')">' + row.where_in_ms_to + '</a>';
+                    toText = '<b><a  onclick="goToCanvasByLabel(\'' + row.where_in_ms_to + '\')">' + row.where_in_ms_to + '</a></b>';
 
                     if (row.where_in_ms_from == row.where_in_ms_to || row.where_in_ms_to == '-')
                         return fromText;
@@ -411,10 +411,10 @@ function init_content_table() {
                     let toText = row.where_in_ms_to;
 
                     //if(fromIndex)
-                    fromText = '<a  onclick="goToCanvasByLabel(\'' + row.where_in_ms_from + '\')">' + row.where_in_ms_from + '</a>';
+                    fromText = '<b><a  onclick="goToCanvasByLabel(\'' + row.where_in_ms_from + '\')">' + row.where_in_ms_from + '</a></b>';
 
                     //if(toIndex)
-                    toText = '<a  onclick="goToCanvasByLabel(\'' + row.where_in_ms_to + '\')">' + row.where_in_ms_to + '</a>';
+                    toText = '<b><a  onclick="goToCanvasByLabel(\'' + row.where_in_ms_to + '\')">' + row.where_in_ms_to + '</a></b>';
 
                     if (row.where_in_ms_from == row.where_in_ms_to || row.where_in_ms_to == '-')
                         return fromText;
@@ -557,10 +557,10 @@ function init_quires_table() {
                     let toText = row.where_in_ms_to;
 
                     //if(fromIndex)
-                    fromText = '<a  onclick="goToCanvasByLabel(\'' + row.where_in_ms_from + '\')">' + row.where_in_ms_from + '</a>';
+                    fromText = '<b><a  onclick="goToCanvasByLabel(\'' + row.where_in_ms_from + '\')">' + row.where_in_ms_from + '</a></b>';
 
                     //if(toIndex)
-                    toText = '<a  onclick="goToCanvasByLabel(\'' + row.where_in_ms_to + '\')">' + row.where_in_ms_to + '</a>';
+                    toText = '<b><a  onclick="goToCanvasByLabel(\'' + row.where_in_ms_to + '\')">' + row.where_in_ms_to + '</a></b>';
 
                     if (row.where_in_ms_from == row.where_in_ms_to || row.where_in_ms_to == '-')
                         return fromText;
@@ -583,10 +583,12 @@ function init_quires_table() {
 }
 
 //Decoration----------------------------------------------------------------
-var decoration_table
+
+/*
+var decoration_table;
 
 function init_decoration_table() {
-    var decoration_groupColumn = 0;
+    var decoration_groupColumn = 2;
     decoration_table = $('#decoration').DataTable({
         "ajax": {
             "url": pageRoot + '/decoration_info/?ms=' + manuscriptId,
@@ -598,38 +600,273 @@ function init_decoration_table() {
             { "data": "id", "title": "id"  , "visible": false },
             { "data": "decoration_type", "title": "Decoration type"  , "visible": false },
             { "data": "decoration_subtype", "title": "Decoration subtype" },
+            { "data": "size_characteristic", "title": "Size characteristic", "visible": false },
             { "data": "size_height_min", "title": "Size - height min", "visible": false },
             { "data": "size_height_max", "title": "Size - height max", "visible": false },
             { "data": "size_width_min", "title": "Size - width min", "visible": false },
             { "data": "size_width_max", "title": "Size - width max", "visible": false },
-            {
-                "data": "width",
-                "title": "Width",
-                "render": function (data, type, row, meta) {
+            { "data": "size", "title": "Size",
+                "render": function(data, type, row, meta) {
+                    let size_characteristic = row.size_characteristic;
+                    let width='';
+                    let height='';
                     if (row.size_width_min != '-' && row.size_width_max != '-' && row.size_width_min != row.size_width_max)
-                        return row.size_width_min + " mm - " + row.size_width_max + " mm";
+                        width = row.size_width_min + " mm - " + row.size_width_max + " mm";
                     else if (row.size_width_min != '-' && row.size_width_max != '-' ) // min == max
-                        return row.size_width_min + " mm ";
+                        width = row.size_width_min + " mm ";
                     else if (row.size_width_min != '-')
-                        return row.size_width_min  + " mm"
+                        width = row.size_width_min  + " mm"
                     else if (row.size_width_max != '-')
-                        return row.size_width_max + " mm"
-                    return '-';
+                        width = row.size_width_max + " mm"
+
+                    if (row.size_height_min != '-' && row.size_height_max != '-' && row.size_height_min != row.size_height_max)
+                        height = row.size_height_min + " mm - " + row.size_height_max + " mm";
+                    else if (row.size_height_min != '-' && row.size_height_max != '-' ) // min == max
+                        height = row.size_height_min + " mm ";
+                    else if (row.size_height_min != '-')
+                        height = row.size_height_min  + " mm"
+                    else if (row.size_height_max != '-')
+                        height = row.size_height_max + " mm"
+
+                    let dimensions = [width,height].join(" x ");
+                    if(dimensions<4)
+                        dimensions = '';
+                    
+                    return size_characteristic.toLowerCase()+' '+dimensions;
+            }},
+            { "data": "where_in_ms_from", "title": "Where in MS (from)", "visible": false },
+            { "data": "where_in_ms_to", "title": "Where in MS (to)", "visible": false },
+            {
+                "data": "where",
+                "title": "Where in MS",
+                "render": function (data, type, row, meta) {
+                    //let fromIndex = findCanvasIndexByLabel(row.where_in_ms_from);
+                    //let toIndex = findCanvasIndexByLabel(row.where_in_ms_to);
+
+                    let fromText = row.where_in_ms_from;
+                    let toText = row.where_in_ms_to;
+
+                    //if(fromIndex)
+                    fromText = '<b><a  onclick="goToCanvasByLabel(\'' + row.where_in_ms_from + '\')">' + row.where_in_ms_from + '</a></b>';
+
+                    //if(toIndex)
+                    toText = '<b><a  onclick="goToCanvasByLabel(\'' + row.where_in_ms_to + '\')">' + row.where_in_ms_to + '</a></b>';
+
+                    if (row.where_in_ms_from == row.where_in_ms_to || row.where_in_ms_to == '-')
+                        return fromText;
+                    return fromText + ' - ' + toText;
+                }
+            },
+            { "data": "content", "title": "content", "visible": false },
+            { "data": "calendar", "title": "calendar", "visible": false },
+            { "data": "rite_name_standarized", "title": "rite_name_standarized", "visible": false },
+            {
+                "data": "decorated_content",
+                "title": "Decorated content",
+                "render": function (data, type, row, meta) {
+                    //let fromIndex = findCanvasIndexByLabel(row.where_in_ms_from);
+                    //let toIndex = findCanvasIndexByLabel(row.where_in_ms_to);
+
+                    let content = row.content;
+                    let calendar = row.calendar;
+                    let rite_name_standarized = row.rite_name_standarized;
+
+                    if(content.length<2)
+                        content = '';
+                    if(calendar.length<2)
+                        calendar = '';
+                    if(rite_name_standarized.length<2)
+                        rite_name_standarized = '';
+
+
+
+                    return content+' '+calendar+' '+rite_name_standarized;
+                }
+            },
+
+            { "data": "location_on_the_page", "title": "Location on the page" },
+            { "data": "original_or_added", "title": "Original or added", "visible": false },
+            { "data": "monochrome_or_colour", "title": "Monochrome or colour", "visible": false },
+            //{ "data": "characteristic", "title": "Decoration characteristic" },
+            { 
+                "data": "decoration_subjects", 
+                "title": "Subjects",
+                "render": function(data, type, row) {
+                    return Array.isArray(data) ? data.join(", ") : data;
+                }
+            },
+            { 
+                "data": "decoration_colours", 
+                "title": "Colours",
+                "render": function(data, type, row) {
+                    return Array.isArray(data) ? data.join(", ") : data;
+                }
+                , "visible": false
+            },
+            { 
+                "data": "decoration_characteristics", 
+                "title": "Characteristics",
+                "render": function(data, type, row) {
+                    return Array.isArray(data) ? data.join(", ") : data;
                 }
             },
             {
-                "data": "height",
-                "title": "Height",
+                "data": "colour",
+                "title": "Colour",
                 "render": function (data, type, row, meta) {
-                    if (row.size_height_min != '-' && row.size_height_max != '-' && row.size_height_min != row.size_height_max)
-                        return row.size_height_min + " mm - " + row.size_height_max + " mm";
-                    else if (row.size_height_min != '-' && row.size_height_max != '-' ) // min == max
-                        return row.size_height_min + " mm ";
-                    else if (row.size_height_min != '-')
-                        return row.size_height_min  + " mm"
-                    else if (row.size_height_max != '-')
-                        return row.size_height_max + " mm"
-                    return '-';
+
+                    let monochrome_or_colour = row.monochrome_or_colour;
+                    let colours_list = row.decoration_colours;
+
+                    let html_text = '';
+
+                    if(monochrome_or_colour=='C')
+                        html_text = '<b>colour </b>'
+                    else if (monochrome_or_colour=='C')
+                        html_text = '<b>monochrome </b>'
+
+                    for(var c=0; c<colours_list.length; ++c)
+                    {
+                        var color_box = '<div style="border: 1px solid black; width: 1.1em; height:1.1em; display: inline-block; margin-right:0.5em;  margin-left: 1em; text-align: middle; background-color: '+colours_list[c]+';"></div>'
+                        html_text+=color_box
+                        html_text+="<span>"+colours_list[c]+"<span>"
+                    }
+
+                    return html_text;
+                }
+            },
+
+            { "data": "technique", "title": "Technique" },
+            { "data": "ornamented_text", "title": "Ornamented text" },
+            { "data": "date_of_the_addition", "title": "Addition Date" },
+            //{ "data": "comments", "title": "Comments" },
+            { "data": "authors", "title": "Authors", "visible": false },
+            { "data": "data_contributor", "title": "Data contributor", "visible": false },
+            { "data": "entry_date", "title": "Entry date", "visible": false },
+
+        ],
+        "order": [
+            [decoration_groupColumn, 'asc'],
+            { "data": "where_in_ms_from", "order": "asc" }      // Then sort by the "manuscript" column in descending order
+        ],
+        "createdRow": function (row, data, dataIndex) {
+            if (data.original_or_added == "ORIGINAL") {
+                $(row).addClass('medieval-row');
+            } else if (data.original_or_added == "ADDED") {
+                $(row).addClass('non-medieval-row');
+            }
+        },
+        "initComplete": function() {
+            displayDebate(decoration_table,"#decoration");
+            displayComments(decoration_table,"#decoration");
+            displaOriginalAddedLegend(decoration_table,"#decoration");
+            displayEntryDate(decoration_table,"#decoration");
+            displayUniqueAuthorsAndContributors(decoration_table,"#decoration");
+        },
+        "drawCallback": function (settings) {
+            var api = this.api();
+            var rows = api.rows({ page: 'current' }).nodes();
+            var last = null;
+
+            api.column(decoration_groupColumn, { page: 'current' })
+                .data()
+                .each(function (group, i) {
+                    if (last !== group) {
+                        $(rows)
+                            .eq(i)
+                            .before(
+                                '<tr class="table_group"><td colspan="12">' +
+                                group +
+                                '</td></tr>'
+                            );
+
+                        last = group;
+                    }
+                });
+        }
+    });
+}
+*/
+//TODO Dla pozostałych tabel
+
+var initials_table;
+
+var decoration_tables_initials = {
+    table: null,
+    tableSelector: '#initials',
+    typeQuery: 'initials',
+    ornamentedTextVisible: true,
+    displaySubsections: true,
+}
+
+var decoration_tables_miniatures = {
+    table: null,
+    tableSelector: '#miniatures',
+    typeQuery: 'miniatures',
+    ornamentedTextVisible: false,
+    displaySubsections: false,
+}
+
+var decoration_tables_borders_others = {
+    table: null,
+    tableSelector: '#borders_others',
+    typeQuery: 'Borders / Others',
+    ornamentedTextVisible: false,
+    displaySubsections: true,
+}
+
+
+function init_initials_table() {
+    init_decoration_table(decoration_tables_initials);
+}
+
+function init_borders_others_table(){
+    init_decoration_table(decoration_tables_borders_others);
+}
+
+function init_miniatures_table(){
+    init_decoration_table(decoration_tables_miniatures);
+}
+
+
+
+function init_decoration_table(table_info) {
+    var decoration_groupColumn = 2;
+    table_info.table = $(table_info.tableSelector).DataTable({
+        "ajax": {
+            "url": pageRoot + '/decoration_info/?ms=' + manuscriptId+'&decoration_type='+table_info.typeQuery,
+            "dataSrc": function (data) {
+                return data.data;
+            }
+        },
+        "bAutoWidth": false, 
+        "columns": [
+            { "data": "id", "title": "id"  , "visible": false },
+            { "data": "decoration_type", "title": "Decoration type"  , "visible": false },
+            { "data": "decoration_subtype", "title": "Decoration subtype" , "visible": false },
+            { "data": "ornamented_text", "title": "Ornamented text", "width": '15%', "visible": table_info.ornamentedTextVisible}, 
+            { "data": "content", "title": "content", "visible": false },
+            { "data": "calendar", "title": "calendar", "visible": false },
+            { "data": "rite_name_standarized", "title": "rite_name_standarized", "visible": false },
+            {
+                "data": "decorated_content",
+                "title": "Decorated content",
+                "render": function (data, type, row, meta) {
+                    //let fromIndex = findCanvasIndexByLabel(row.where_in_ms_from);
+                    //let toIndex = findCanvasIndexByLabel(row.where_in_ms_to);
+
+                    let content = row.content;
+                    let calendar = row.calendar;
+                    let rite_name_standarized = row.rite_name_standarized;
+
+                    if(content.length<2)
+                        content = '';
+                    if(calendar.length<2)
+                        calendar = '';
+                    if(rite_name_standarized.length<2)
+                        rite_name_standarized = '';
+
+                    return content+' '+calendar+' '+rite_name_standarized;
                 }
             },
             { "data": "where_in_ms_from", "title": "Where in MS (from)", "visible": false },
@@ -645,57 +882,218 @@ function init_decoration_table() {
                     let toText = row.where_in_ms_to;
 
                     //if(fromIndex)
-                    fromText = '<a  onclick="goToCanvasByLabel(\'' + row.where_in_ms_from + '\')">' + row.where_in_ms_from + '</a>';
+                    fromText = '<b><a  onclick="goToCanvasByLabel(\'' + row.where_in_ms_from + '\')">' + row.where_in_ms_from + '</a></b>';
 
                     //if(toIndex)
-                    toText = '<a  onclick="goToCanvasByLabel(\'' + row.where_in_ms_to + '\')">' + row.where_in_ms_to + '</a>';
+                    toText = '<b><a  onclick="goToCanvasByLabel(\'' + row.where_in_ms_to + '\')">' + row.where_in_ms_to + '</a></b>';
 
                     if (row.where_in_ms_from == row.where_in_ms_to || row.where_in_ms_to == '-')
                         return fromText;
                     return fromText + ' - ' + toText;
-                }
+                },
+                "width": '10%'
             },
             { "data": "location_on_the_page", "title": "Location on the page" },
-            { "data": "original_or_added", "title": "Original or added" },
-            { "data": "monochrome_or_colour", "title": "Monochrome or colour" },
-            { "data": "characteristic", "title": "Decoration characteristic" },
-            { "data": "technique", "title": "Technique" },
-            { "data": "ornamented_text", "title": "Ornamented text" },
+            { "data": "size_characteristic", "title": "Size characteristic", "visible": false },
+            { "data": "size_height_min", "title": "Size - height min", "visible": false },
+            { "data": "size_height_max", "title": "Size - height max", "visible": false },
+            { "data": "size_width_min", "title": "Size - width min", "visible": false },
+            { "data": "size_width_max", "title": "Size - width max", "visible": false },
+            { "data": "size", "title": "Size",
+                "render": function(data, type, row, meta) {
+                    let size_characteristic = row.size_characteristic;
+                    let width='';
+                    let height='';
+                    if (row.size_width_min != '-' && row.size_width_max != '-' && row.size_width_min != row.size_width_max)
+                        width = row.size_width_min + " mm - " + row.size_width_max + " mm";
+                    else if (row.size_width_min != '-' && row.size_width_max != '-' ) // min == max
+                        width = row.size_width_min + " mm ";
+                    else if (row.size_width_min != '-')
+                        width = row.size_width_min  + " mm"
+                    else if (row.size_width_max != '-')
+                        width = row.size_width_max + " mm"
+
+                    if (row.size_height_min != '-' && row.size_height_max != '-' && row.size_height_min != row.size_height_max)
+                        height = row.size_height_min + " mm - " + row.size_height_max + " mm";
+                    else if (row.size_height_min != '-' && row.size_height_max != '-' ) // min == max
+                        height = row.size_height_min + " mm ";
+                    else if (row.size_height_min != '-')
+                        height = row.size_height_min  + " mm"
+                    else if (row.size_height_max != '-')
+                        height = row.size_height_max + " mm"
+
+                    let dimensions = [width,height].join("<br /> x <br />");
+                    if(dimensions.length<16)
+                        dimensions = '';
+                    
+                    return size_characteristic.toLowerCase()+'<br />'+dimensions;
+                },
+                "className": "text-center",
+                "width": '12%'
+            },
+            { "data": "original_or_added", "title": "Original or added", "visible": false },
+            { "data": "monochrome_or_colour", "title": "Monochrome or colour", "visible": false },
+            /*{ "data": "characteristic", "title": "Decoration characteristic" },*/
+            { 
+                "data": "decoration_subjects", 
+                "title": "Subjects",
+                "render": function(data, type, row) {
+                    return Array.isArray(data) ? data.join(", ") : data;
+                },
+                "width": '10%'
+            },
+            { 
+                "data": "decoration_colours", 
+                "title": "Colours",
+                "render": function(data, type, row) {
+                    return Array.isArray(data) ? data.join(", ") : data;
+                }
+                , "visible": false
+            },
+            { 
+                "data": "decoration_characteristics", 
+                "title": "Characteristics",
+                "render": function(data, type, row) {
+                    return Array.isArray(data) ? data.join(", ") : data;
+                },
+                "width": '15%'
+            },
+            {
+                "data": "colour",
+                "title": "Colour",
+                "render": function (data, type, row, meta) {
+
+                    let monochrome_or_colour = row.monochrome_or_colour;
+                    let colours_list = row.decoration_colours;
+
+                    let html_text = '';
+
+                    if(monochrome_or_colour=='C')
+                        html_text = '<b>colour </b>'
+                    else if (monochrome_or_colour=='C')
+                        html_text = '<b>monochrome </b>'
+
+                    for(var c=0; c<colours_list.length; ++c)
+                    {
+                        var color_box = '<br /><div style="border: 1px solid black; width: 1.1em; height:1.1em; display: inline-block; margin-right:0.5em;  margin-left: 1em; text-align: middle; background-color: '+colours_list[c]+';"></div>'
+                        html_text+=color_box
+                        html_text+="<span>"+colours_list[c]+"<span>"
+                    }
+
+                    return html_text;
+                },
+                "width": '10%'
+            },
+
+            { "data": "technique", "title": "Technique" , "width": '15%'},
+            { "data": "date_of_the_addition", "title": "Addition Date" },
             //{ "data": "comments", "title": "Comments" },
             { "data": "authors", "title": "Authors", "visible": false },
             { "data": "data_contributor", "title": "Data contributor", "visible": false },
+            { "data": "entry_date", "title": "Entry date", "visible": false },
+
         ],
         "order": [
             [decoration_groupColumn, 'asc'],
             { "data": "where_in_ms_from", "order": "asc" }      // Then sort by the "manuscript" column in descending order
         ],
-        "initComplete": function() {
-            displayDebate(decoration_table,"#decoration");
-            displayUniqueAuthorsAndContributors(decoration_table,"#decoration");
+        "createdRow": function (row, data, dataIndex) {
+            if (data.original_or_added == "ORIGINAL") {
+                $(row).addClass('medieval-row');
+            } else if (data.original_or_added == "ADDED") {
+                $(row).addClass('non-medieval-row');
+            }
+        },
+        "initComplete": function (settings, json) {
+            displayDebate(table_info.table, table_info.tableSelector);
+            displayComments(table_info.table, table_info.tableSelector);
+            displaOriginalAddedLegend(table_info.table, table_info.tableSelector);
+            displayEntryDate(table_info.table, table_info.tableSelector);
+            displayUniqueAuthorsAndContributors(table_info.table, table_info.tableSelector);
+
+            // Get column information from DataTable settings
+            var columns = settings.aoColumns;
+
+            // Column names to check for null values
+            var columnsToCheck = ["decorated_content","location_on_the_page","decoration_subjects","technique","date_of_the_addition"];
+
+            // Get the DataTable instance
+            var table = this;
+
+            // Iterate over columns
+            columns.forEach(function (column, columnIndex) {
+                // Check if the column name matches the ones to be checked
+                if (columnsToCheck.includes(column.data)) {
+                    var isVisible = json.data.some(function (row) {
+                        return !(row[column.data] == 'None' || row[column.data] == null || row[column.data] == '' || row[column.data] == "-" );
+                    });
+
+                    // Set column visibility based on null values
+                    settings.oInstance.api().column(columnIndex).visible(isVisible);
+                }
+            });
+
+
         },
         "drawCallback": function (settings) {
             var api = this.api();
             var rows = api.rows({ page: 'current' }).nodes();
             var last = null;
 
-            api.column(decoration_groupColumn, { page: 'current' })
-                .data()
-                .each(function (group, i) {
-                    if (last !== group) {
-                        $(rows)
-                            .eq(i)
-                            .before(
-                                '<tr class="table_group"><td colspan="9">' +
-                                group +
-                                '</td></tr>'
-                            );
+            if(table_info.displaySubsections)
+            {
 
-                        last = group;
-                    }
-                });
+                api.column(decoration_groupColumn, { page: 'current' })
+                    .data()
+                    .each(function (group, i) {
+                        if (last !== group) {
+                            $(rows)
+                                .eq(i)
+                                .before(
+                                    '<tr class="table_group"><td colspan="12">' +
+                                    group +
+                                    '</td></tr>'
+                                );
+
+                            last = group;
+                        }
+                    });
+            
+            }
         }
     });
 }
+//init_miniatures_table
+//init_borders_others_table
+/*
+var origins_table;
+
+function init_origins_table() {
+    origins_table = $('#origins').DataTable({
+        "ajax": {
+            "url": pageRoot + '/origins_info/?ms=' + manuscriptId,
+            "dataSrc": function (data) {
+                return data.data;
+            }
+        },
+        "bAutoWidth": false, 
+        "columns": [
+            { "data": "id", "title": "id"  , "visible": false },
+            { "data": "origins_date", "title": "Origins date", "width": "10%" },
+            { "data": "origins_place", "title": "Origins place", "width": "30%"  },
+            { "data": "origins_comment", "title": "Origins comment", "width": "60%"  },
+            { "data": "provenance_comments", "title": "Provenance comments", "visible": false },
+            { "data": "authors", "title": "Authors", "visible": false },
+            { "data": "data_contributor", "title": "Data contributor", "visible": false }
+        ],
+        "initComplete": function() {
+            displayDebate(origins_table,"#origins");
+            displayUniqueAuthorsAndContributors(origins_table,"#origins");
+        }
+    });
+}
+
+*/
 
 //Condition----------------------------------------------------------------
 /*
@@ -752,6 +1150,8 @@ function init_origins_table() {
         }
     });
 }
+
+
 
 //Binding----------------------------------------------------------------
 /*
@@ -845,10 +1245,10 @@ function init_main_hands() {
                     let toText = row.where_in_ms_to;
 
                     //if(fromIndex)
-                    fromText = '<a  onclick="goToCanvasByLabel(\'' + row.where_in_ms_from + '\')">' + row.where_in_ms_from + '</a>';
+                    fromText = '<b><a  onclick="goToCanvasByLabel(\'' + row.where_in_ms_from + '\')">' + row.where_in_ms_from + '</a></b>';
 
                     //if(toIndex)
-                    toText = '<a  onclick="goToCanvasByLabel(\'' + row.where_in_ms_to + '\')">' + row.where_in_ms_to + '</a>';
+                    toText = '<b><a  onclick="goToCanvasByLabel(\'' + row.where_in_ms_to + '\')">' + row.where_in_ms_to + '</a></b>';
 
                     if (row.where_in_ms_from == row.where_in_ms_to || row.where_in_ms_to == '-')
                         return fromText;
@@ -929,10 +1329,10 @@ function init_additions_hands() {
                     let toText = row.where_in_ms_to;
 
                     //if(fromIndex)
-                    fromText = '<a  onclick="goToCanvasByLabel(\'' + row.where_in_ms_from + '\')">' + row.where_in_ms_from + '</a>';
+                    fromText = '<b><a  onclick="goToCanvasByLabel(\'' + row.where_in_ms_from + '\')">' + row.where_in_ms_from + '</a></b>';
 
                     //if(toIndex)
-                    toText = '<a  onclick="goToCanvasByLabel(\'' + row.where_in_ms_to + '\')">' + row.where_in_ms_to + '</a>';
+                    toText = '<b><a  onclick="goToCanvasByLabel(\'' + row.where_in_ms_to + '\')">' + row.where_in_ms_to + '</a></b>';
 
                     if (row.where_in_ms_from == row.where_in_ms_to || row.where_in_ms_to == '-')
                         return fromText;
@@ -1165,6 +1565,59 @@ function displayDebate(dataTable,divToAppend)
     $(divToAppend).after(uniqueValuesDiv);
 }
 
+function displayComments(dataTable,divToAppend)
+{
+    var all_data = dataTable.ajax.json();
+    var data = all_data.data;
+
+    var uniqueValuesDiv = $('<div class="printIt">');
+    var title = $('<h4 class="mt-6">Descriptive Details:</h4>');
+    uniqueValuesDiv.append(title);
+    uniqueValuesDiv.append('<hr />');
+
+    var list = $('<ol class="decoration_comment">');
+
+    /////////////////////////////////////////
+    var table = dataTable.table();
+    var last_subtype = "";
+
+    table.rows().every(function () {
+        var rowData = this.data();
+        var authors = "";
+        var subtypeText = "";
+
+        if(rowData.decoration_subtype != last_subtype)
+        {
+            last_subtype = rowData.decoration_subtype;
+            subtypeText = rowData.decoration_subtype+": ";
+        }
+
+        if (rowData.comments.length > 1)
+        {
+            if(subtypeText.length>1){
+            
+                var list_item = $('<li><h4>'+subtypeText+'</h4></li>');
+                list.append(list_item);
+            
+            }
+            var list_item = $(
+                '<li class="decoration_comment">' 
+                +'<div id="decoration_comment_'+rowData.id+'">'
+                +'  <span style="display: block;">'
+                +'      <b>'+rowData.ornamented_text+' </b>'
+                +      rowData.comments
+                +'  </span>'
+                +'</li><hr />');
+            list.append(list_item);
+        }
+    });
+
+    table.draw(false);
+
+    uniqueValuesDiv.append(list);
+    $(divToAppend).after(uniqueValuesDiv);
+}
+
 function displayUniqueAuthorsAndContributors(dataTable, divToAppend) {
     var table = dataTable.table();
 
@@ -1196,6 +1649,44 @@ function displayUniqueAuthorsAndContributors(dataTable, divToAppend) {
 
     $(divToAppend).after(uniqueValuesDiv);
 }
+
+function displayEntryDate(dataTable, divToAppend) {
+    var table = dataTable.table();
+    var uniqueDates = [];
+
+    table.rows().every(function () {
+        var rowData = this.data();
+        var date = rowData.entry_date;
+
+        if (!date) return;
+
+        if (!uniqueDates.includes(date)) {
+            uniqueDates.push(date);
+        }
+    });
+
+    // Sort dates (they are in yyyy-mm-dd format, so sorting as text works fine)
+    uniqueDates.sort();
+
+    var displayString = "";
+    if (uniqueDates.length >= 2) {
+        // Get first and last entry if there are 2 or more dates
+        var minDate = uniqueDates[0];
+        var maxDate = uniqueDates[uniqueDates.length - 1];
+        displayString = minDate + " - " + maxDate;
+    } else if (uniqueDates.length === 1) {
+        // If there's only one date, display that single date
+        displayString = uniqueDates[0];
+    }
+
+    // Render the result in a div below the table
+    var uniqueValuesDiv = $('<div>');
+    var combinedParagraph = '<p class="printIt"><strong>Entry date:</strong> ' + displayString + '</p>';
+    uniqueValuesDiv.append(combinedParagraph);
+
+    $(divToAppend).after(uniqueValuesDiv);
+}
+
 
 
 function displayScriptsLegend(dataTable, divToAppend) {

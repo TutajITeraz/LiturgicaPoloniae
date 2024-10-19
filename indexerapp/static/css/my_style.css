@@ -855,3 +855,46 @@ th {
     word-wrap: break-word; 
     white-space: normal; /* Needed for word-wrap to work */
   }
+
+
+  /* https://codepen.io/equinusocio/pen/OqpBKJ */
+  /* List */
+ul.decoration_comment {
+    counter-reset: index;  
+    padding: 0;
+  }
+  
+  /* List element */
+  li.decoration_comment {
+    counter-increment: index; 
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    box-sizing: border-box;
+  }
+  
+  
+  /* Element counter */
+  li.decoration_comment::before {
+    content: counters(index, ".", decimal-leading-zero);
+    font-size: 1.2rem;
+    text-align: right;
+    font-weight: bold;
+    min-width: 50px;
+    padding-right: 12px;
+    align-self: flex-start;
+  }
+  
+  
+  /* Element separation */
+  li.decoration_comment + li.decoration_comment {
+    border-top: 1px solid rgba(255,255,255,0.2);
+  }
+
+  a {
+    cursor: pointer;
+  }
+
+  .text-center{
+    text-align: center;
+  }

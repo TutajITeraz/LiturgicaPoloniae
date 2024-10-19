@@ -165,7 +165,7 @@ class Calendar(models.Model):
         return self.latin_name
 
 class DecorationSubjects(models.Model):
-    decoration = models.ForeignKey('Decoration', models.DO_NOTHING, related_name='decoration_subject')
+    decoration = models.ForeignKey('Decoration', models.DO_NOTHING, related_name='decoration_subjects')
     subject = models.ForeignKey('Subjects', models.DO_NOTHING, related_name='decoration_subject')
 
     class Meta:
@@ -191,7 +191,7 @@ class DecorationColours(models.Model):
 
 class DecorationCharacteristics(models.Model):
     decoration = models.ForeignKey('Decoration', models.DO_NOTHING, related_name='decoration_characteristics')
-    characteristics = models.ForeignKey('Characteristics', models.DO_NOTHING, related_name='decoration_colour')
+    characteristics = models.ForeignKey('Characteristics', models.DO_NOTHING, related_name='decoration_characteristics')
 
     class Meta:
         #managed = False
@@ -216,7 +216,7 @@ class Decoration(models.Model):
     decoration_type = models.ForeignKey('DecorationTypes', models.DO_NOTHING, related_name='decoration_type')
     decoration_subtype = models.ForeignKey('DecorationTypes', models.DO_NOTHING, related_name='decoration_subtype',blank=True, null=True)
 
-    size_characteristic = models.CharField(max_length=10,choices=[("SMALL", "small"),("1LINE", "1-line"),("3LINES", "2-lines"),("3LINES", "3-lines"),("1SYSTEM", "1-system"),("2SYSTEMS", "2-systems"),("FULL", "full page")], blank=True, null=True)
+    size_characteristic = models.CharField(max_length=10,choices=[("SMALL", "small"),("1LINE", "1-line"),("2LINES", "2-lines"),("3LINES", "3-lines"),("1SYSTEM", "1-system"),("2SYSTEMS", "2-systems"),("FULL", "full page")], blank=True, null=True)
     size_height_min = models.PositiveIntegerField(blank=True, null=True)
     size_height_max = models.PositiveIntegerField(blank=True, null=True)
 

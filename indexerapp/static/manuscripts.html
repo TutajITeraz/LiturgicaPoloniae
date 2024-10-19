@@ -558,11 +558,11 @@
                                 <div class="flex w-1/2">
                                     <div class="range_input">
                                         <label class="top_level_label range_label" for="ms_binding_date_years_min">min.</label>
-                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="ms_binding_date_years_min" min="0" max="22" />
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="ms_binding_date_years_min" min="0" max="2200" />
                                     </div>
                                     <div class="range_input ml-2">
                                         <label class="top_level_label range_label" for="ms_binding_date_years_max">max.</label>
-                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="ms_binding_date_years_max" min="0" max="22" />
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="ms_binding_date_years_max" min="0" max="2200" />
                                     </div>
                                 </div>
                             </div>
@@ -835,8 +835,132 @@
                             x-transition:leave-start="transform opacity-100 scale-100"
                             x-transition:leave-end="transform opacity-0 scale-90">
 
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Type</h2>
+                                <select class="manuscript_filter w-1/2" id="decoration_type_select" multiple style="width: 50% !important;"></select>
+                            </div>
 
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Subtype</h2>
+                                <select class="manuscript_filter w-1/2" id="decoration_subtype_select" multiple style="width: 50% !important;">
+                                </select>
+                            </div>
 
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Location</h2>
+                                <select class="manuscript_filter w-1/2" id="location_on_the_page_select" multiple style="width: 50% !important;">
+                                    <option value="WITHIN">within the column</option>
+                                    <option value="MARGIN">on the margin</option>
+                                    <option value="IN_TEXT">in the text line</option>
+                                </select>
+                            </div>
+
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Technique</h2>
+                                <select class="manuscript_filter w-1/2" id="technique_select" multiple style="width: 50% !important;"></select>
+                            </div>
+
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Ornamented text</h2>
+                                <select class="manuscript_filter w-1/2" id="ornamented_text_select" multiple style="width: 50% !important;"></select>
+                            </div>
+
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Subject</h2>
+                                <select class="manuscript_filter w-1/2" id="decoration_subject_select" multiple style="width: 50% !important;"></select>
+                            </div>
+
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Monochrome or colour</h2>
+                                <select class="manuscript_filter w-1/2" id="monochrome_or_colour_select" multiple style="width: 50% !important;">
+                                    <option value="M">monochromatic</option>
+                                    <option value="B">bicolor</option>
+                                    <option value="C">in colour</option>
+                                </select>
+                            </div>
+
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Colours</h2>
+                                <select class="manuscript_filter w-1/2" id="decoration_colours_select" multiple style="width: 50% !important;"></select>
+                            </div>
+
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Decoration characteristic</h2>
+                                <select class="manuscript_filter w-1/2" id="decoration_characteristics_select" multiple style="width: 50% !important;"></select>
+                            </div>
+
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Original / Added</h2>
+                                <select class="manuscript_filter w-1/2" id="original_or_added_select" multiple style="width: 50% !important;">
+                                    <option value="ORIGINAL">original</option>
+                                    <option value="ADDED">added</option>
+                                </select>
+                            </div>
+
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Addition date by centuries</h2>
+                                <div class="flex w-1/2">
+                                    <div class="range_input">
+                                        <label class="top_level_label range_label" for="decoration_addition_date_min">min.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="decoration_addition_date_min" min="0" max="22" />
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <label class="top_level_label range_label" for="decoration_addition_date_max">max.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="decoration_addition_date_max" min="0" max="22" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Addition date by years</h2>
+                                <div class="flex w-1/2">
+                                    <div class="range_input">
+                                        <label class="top_level_label range_label" for="decoration_addition_date_years_min">min.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="decoration_addition_date_years_min" min="0" max="2200" />
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <label class="top_level_label range_label" for="decoration_addition_date_years_max">max.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="decoration_addition_date_years_max" min="0" max="2200" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 mt-1 mb-2">
+                                <h2 class="w-1/2 flex items-center">Size characteristic</h2>
+                                <select class="manuscript_filter w-1/2" id="size_characteristic_select" multiple style="width: 50% !important;">
+                                    <option value="SMALL">small</option>
+                                    <option value="1LINE">1-line</option>
+                                    <option value="2LINES">2-lines</option>
+                                    <option value="3LINES">3-lines</option>
+                                    <option value="1SYSTEM">1-system</option>
+                                    <option value="2SYSTEMS">2-systems</option>
+                                    <option value="FULL">full page</option>
+                                </select>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Size height</h2>
+                                <div class="flex w-1/2">
+                                    <div class="range_input">
+                                        <label class="top_level_label range_label" for="decoration_size_height_min">min.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="decoration_size_height_min" min="0" max="1000" />
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <label class="top_level_label range_label" for="decoration_size_height_max">max.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="decoration_size_height_max" min="0" max="1000" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mx-3 my-1">
+                                <h2 class="w-1/2 flex items-center">Size width</h2>
+                                <div class="flex w-1/2">
+                                    <div class="range_input">
+                                        <label class="top_level_label range_label" for="decoration_size_width_min">min.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="decoration_size_width_min" min="0" max="1000" />
+                                    </div>
+                                    <div class="range_input ml-2">
+                                        <label class="top_level_label range_label" for="decoration_size_width_max">max.</label>
+                                        <input class="range_number p-[5px] border border-[#bbb] rounded" type="number" id="decoration_size_width_max" min="0" max="1000" />
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </li>
                     <li x-data="{ bib: false }" @click.away="bib = false"

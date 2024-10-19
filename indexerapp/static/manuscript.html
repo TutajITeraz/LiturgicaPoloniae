@@ -358,16 +358,36 @@
                             
                             <p class="printIt indent-8 m-3" x-text="(await getMSInfo()).manuscript.decoration_comments"></p>
                     
-
+                            <!--
                             <table x-init="init_decoration_table" id="decoration" class="table printIt table-striped  table-bordered table-hover" style="width:100%"></table>
+                            -->
+
+                            <div class="openbox open-lvl-1" x-data="{ open2: false }">
+                                <button @click="open2 = ! open2" class="w-full py-2 bg-[#997a62] toggle hover:bg-[#b9987f] text-white rounded text-white rounded font-semibold drop-shadow mt-2" x-bind:opened="open2"><span class="printIt title">Initials</span></button>
+                                
+                                <div class="open-inside"  x-show="open2" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
+                                    <table  x-init="init_initials_table" id="initials" class="table printIt table-striped  table-bordered table-hover" style="width:100%"></table>
+                                </div>
+                            </div>
+
+
+                        <div class="openbox open-lvl-1" x-data="{ open2: false }">
+                            <button @click="open2 = ! open2" class="w-full py-2 bg-[#997a62] toggle hover:bg-[#b9987f] text-white rounded text-white rounded font-semibold drop-shadow mt-2" x-bind:opened="open2"><span class="printIt title">Miniatures</span></button>
                             
-                            <h2 class="m-3 text-lg">Comments:</h2>
-                            <ol  class="printIt list-disc list-inside" >
-                                <template x-for="datarow in (await getDecorationInfo()).data">
-                                    <li x-text="datarow.comments">
-                                    </li>
-                                </template>
-                            </ol>
+                            <div class="open-inside"  x-show="open2" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
+                                <table  x-init="init_miniatures_table" id="miniatures" class="table printIt table-striped  table-bordered table-hover" style="width:100%"></table>
+                            </div>
+                        </div>
+
+
+                        <div class="openbox open-lvl-1" x-data="{ open2: false }">
+                            <button @click="open2 = ! open2" class="w-full py-2 bg-[#997a62] toggle hover:bg-[#b9987f] text-white rounded text-white rounded font-semibold drop-shadow mt-2" x-bind:opened="open2"><span class="printIt title">Borders / Others</span></button>
+                            
+                            <div class="open-inside"  x-show="open2" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
+                                <table  x-init="init_borders_others_table" id="borders_others" class="table printIt table-striped  table-bordered table-hover" style="width:100%"></table>
+                            </div>
+                        </div>
+
 
                         </div>
                     </div>

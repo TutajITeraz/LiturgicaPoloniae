@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="https://raw.githubusercontent.com/msdesc/consolidated-tei-schema/master/msdesc.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<?xml-model href="https://raw.githubusercontent.com/msdesc/consolidated-tei-schema/master/msdesc.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0" xml:id="manuscript_{{ manuscript.id }}">
+   <teiHeader>
+      <fileDesc>
+         <titleStmt>
+            <title>{{ manuscript.shelf_mark }}</title>
+            <title type="collection">{{ manuscript.name }}</title>
+            
+            {% for contributor in manuscript.data_contributor.all %}
+            <respStmt xml:id="main_contributor_{{ contributor.id }}">
+               <resp>Main Data contributor</resp>
+               <persName type="person">{{ contributor.first_name }} {{ contributor.last_name }}</persName>
+               <orgName>{{ contributor.affiliation }}</orgName>
+            </respStmt>
+            {% endfor %}
+            {% for author in manuscript.authors.all %}
+            <respStmt xml:id="main_author_{{ author.id }}">
+               <resp>Main Author</resp>
+               <persName type="person">{{ author.first_name }} {{ author.last_name }}</persName>
+               <orgName>{{ author.affiliation }}</orgName>
+            </respStmt>
+            {% endfor %}
+         </titleStmt>
+         <editionStmt>
+            <edition>Liturgica Poloniae. TEI Edition</edition>
+            <funder>
+               <orgName>
+                  <ref target="https://liturgica-poloniae.ihpan.edu.pl/">
+                     Liturgica Poloniae. Katalog polskich rękopisów liturgicznych. Cz. 1: do około 1300 r.
+                  </ref>
+               </orgName>
+            </funder>
+         </editionStmt>
+         <publicationStmt>
+            <publisher>
+               <name type="project">Liturgica Poloniae Project</name>
+               <orgName>Instytut Sztuki PAN</orgName>
+            </publisher>             
+            <distributor>
+               <persName>Paweł Figurski</persName>
+               <email>pawel.figurski.uw@gmail.com</email>
+            </distributor>
+         </publicationStmt>
+         <sourceDesc>
+            <msDesc xml:lang="lat" xml:id="{{ manuscript.id }}">
+               <msIdentifier>
+                  <country>{{ manuscript.contemporary_repository_place.country_today_eng }}</country>
+                  <settlement>{{ manuscript.contemporary_repository_place.city_today_eng }}</settlement>
+                  <repository>{{ manuscript.contemporary_repository_place.repository_today_eng }}</repository>
+                  <idno type="shelfmark">{{ manuscript.shelf_mark }}</idno>
+                  <msName xml:lang="la">{{ manuscript.name }}</msName>
+                  <altIdentifier type="external">
+                     <idno type="MSPL">{{ manuscript.foreign_id }}</idno>
+                  </altIdentifier>
+                  <altIdentifier type="external">
+                     <idno type="RISM">{{ manuscript.rism_id }}</idno>
+                  </altIdentifier>
+               </msIdentifier>
+               <head>
+                  <title type="main">{{ manuscript.name }}</title>
+                  <origPlace>
+                     <region>{{ manuscript.place_of_origin.country_today_eng }}</region>
+                     <settlement cert="low">{{ manuscript.place_of_origin.city_today_eng }}</settlement>
+                  </origPlace>
+                  <origDate notAfter="{{ manuscript.dating.year_to }}" notBefore="{{ manuscript.dating.year_from }}" calendar="Gregorian">
+                     {{ manuscript.dating.time_description }}
+                  </origDate>
+               </head>
+               <msContents>
+                  <summary>{{ manuscript.liturgical_genre_comment }}</summary>
+                  <textLang mainLang="la">Latin</textLang>
+
+                  {% for content in manuscript.ms_content.all %}
+                  <msItem xml:id="{{ content.id }}" n="{{ content.sequence_in_ms }}">
+                     <locus from="{{ content.where_in_ms_from }}" to="{{ content.where_in_ms_to }}">ff. {{ content.where_in_ms_from }}-{{ content.where_in_ms_to }}</locus>
+                     <title xml:lang="en" resp="content_author_{{ content.authors.first.id }}"></title>
+                     <note>{{ content.formula_text }}</note>
+                     <note>{{ content.formula.text }}</note>
+                     <rubric> {{ content.rite_name_from_ms }} </rubric>
+                  </msItem>
+                  {% endfor %}
+                </msContents>
+            </msDesc>
+         </sourceDesc>
+      </fileDesc>
+      <revisionDesc>
+         <change when="2024-06-21" xml:id="v01">First TEI version.</change>
+      </revisionDesc>
+   </teiHeader>
+</TEI>
