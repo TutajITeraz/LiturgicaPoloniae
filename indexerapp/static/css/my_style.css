@@ -898,3 +898,15 @@ ul.decoration_comment {
   .text-center{
     text-align: center;
   }
+
+  /* for ms formulas graph */
+
+  .selected-line {
+    stroke: black;
+    stroke-width: 4;
+}
+
+.selected-circle {
+    fill: black;
+    r: 15;  /* Podwójna wielkość w porównaniu do oryginalnej */
+}
