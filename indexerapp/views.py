@@ -3802,8 +3802,14 @@ class ManuscriptTEI(TemplateView):
         # Retrieve manuscript from the database or return 404 if not found
         manuscript = get_object_or_404(Manuscripts, id=ms_id)
 
+        medieval_hands = manuscript.ms_hands.filter(is_medieval=True)
+        added_hands = manuscript.ms_hands.filter(is_medieval=False)
+
         # Render the XML template with the manuscript data
         context = self.get_context_data(manuscript=manuscript)
+        context['medieval_hands'] = medieval_hands
+        context['added_hands'] = added_hands
+
         xml_content = render_to_string(self.template_name, context)
 
         # Prepare the response as XML

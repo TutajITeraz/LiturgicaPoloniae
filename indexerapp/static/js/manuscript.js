@@ -37,7 +37,9 @@ async function getMSInfo() {
 }
 
 async function getTEIUrl() {
-    return pageRoot + '/ms_tei/?ms=' + (await getMSInfo()).manuscript.id;
+    //return pageRoot + '/ms_tei/?ms=' + (await getMSInfo()).manuscript.id;
+
+    return pageRoot + '/manuscript_tei/?ms=' + (await getMSInfo()).manuscript.id;
 }
 
 async function getMSInfoFiltered() {

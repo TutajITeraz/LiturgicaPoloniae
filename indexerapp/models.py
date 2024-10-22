@@ -774,6 +774,21 @@ class Manuscripts(models.Model):
             txt += '(...)'
         return txt
 
+    def get_material(self):
+        """
+        FOR TEI 
+        Determines the material type for the manuscript based on all Quires.
+        Returns 'chart' if all are paper, 'perg' if all are parchment, and 'mixed' otherwise.
+        """
+        quire_materials = self.ms_quires.values_list('material', flat=True)
+
+        if all(material == 'paper' for material in quire_materials):
+            return 'chart'  # All paper
+        elif all(material == 'parchment' for material in quire_materials):
+            return 'perg'  # All parchment
+        else:
+            return 'mixed'  # Mixed materials
+
 class Projects(models.Model):
     name = models.CharField(max_length=64, default="Project Name")
 

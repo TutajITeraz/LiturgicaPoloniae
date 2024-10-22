@@ -74,14 +74,136 @@
 
                   {% for content in manuscript.ms_content.all %}
                   <msItem xml:id="{{ content.id }}" n="{{ content.sequence_in_ms }}">
-                     <locus from="{{ content.where_in_ms_from }}" to="{{ content.where_in_ms_to }}">ff. {{ content.where_in_ms_from }}-{{ content.where_in_ms_to }}</locus>
-                     <title xml:lang="en" resp="content_author_{{ content.authors.first.id }}"></title>
-                     <note>{{ content.formula_text }}</note>
-                     <note>{{ content.formula.text }}</note>
+                     <locus from="{{ content.where_in_ms_from }}" to="{{ content.where_in_ms_to }}" >ff. {{ content.where_in_ms_from }}-{{ content.where_in_ms_to }}</locus>
+                     <title xml:lang="en" resp="content_author_{{ content.authors.0 }}"></title>
+                     <note type="text_from_ms">{{ content.formula_text }}</note>
+                     <note type="standarized">{{ content.formula.text }}</note>
                      <rubric> {{ content.rite_name_from_ms }} </rubric>
                   </msItem>
                   {% endfor %}
                 </msContents>
+                <physDesc>
+                    <objectDesc form="codex">
+                        <supportDesc material="{{ manuscript.get_material }}">
+                            <support>
+                                {% for quire in manuscript.ms_quires.all %}
+                                <p>
+                                    <material>{{ quire.material }}</material>
+                                    <locus from="f{{ quire.where_in_ms_from }}" to="f{{ quire.where_in_ms_to }}">(ff. {{ quire.where_in_ms_from }} - {{ quire.where_in_ms_to }})</locus>
+                                </p>
+                                {% endfor %}
+                            </support>
+    
+                            <extent>
+                                <!-- docs: can be structured with seg @type = leaf | dimensions | object -->
+                                {% for codicology in manuscript.ms_codicology.all %}
+                                <dimensions unit="mm">
+                                    <height max="{{ codicology.page_size_max_height }}">page size: {{ codicology.page_size_max_height }}</height>
+                                    <width max="{{ codicology.page_size_max_width }}">x {{ codicology.page_size_max_width }} mm</width>
+                                </dimensions>
+                                {% endfor %}
+                            </extent>
+                            <condition>
+                                {% for condition in manuscript.ms_condition.all %}
+
+                                <p> damage: {{ condition.damage}};
+                                    parchment shrinkage: {{ condition.parchment_shrinkage}};
+                                    illegible_text: {{ condition.illegible_text }};
+                                    ink corrosion: {{ condition.ink_corrosion }}; 
+                                    copper_corrosion: {{ condition.copper_corrosion }}; 
+                                    powdering_or_cracking_paint_layer: {{ condition.powdering_or_cracking_paint_layer }}; 
+                                    conservation: {{ condition.conservation }}; 
+                                    conservation_date: {{ condition.conservation_date }}; 
+                                    darkening: {{ condition.darkening }}; 
+                                    water_staining: {{ condition.water_staining }}; 
+                                    historic_repairs: {{ condition.historic_repairs }}; 
+                                </p>
+                                <p>
+
+                                </p>
+                                <seg> {{ condition.comments}}
+                                </seg>
+                                {% endfor %}
+                            </condition>
+
+
+                        <!-- Other support description content -->
+                        </supportDesc>
+                        <layoutDesc>
+                            {% for layout in manuscript.ms_layouts.all %}
+                            <layout rulingMedium="{{ layout.ruling_method }}" n="{{ layout.name }}" columns="{{ layout.how_many_columns }}" writtenLines="{{ layout.lines_per_page_maximum }}">
+                                <formula notation="Muzerelle" resp="#KN">{{ layout.distance_between_horizontal_ruling }}</formula>
+                                <locus from="{{ layout.where_in_ms_from }}" to="{{ layout.where_in_ms_to }}">ff. {{ layout.where_in_ms_from }}–{{ layout.where_in_ms_to }}</locus>
+                                ; written space {{ layout.written_space_height_max }} × {{ layout.written_space_width_max }} mm;
+                                distance between vertical ruling 
+                                <measure type="distVerticalRuling"
+                                    unit="mm">{{ layout.distance_between_vertical_ruling }} mm;</measure> {{ layout.lines_per_page_maximum }} lines. 
+                            </layout>
+                            {% endfor %}
+                        </layoutDesc>
+                    </objectDesc>
+                    <handDesc>
+                        <!-- @hands optional, does not include later additions -->
+                        {% for hand in medieval_hands %}
+                        <handNote script="{{ hand.script_name }}" xml:id="{{ hand.hand }}">
+                            <term type="script">{{ hand.script_name }}</term>
+                            {{ hand.comment }}
+                        </handNote>
+                        {% endfor %}
+
+                    </handDesc>
+                    <musicNotation>
+                        <p>
+                            {{ manuscript.music_notation_comments }}
+                        </p>
+                    </musicNotation>
+                    <decoDesc>
+                        {% for decoration in manuscript.ms_decorations.all %}
+                        <decoNote type="{{ decoration.decoration_subtype }}">
+                            {{ decoration.comments }}
+                        </decoNote>
+                        {% endfor %}
+                    </decoDesc>
+                    <additions>
+
+                        {% for hand in added_hands %}
+                        <note type="addition">
+                            <locus from="{{ hand.where_in_ms_from }}" to="{{ hand.where_in_ms_to }}">ff. {{ hand.where_in_ms_from }}–{{ hand.where_in_ms_to }}</locus> 
+                            Additions
+                            <note hand="{{ hand.hand }}"><q>{{ hand.comment }}</q></note>
+                        </note>
+                        {% endfor %}
+                    </additions>
+                    <bindingDesc>
+                        {% for binding in manuscript.ms_binding.all %}
+                        <binding notAfter="{{ binding.date.year_to }}" notBefore="{{ binding.date.year_from }}">
+                            {{ binding.general_comments }}
+                        </binding>
+                        {% endfor %}
+                    </bindingDesc>
+                </physDesc>
+                <history>
+                  <!-- see https://git.io/msdescdoc#history -->
+                  <origin>
+                     <!-- see https://git.io/msdescdoc#origin -->
+                     <origPlace>
+                        <country>{{ manuscript.place_of_origin.country_today_eng }}</country>, <region>{{ manuscript.place_of_origin.region_today_eng }}</region>,
+                           <settlement>{{ manuscript.place_of_origin.city_today_eng }}</settlement>,
+                           <orgName>{{ manuscript.place_of_origin.repository_historic_latin }}</orgName>
+                     </origPlace>
+                     <origDate notAfter="{{ manuscript.dating.year_to }}" notBefore="{{ manuscript.dating.year_from }}" calendar="Gregorian">
+                        {{ manuscript.place_of_origin_comment }}
+                     </origDate>
+                     <!-- use additional origPlace and origDate elements if necessary --> 
+                     </origin>
+
+                    {% for provenance in manuscript.ms_provenance.all %}
+                    <provenance notBefore="{{ provenance.date_to }}" notAfter="{{ provenance.date_from }}" >
+                        {{ provenance.place }} : 
+                        {{ provenance.comment }}
+                    </provenance>
+                    {% endfor %}
+                 </history>
             </msDesc>
          </sourceDesc>
       </fileDesc>
