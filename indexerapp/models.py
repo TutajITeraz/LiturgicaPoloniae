@@ -744,6 +744,7 @@ class Manuscripts(models.Model):
     iiif_manifest_url = models.CharField(max_length=1024, blank=True, null=True)
     #zoteroCollection = models.CharField(max_length=64, blank=True, null=True)
     image = models.ImageField(upload_to='images/', blank=True, null=True)
+    pdf_url = models.CharField(max_length=1024, blank=True, null=True)
 
     general_comment = models.TextField(blank=True, null=True)
     form_of_an_item = models.CharField(max_length=2,choices=[("C", "CODEX"),("F", "FRAGMENT"),("P", "PALIMPSEST"),("L", "LOST")], blank=True, null=True)

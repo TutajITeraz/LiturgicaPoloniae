@@ -19,6 +19,19 @@ function setTableHeight() {
     $('#manuscriptPage').css('height', tableHeight + 'px');
 }
 
+function initZoomist()
+{
+    new Zoomist('.zoomist-container', {
+        // Optional parameters
+        maxScale: 2.5,
+        bounds: true,
+        // if you need slider
+        slider: true,
+        // if you need zoomer
+        zoomer: true
+    })
+}
+
 $(document).ready(function() {
     console.log('document ready function');
     setTimeout(function() {
@@ -904,6 +917,9 @@ function init_decoration_table(table_info) {
             { "data": "size", "title": "Size",
                 "render": function(data, type, row, meta) {
                     let size_characteristic = row.size_characteristic;
+                    if(!size_characteristic || size_characteristic=='-')
+                        size_characteristic=''
+
                     let width='';
                     let height='';
                     if (row.size_width_min != '-' && row.size_width_max != '-' && row.size_width_min != row.size_width_max)
@@ -924,7 +940,7 @@ function init_decoration_table(table_info) {
                     else if (row.size_height_max != '-')
                         height = row.size_height_max + " mm"
 
-                    let dimensions = [width,height].join("<br /> x <br />");
+                    let dimensions = [height,width].join("<br /> x <br />");
                     if(dimensions.length<16)
                         dimensions = '';
                     
@@ -971,9 +987,11 @@ function init_decoration_table(table_info) {
                     let html_text = '';
 
                     if(monochrome_or_colour=='C')
-                        html_text = '<b>colour </b>'
-                    else if (monochrome_or_colour=='C')
-                        html_text = '<b>monochrome </b>'
+                        html_text = '<b>in colour</b>'
+                    else if (monochrome_or_colour=='M')
+                        html_text = '<b>monochromatic</b>'
+                    else if (monochrome_or_colour=='B')
+                        html_text = '<b>bicolor</b>'
 
                     for(var c=0; c<colours_list.length; ++c)
                     {

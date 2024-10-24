@@ -233,7 +233,7 @@ ms_formulas_graph_init = function()
                     tooltip.transition()
                         .duration(200)
                         .style("opacity", .9);
-                    tooltip.html(`Formula: ${d.formula_id}<br>Sequence: ${d.sequence_in_ms}<br>${d.formula}`)
+                    tooltip.html(`Formula: ${d.formula_id}<br>Sequence: ${d.sequence_in_ms}<br>${d.rite_name}<br>${d.formula}`)
                         .style("left", `${event.pageX + 5}px`)
                         .style("top", `${event.pageY - 28}px`);
                 })

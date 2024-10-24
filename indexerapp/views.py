@@ -1247,6 +1247,11 @@ class DecorationAjaxView(View):
             
             obj_dict['entry_date'] = entry.entry_date.strftime('%Y-%m-%d')  # format date as string
 
+            #obj_dict['location_on_the_page'] = entry.get_location_on_the_page_display()
+            #obj_dict['size_characteristic'] = entry.get_size_characteristic_display()
+            obj_dict['location_on_the_page'] = entry.get_location_on_the_page_display() or entry.location_on_the_page
+            obj_dict['size_characteristic'] = entry.get_size_characteristic_display() or entry.size_characteristic
+
 
             info_dict.append(obj_dict)
 
@@ -3461,11 +3466,14 @@ class contentCompareJSON(View):
             for content_object in row['Values']:
                 formula_id = content_object.formula_id
                 formula = str(content_object.formula)
+                rite_name = content_object.rite_name_from_ms
+
                 reshaped_data.append({
                     'Table': row['Table'],
                     'formula_id': str(formula_id),
                     'sequence_in_ms': content_object.sequence_in_ms,
-                    'formula': formula
+                    'formula': formula,
+                    'rite_name': rite_name
                 })
 
         reshaped_df = pd.DataFrame(reshaped_data)
