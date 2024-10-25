@@ -431,10 +431,8 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         # Extract ordering parameters from DataTables formatted request
         order_column_index = int(self.request.query_params.get('order[0][column]', 0))
-
-        order_column_index = int(self.request.query_params.get('order[0][column]', 0))
-        order_column_name = self.request.query_params.get(f'columns[{order_column_index}][data]', 'name')
-        order_direction = self.request.query_params.get('order[0][dir]', 'asc')
+        order_column_name = self.request.query_params.get(f'columns[{order_column_index}][data]', 'main_script')
+        order_direction = self.request.query_params.get('order[0][dir]', 'dsc')
 
         name = self.request.query_params.get('name')
         foreign_id = self.request.query_params.get('foreign_id')

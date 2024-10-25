@@ -1,13 +1,10 @@
 
 <div x-init="content_comparator_init()" class="px-2">
-    <h1 class="text-[#0d1b2a] text-[32px] sm:text-[40pt] caudex-bold text-left mt-4 mb-3">Content browser</h1>
+    <h1 class="text-[#0d1b2a] text-[32px] sm:text-[40pt] caudex-bold text-left mt-4 mb-3">Two manuscripts comparison</h1>
  
     <div class="two_columns">
 
         <div class="left_column w-[50%]"  id="leftColumn">
-            <div class="h-12 block my-1">
-                <a class="text-[#0d1b2a] hover:text-[#070e16] hover:underline text-base" href="/static/page.html?p=ms_formulas_graph" >Formulas Comparison Interactive Graph</a>
-            </div>
             
             <div class="flex my-1 justify-center md:justify-normal">
                 <h2 class="flex items-center mr-5">Manuscript</h2>
@@ -18,9 +15,6 @@
         <div class="resizer w-[5px] bg-gray-300" id="resizer"></div>
           
         <div class="right_column w-[49%]" id="rightColumn">
-            <div class="h-12 block my-1">
-                <a class="text-[#0d1b2a] hover:text-[#070e16] hover:underline text-base" href="/static/page.html?p=ms_edition_graph" >Rites (Edition) Interactive Graph</a>
-            </div>
             
             <div class="flex my-1 justify-center md:justify-normal">
                 <h2 class="flex items-center mr-5">Manuscript</h2>
@@ -68,7 +62,5 @@
     table {
         display: table !important;
     }
-    table thead {
-        display: none;
-    }
+
 </style>

@@ -10,8 +10,18 @@ async function getAndShowSimilarMSbyEditionIndex(id,name)
 
     var ms_content = info.ms_content;
     var similar_ms = info.similar_ms;
+    //convert to array:
+    similar_ms = Object.values(similar_ms);
+
 
     var ms_content_count = ms_content.length;
+
+
+    similar_ms.sort((a, b) => {
+        const contentSimilarityA = (a.identical_edition_index_count / ms_content_count) * 100.0;
+        const contentSimilarityB = (b.identical_edition_index_count / ms_content_count) * 100.0;
+        return contentSimilarityB - contentSimilarityA;
+    });
 
     var ms_content_div = $('<div class="ms_content">');
     ms_content_div.append('<h2 class="content_header">'+name+'</h2>');
@@ -46,12 +56,12 @@ async function getAndShowSimilarMSbyEditionIndex(id,name)
         manuscript_description.append('<tr><td class="firsttd" class="firsttd">Content similarity:</td><td>'+Math.round(content_similarity * 100) / 100+'%</td><tr>');
         manuscript_description.append('<tr><td class="firsttd">Sequence similarity:</td><td>'+Math.round(sequence_similarity * 100) / 100+'%</td><tr>');
 
-        manuscript_description.append('<tr><td class="firsttd">How many rites in edition index:</td><td>'+manuscript.total_edition_index_count+'</td><tr>');
+        manuscript_description.append('<tr><td class="firsttd">Number of rites in the manuscript:</td><td>'+manuscript.total_edition_index_count+'</td><tr>');
         
         manuscript_description.append('<tr><td class="firsttd">How many rites are the same:</td><td>'+manuscript.identical_edition_index_count+'</td><tr>');
-        manuscript_description.append('<tr><td class="firsttd">How many rites are the same (and have same sequence no.):</td><td>'+manuscript.identical_edition_index_on_same_sequence_count+'</td><tr>');
-        manuscript_description.append('<tr><td class="firsttd">List of same edition indexes:</td><td>'+manuscript.identical_edition_index_list+'</td><tr>');
-        manuscript_description.append('<tr><td class="firsttd">List of all edition indexes:</td><td>'+manuscript.edition_index_list+'</td><tr>');
+        manuscript_description.append('<tr><td class="firsttd">How many rites are the same (and have the same sequence):</td><td>'+manuscript.identical_edition_index_on_same_sequence_count+'</td><tr>');
+        manuscript_description.append('<tr><td class="firsttd">A list of the same rites:</td><td>'+manuscript.identical_edition_index_list+'</td><tr>');
+        manuscript_description.append('<tr><td class="firsttd">Other rites included in the manuscript:</td><td>'+manuscript.edition_index_list+'</td><tr>');
 
         manuscript_div.append(manuscript_description);
 

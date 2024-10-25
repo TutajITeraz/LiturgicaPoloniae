@@ -1013,6 +1013,8 @@ manuscripts_init = function()
         "pagingType": "full_numbers",
         "pageLength": 25,
         "columns": [
+            { "data": "main_script", "title": "Main Script" , visible: false },
+
             { 
                 "data": "image", "title": "Image", "width": "220px",
                 "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
@@ -1071,7 +1073,6 @@ manuscripts_init = function()
             { "data": "shelf_mark", "title": "Shelf Mark" , visible: false },
             { "data": "place_of_origin", "title": "Place of origin" , visible: false },
             { "data": "dating", "title": "Dating" , visible: false },
-            { "data": "main_script", "title": "Main Script" , visible: false },
             /*{ "data": "how_many_columns_mostly", "title": "How Many Columns Mostly" , visible: false },
             { "data": "lines_per_page_usually", "title": "Lines per Page Usually" , visible: false },
             { "data": "how_many_quires", "title": "How Many Quires" , visible: false },*/
@@ -1079,6 +1080,9 @@ manuscripts_init = function()
             { "data": "music_notation", "title": "Music Notation" , visible: false },
             { "data": "binding_date", "title": "Binding Date" , visible: false }
             // Add more columns as needed
+        ],
+        "order": [
+            { "data": "main_script", "order": "desc" },  // Sort by the "manuscript_name" column in ascending order
         ]
     });
 

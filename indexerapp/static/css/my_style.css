@@ -864,17 +864,18 @@ ul.decoration_comment {
     padding: 0;
   }
   
-  /* List element */
+
+
   li.decoration_comment {
     counter-increment: index; 
     display: flex;
     align-items: center;
     padding: 12px 0;
     box-sizing: border-box;
+    margin-left: 20px;
   }
   
-  
-  /* Element counter */
+/*  
   li.decoration_comment::before {
     content: counters(index, ".", decimal-leading-zero);
     font-size: 1.2rem;
@@ -885,10 +886,13 @@ ul.decoration_comment {
     align-self: flex-start;
   }
   
-  
+*/
+
   /* Element separation */
   li.decoration_comment + li.decoration_comment {
     border-top: 1px solid rgba(255,255,255,0.2);
+    margin-top: 5px;
+    margin-bottom: 5px;
   }
 
   a {
