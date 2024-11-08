@@ -84,6 +84,9 @@ from django.contrib.auth import update_session_auth_hash
 #for api key getter setter
 from django.contrib.auth.decorators import login_required
 
+#for data export
+import csv
+
 #from zotero.forms import get_tag_formset
 
 ZOTERO_library_type = 'group'
@@ -514,9 +517,22 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
             # Assuming you want to search in 'name', 'author', and 'description' fields
             queryset = queryset.filter(
                 Q(name__icontains=search_value) |
+                Q(rism_id__icontains=search_value) |
                 Q(foreign_id__icontains=search_value) |
                 Q(shelf_mark__icontains=search_value) |
-                Q(common_name__icontains=search_value)
+                Q(common_name__icontains=search_value) |
+                
+                Q(place_of_origin__country_today_eng__icontains=search_value) |
+                Q(place_of_origin__region_today_eng__icontains=search_value) |
+                Q(place_of_origin__city_today_eng__icontains=search_value) |
+                Q(place_of_origin__repository_today_eng__icontains=search_value) |
+
+                Q(dating__time_description__icontains=search_value) |
+
+                Q(general_comment__icontains=search_value) |
+
+                Q(main_script__name__icontains=search_value)
+
                 #Q(contemporary_repository_place__icontains=search_value)
             )
 
@@ -1683,7 +1699,11 @@ class ManuscriptsAutocompleteMain(autocomplete.Select2QuerySetView):
 
 
         if self.q:
-            qs = qs.filter(name__icontains=self.q)
+            qs = qs.filter(
+                Q(name__icontains=self.q) |
+                Q(rism_id__icontains=self.q) |
+                Q(foreign_id__icontains=self.q)
+            )
 
         return qs
 
@@ -1696,7 +1716,11 @@ class ManuscriptsAutocomplete(autocomplete.Select2QuerySetView):
         qs = Manuscripts.objects.all()
 
         if self.q:
-            qs = qs.filter(name__icontains=self.q)
+            qs = qs.filter(
+                Q(name__icontains=self.q) |
+                Q(rism_id__icontains=self.q) |
+                Q(foreign_id__icontains=self.q)
+            )
 
         return qs
 
@@ -1904,7 +1928,19 @@ class ContributorsAutocomplete(autocomplete.Select2QuerySetView):
         qs = Contributors.objects.all()
 
         if self.q:
-            qs = qs.filter(formula_text__icontains=self.q)
+            # Rozdziel `self.q` na słowa
+            query_parts = self.q.split()
+            
+            # Budujemy skomplikowane zapytanie
+            query = Q()
+            for part in query_parts:
+                query &= (Q(initials__icontains=part) |
+                        Q(first_name__icontains=part) |
+                        Q(last_name__icontains=part))
+
+                
+            # Filtrujemy queryset na podstawie zapytania
+            qs = qs.filter(query)
 
         return qs
 
@@ -3163,6 +3199,9 @@ def get_obj_dictionary(obj, skip_fields):
                 info_strings[field_name] = "-"
             elif field_name == 'where_in_ms_from' or field_name == 'where_in_ms_to':
                 info_strings[field_name] =foliation(field)
+            elif field_name == 'form_of_an_item':
+                form_of_an_item_map = {key: value.lower() for key, value in obj._meta.get_field('form_of_an_item').choices}
+                info_strings[field_name] = form_of_an_item_map.get(field, field)  # Default to value if key not found            
             elif field_name == 'authors' and type(obj.authors) is not str:
                 info_strings[field_name] = [str(author) for author in obj.authors.all()]
             else:
@@ -3833,3 +3872,76 @@ class ManuscriptTEI(TemplateView):
         context = super().get_context_data(**kwargs)
         context['manuscript'] = kwargs['manuscript']
         return context
+
+
+
+class ContentCSVExportView(View):
+    def get(self, request, manuscript_id):
+        # Check if manuscript_id is valid
+        if not (0 < manuscript_id < 99999999):
+            return HttpResponse("Invalid manuscript ID.", status=400)
+
+        # Filter Content records based on manuscript_id
+        contents = Content.objects.filter(manuscript_id=manuscript_id)
+
+        # Prepare the response as a CSV file
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="content_export.csv"'
+
+        writer = csv.writer(response)
+        # Write header
+        writer.writerow([
+            "id", "manuscript_id", "formula_sequence_in_ms", "formula_id", "formula_text_from_ms",
+            "similarity_by_user", "where_in_ms_from", "where_in_ms_to", "rite_name_from_ms", "rite_id",
+            "rite_sequence_in_the_MS", "original_or_added", "biblical_reference", "reference_to_other_items",
+            "edition_index", "comments", "function_id", "subfunction_id", "liturgical_genre_id", "music_notation_id",
+            "quire_id", "section_id", "subsection_id", "contributor_id", "entry_date"
+        ])
+
+        # Write content rows
+        for content in contents:
+            writer.writerow([
+                content.id,
+                content.manuscript_id,
+                content.sequence_in_ms,
+                content.formula.id if content.formula else "",
+                content.formula_text,
+                content.similarity_by_user,
+                foliation(content.where_in_ms_from),
+                foliation(content.where_in_ms_to),
+                content.rite_name_from_ms,
+                content.rite.id if content.rite else "",
+                content.rite_sequence,
+                content.original_or_added,
+                content.biblical_reference,
+                content.reference_to_other_items,
+                str(content.edition_index) if content.edition_index else "",
+                content.comments,
+                str(content.function) if content.function else "",
+                str(content.subfunction) if content.subfunction else "",
+                str(content.liturgical_genre) if content.liturgical_genre else "",
+                content.music_notation.id if content.music_notation else "",
+                content.quire.id if content.quire else "",
+                str(content.section) if content.section else "",
+                str(content.subsection) if content.subsection else "",
+                content.data_contributor.id if content.data_contributor else "",
+                content.entry_date,
+            ])
+
+        return response
+
+
+
+class DeleteContentView(View):
+    def delete(self, request, manuscript_id):
+        # Check if the user is a superuser
+        if not request.user.is_superuser:
+            return HttpResponseForbidden("Only superusers can delete content.")
+
+        # Validate manuscript ID
+        manuscript = get_object_or_404(Manuscripts, pk=manuscript_id)
+        
+        # Delete all related content
+        deleted_count, _ = Content.objects.filter(manuscript_id=manuscript.id).delete()
+        
+        return JsonResponse({'status': 'success', 'deleted_count': deleted_count})

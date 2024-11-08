@@ -1287,7 +1287,7 @@ function init_main_hands() {
             { "data": "where_in_ms_from", "order": "asc" }      // Then sort by the "manuscript" column in descending order
         ],
         "createdRow": function (row, data, dataIndex) {
-            if (data.is_medieval == true || data.is_medieval == "true" || data.is_medieval == "yes") {
+            if (data.is_medieval == true || data.is_medieval == "true" || data.is_medieval == "yes" || data.is_medieval == "Yes") {
                 $(row).addClass('medieval-row');
             } else {
                 $(row).addClass('non-medieval-row');
@@ -1371,7 +1371,7 @@ function init_additions_hands() {
             { "data": "where_in_ms_from", "order": "asc" }      // Then sort by the "manuscript" column in descending order
         ],
         "createdRow": function (row, data, dataIndex) {
-            if (data.is_medieval == true || data.is_medieval == "true" || data.is_medieval == "yes") {
+            if (data.is_medieval == true || data.is_medieval == "true" || data.is_medieval == "yes" || data.is_medieval == "Yes") {
                 $(row).addClass('medieval-row');
             } else {
                 $(row).addClass('non-medieval-row');

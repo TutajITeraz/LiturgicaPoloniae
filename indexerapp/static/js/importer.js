@@ -59,6 +59,18 @@ function processData(csvData) {
             // Assuming results.data is an array of objects representing the CSV rows
             data = results.data;
 
+            // Loop through each row in the parsed data
+            data = data.map(row => {
+                // Apply the reverse foliation logic for where_in_ms_from and where_in_ms_to columns
+                if (row.where_in_ms_from) {
+                    row.where_in_ms_from = row.where_in_ms_from.replace(/r$/, '.1').replace(/v$/, '.2');
+                }
+                if (row.where_in_ms_to) {
+                    row.where_in_ms_to = row.where_in_ms_to.replace(/r$/, '.1').replace(/v$/, '.2');
+                }
+                return row;
+            });
+
             const columnNames = Object.keys(data[0]);
 
             tableName = ''
@@ -614,6 +626,18 @@ function handleServerResponse(response) {
     }
 }
 
+function downloadContentCSV() {
+
+    if (!(manuscriptId > 0 && manuscriptId < 99999999)) {
+        alert('You have to select a manuscript from the list!');
+        return;
+    }
+
+    // Trigger the download
+    const url = pageRoot+`/export/content/${manuscriptId}/`;
+    window.location.href = url;
+}
+
 importer_init = function()
 {
     console.log('importer_init');
@@ -636,6 +660,8 @@ importer_init = function()
         console.log(id);
 
         manuscriptId = id;
+        document.getElementById('download-csv-from-server').style.display = 'block';
+        document.getElementById("delete-ms-content").style.display = 'block';
 
         //content_table.columns(0).search(id).draw();
     });
@@ -664,3 +690,42 @@ importer_init = function()
     });
 }
 
+function deleteMSContent() {
+    if (!(manuscriptId > 0 && manuscriptId < 99999999)) {
+        alert('You have to select a manuscript from the list!');
+        return;
+    }
+
+    if (confirm('Are you sure you want to delete all content for this manuscript?')) {
+        fetch(pageRoot+`/delete/content/${manuscriptId}/`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')  // Include CSRF token for security
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert(`Successfully deleted ${data.deleted_count} items.`);
+            } else {
+                alert('Failed to delete content.');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}

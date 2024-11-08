@@ -242,6 +242,10 @@ urlpatterns = [
     #path('ms_content/<int:pk>/', views.MSContentView.as_view(), name='ms_content_view'),
     path('api/', include(router.urls)),
 
+    path('export/content/<int:manuscript_id>/', views.ContentCSVExportView.as_view(), name='content_csv_export'),
+        path('delete/content/<int:manuscript_id>/', views.DeleteContentView.as_view(), name='delete_content'),
+
+
     path(
         'iommi-page-test/',
         views.TestPage().as_view()

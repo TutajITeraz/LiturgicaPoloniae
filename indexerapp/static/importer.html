@@ -1,8 +1,8 @@
 
-<div x-init="importer_init()">
+<div x-init="importer_init()" class="px-2">
 
-    <h1>.csv content importer</h1>
-    <h2>1. Download and fill the file with data:</h2>
+    <h1 class="text-[#0d1b2a] text-[32px] sm:text-[40pt] caudex-bold text-left mt-4 mb-3" >Content importer</h1>
+    <h2 class="text-[16pt] text-[#0d1b2a] caudex-bold text-left mb-5">1. Download and fill the file with data:</h2>
     <ul>
         <li><a href="/static/files/Manuscripts_sample.csv">Manuscripts_sample.csv</a></li>
         <li><a href="/static/files/Bibliography_sample.csv">Bibliography_sample.csv</a></li>
@@ -14,19 +14,22 @@
         <li><a href="/static/files/TimeReference_sample.csv">TimeReference_sample.csv</a></li>
     </ul>
 
-    <h2>2. Upload .csv file:</h2>
+    <h2 class="text-[16pt] text-[#0d1b2a] caudex-bold text-left mb-5">2. Upload .csv file:</h2>
     <p>Drag & drop file below, or click and select it using system file browser.</p>
     <div id="upload-container" onclick="browseFile()" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
         <p>Upload .csv</p>
         <input type="file" id="file-input" style="display: none" onchange="handleFile()">
     </div>
 
-    <h2>3. Check the data:</h2>
+    <h2 class="text-[16pt] text-[#0d1b2a] caudex-bold text-left mb-5">3. Check the data:</h2>
     <div id="ms_selector">
         <h3>3.1. Select manuscript:</h3>
         <label for="ms_select">Manuscript:</label>
         <select class="manuscript_filter" id="ms_select">
         </select>
+        <button class="py-2 text-[#0d1b2a] font-semibold shadow drop-shadow-md bg-[#e8d3c3] rounded w-[200px] hover:bg-[#dec5b2] text-center mt-7" id="download-csv-from-server" onclick="downloadContentCSV()" style="display: none">Download data from the server as .csv</button>
+        <button class="py-2 text-[#0d1b2a] font-semibold shadow drop-shadow-md bg-[#e8d3c3] rounded w-[200px] hover:bg-[#dec5b2] text-center mt-7" id="delete-ms-content" onclick="deleteMSContent()" style="display: none">Delete all content</button>
+
     </div>
 
     <div id="contributor_selector">
@@ -44,8 +47,8 @@
     <p id="error-info"></p>
     <p id="loading-info">Sending data... please wait. Do NOT close this window</p>
     
-    <h2>4. Send data to the database:</h2>
-    <button id="send-to-server" onclick="sendToServer()" style="display: none">Send to database</button>
+    <h2 class="text-[16pt] text-[#0d1b2a] caudex-bold text-left mb-5" >4. Send data to the database:</h2>
+    <button class="py-2 text-[#0d1b2a] font-semibold shadow drop-shadow-md bg-[#e8d3c3] rounded w-[200px] hover:bg-[#dec5b2] text-center mt-7" id="send-to-server" onclick="sendToServer()" style="display: none">Send to database</button>
     
     
 </div>

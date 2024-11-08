@@ -441,7 +441,6 @@ class UserOpenAIAPIKey(models.Model):
         db_table = 'user_openai_api_key'
         verbose_name_plural = 'Users OpenAI API Keys'
 
-#TODO [X] rename to Content:
 class Content(models.Model):
 
     def calc_last_sequence():
@@ -768,10 +767,13 @@ class Manuscripts(models.Model):
 
     def __str__(self):
         txt = self.name
+        if self.rism_id:
+            txt = self.rism_id + ' ' + self.name
+
         if txt is None:
             return "noname"
-        if len(txt)>30:
-            txt = txt[0:30]
+        if len(txt)>60:
+            txt = txt[0:60]
             txt += '(...)'
         return txt
 
@@ -1221,8 +1223,8 @@ class ManuscriptHands(models.Model):
     script_name = models.ForeignKey(ScriptNames, models.DO_NOTHING)
     hand_name_in_ms = models.CharField(max_length=255, blank=True, null=True)
     sequence_in_ms = models.PositiveIntegerField()
-    where_in_ms_from = models.DecimalField(max_digits=5, decimal_places=1)
-    where_in_ms_to = models.DecimalField(max_digits=5, decimal_places=1)
+    where_in_ms_from = models.DecimalField(max_digits=5, decimal_places=1, blank=True, null=True)
+    where_in_ms_to = models.DecimalField(max_digits=5, decimal_places=1, blank=True, null=True)
     is_medieval = models.BooleanField(null=True)
     is_main_text = models.BooleanField(null=True)
     comment = models.TextField(blank=True, null=True)
