@@ -47,7 +47,7 @@ function askQuestion() {
 
     $.ajax({
         type: 'GET',
-        url: pageRoot+'/assistant/?q=' + question,
+        url: pageRoot+'/assistant/?project_id='+projectId+'&q=' + question,
         success: function (data) {
             loader.style.display = 'none';
             displayAnswer(data);

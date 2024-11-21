@@ -1144,8 +1144,9 @@ class assistantAjaxView(View):
 
     def get(self, request, *args, **kwargs):
         q = self.request.GET.get('q')
+        projectId = self.request.GET.get('project_id', None)
         #print(q)
-        sql_text = self.text_to_sql(request,q)
+        sql_text = self.text_to_sql(request,q,projectId)
 
 
         #print(sql)
@@ -1160,11 +1161,11 @@ class assistantAjaxView(View):
 
         return JsonResponse(data)
 
-    def text_to_sql(self, request, text):
+    def text_to_sql(self, request, text,projectId):
         
         #return generate_sql(text, fast=False)
 
-        return gpt_generate_sql(request,text)
+        return gpt_generate_sql(request,text,projectId)
 
 
     def sql_query(self,query):

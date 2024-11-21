@@ -728,7 +728,7 @@ input[type=password] {
 .decorated_right {
     text-align: left;
     color: #2e2e2e;
-    min-width: 120px;
+    min-width: 200px;
     display: inline-block;
 }
 
@@ -872,7 +872,7 @@ ul.decoration_comment {
     align-items: center;
     padding: 12px 0;
     box-sizing: border-box;
-    margin-left: 20px;
+    margin-left: 20px;f
   }
   
 /*  

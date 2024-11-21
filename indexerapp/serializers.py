@@ -171,16 +171,20 @@ class ManuscriptsSerializer(serializers.ModelSerializer):
             if provenances[0].place:
                 representation['ms_provenance']= provenances[0].place.country_today_eng
 
-        representation['folios_no'] = '-'
         representation['page_size_max_h'] = '-'
         representation['page_size_max_w'] = '-'
         codicology = instance.ms_codicology.all()
+        representation['folios_no'] = 0
         if len(codicology) > 0:
-            if codicology[0].number_of_paper_leaves and codicology[0].number_of_parchment_folios:
-                representation['folios_no'] = codicology[0].number_of_paper_leaves + codicology[0].number_of_parchment_folios
+            if codicology[0].number_of_paper_leaves:
+                representation['folios_no'] += codicology[0].number_of_paper_leaves
+            if codicology[0].number_of_parchment_folios:
+                representation['folios_no'] += codicology[0].number_of_parchment_folios
             representation['page_size_max_h'] = codicology[0].page_size_max_height
             representation['page_size_max_w'] = codicology[0].page_size_max_width
 
+        if not representation['folios_no']:
+            representation['folios_no'] = '-'
 
 
         return representation
