@@ -120,7 +120,7 @@ async function getUsername()
     const main_info = await getMainInfo();
     const user = main_info.username
 
-    if( user == "")
+    if( user == "" && page !='about')
 	    //alert('no user');
         window.location.href = "/static/login.html";
 

@@ -3115,7 +3115,7 @@ class BibliographyImportView(View):
         return obj.id if obj else None
 
 
-class Index(LoginRequiredMixin, View):
+class Index(View):
     template = 'index.html'
     login_url = '/login/'
 

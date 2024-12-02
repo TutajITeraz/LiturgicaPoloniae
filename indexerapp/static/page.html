@@ -146,10 +146,19 @@
             <div class="flex w-1/2">
               <a href="/"><img class="h-12 sm:h-16 md:h-[70px]" src="/static/img/logo_flat.svg"></img></a>
             </div>
-            <div class="flex w-1/2 justify-end items-center">
-              <a class="text-[10pt] sm:text-[14pt] text-[#d20000] underline hover:text-[#b20000] caudex-bold"
-                x-data="{  user: getUsername() } "
-                href="/static/page.html?p=user">Hello, <span x-text="user"></span>
+            <div class="flex w-1/2 justify-end items-center" x-data="{ user: '', async init() { this.user = await getUsername(); } }" x-init="init()">
+              <!-- Display "Hello, user" if user is not an empty string -->
+              <a x-show="user !== ''" 
+                 class="text-[10pt] sm:text-[14pt] text-[#d20000] underline hover:text-[#b20000] caudex-bold"
+                 :href="`/static/page.html?p=user`">
+                  Hello, <span x-text="user"></span>
+              </a>
+          
+              <!-- Display "login" link if user is an empty string -->
+              <a x-show="user === ''"
+                 class="text-[10pt] sm:text-[14pt] text-[#d20000] underline hover:text-[#b20000] caudex-bold"
+                 href="/static/login.html">
+                  Login
               </a>
             </div>
           </div>
