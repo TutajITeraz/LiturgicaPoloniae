@@ -908,7 +908,7 @@ function init_decoration_table(table_info) {
                 },
                 "width": '10%'
             },
-            { "data": "location_on_the_page", "title": "Location on the page" },
+            { "data": "location_on_the_page", "title": "Location on the page", "width": '10%' },
             { "data": "size_characteristic", "title": "Size characteristic", "visible": false },
             { "data": "size_height_min", "title": "Size - height min", "visible": false },
             { "data": "size_height_max", "title": "Size - height max", "visible": false },
@@ -923,7 +923,7 @@ function init_decoration_table(table_info) {
                     let width='';
                     let height='';
                     if (row.size_width_min != '-' && row.size_width_max != '-' && row.size_width_min != row.size_width_max)
-                        width = row.size_width_min + " mm - " + row.size_width_max + " mm";
+                        width = row.size_width_min + " - " + row.size_width_max + " mm";
                     else if (row.size_width_min != '-' && row.size_width_max != '-' ) // min == max
                         width = row.size_width_min + " mm ";
                     else if (row.size_width_min != '-')
@@ -932,7 +932,7 @@ function init_decoration_table(table_info) {
                         width = row.size_width_max + " mm"
 
                     if (row.size_height_min != '-' && row.size_height_max != '-' && row.size_height_min != row.size_height_max)
-                        height = row.size_height_min + " mm - " + row.size_height_max + " mm";
+                        height = row.size_height_min + " - " + row.size_height_max + " mm";
                     else if (row.size_height_min != '-' && row.size_height_max != '-' ) // min == max
                         height = row.size_height_min + " mm ";
                     else if (row.size_height_min != '-')
@@ -941,13 +941,17 @@ function init_decoration_table(table_info) {
                         height = row.size_height_max + " mm"
 
                     let dimensions = [height,width].join("<br /> x <br />");
-                    if(dimensions.length<16)
+                    if(width == '' && height != '')
+                        dimensions = height+" height"
+                    else if(height == '' && width != '')
+                        dimensions = width+" width"
+                    else if(dimensions.length<16)
                         dimensions = '';
                     
                     return size_characteristic.toLowerCase()+'<br />'+dimensions;
                 },
                 "className": "text-center",
-                "width": '12%'
+                "width": '15%'
             },
             { "data": "original_or_added", "title": "Original or added", "visible": false },
             { "data": "monochrome_or_colour", "title": "Monochrome or colour", "visible": false },
@@ -956,7 +960,7 @@ function init_decoration_table(table_info) {
                 "data": "decoration_subjects", 
                 "title": "Subjects",
                 "render": function(data, type, row) {
-                    return Array.isArray(data) ? data.join(", ") : data;
+                    return Array.isArray(data) ? data.join("; ") : data;
                 },
                 "width": '10%'
             },

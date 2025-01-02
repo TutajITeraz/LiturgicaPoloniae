@@ -2317,7 +2317,7 @@ class PlacesCountriesAutocomplete(autocomplete.Select2QuerySetView):
 class ContentImportView(View):
     def post(self, request, *args, **kwargs):
         try:
-            data = json.loads(request.body)
+            data = json.loads(request.body.decode('utf-8'))
             import_result = self.import_content(data)
 
             return import_result
@@ -2485,7 +2485,7 @@ class ContentImportView(View):
 class ManuscriptsImportView(View):
     def post(self, request, *args, **kwargs):
         try:
-            data = json.loads(request.body)
+            data = json.loads(request.body.decode('utf-8'))
             import_result = self.import_data(data)
 
             return import_result
@@ -2656,7 +2656,7 @@ class ManuscriptsImportView(View):
 class TimeReferenceImportView(View):
     def post(self, request, *args, **kwargs):
         try:
-            data = json.loads(request.body)
+            data = json.loads(request.body.decode('utf-8'))
             import_result = self.import_data(data)
             return import_result
         except Exception as e:
@@ -2716,7 +2716,7 @@ class TimeReferenceImportView(View):
 class EditionContentImportView(View):
     def post(self, request, *args, **kwargs):
         try:
-            data = json.loads(request.body)
+            data = json.loads(request.body.decode('utf-8'))
             import_result = self.import_data(data)
             return import_result
         except Exception as e:
@@ -2791,7 +2791,7 @@ class EditionContentImportView(View):
 class CllaImportView(View):
     def post(self, request, *args, **kwargs):
         try:
-            data = json.loads(request.body)
+            data = json.loads(request.body.decode('utf-8'))
             import_result = self.import_data(data)
             return import_result
         except Exception as e:
@@ -2867,7 +2867,7 @@ class CllaImportView(View):
 class PlacesImportView(View):
     def post(self, request, *args, **kwargs):
         try:
-            data = json.loads(request.body)
+            data = json.loads(request.body.decode('utf-8'))
             import_result = self.import_data(data)
             return import_result
         except Exception as e:
@@ -2943,7 +2943,7 @@ class PlacesImportView(View):
 class RiteNamesImportView(View):
     def post(self, request, *args, **kwargs):
         try:
-            data = json.loads(request.body)
+            data = json.loads(request.body.decode('utf-8'))
             import_result = self.import_data(data)
             return import_result
         except Exception as e:
@@ -3012,7 +3012,7 @@ class RiteNamesImportView(View):
 class FormulasImportView(View):
     def post(self, request, *args, **kwargs):
         try:
-            data = json.loads(request.body)
+            data = json.loads(request.body.decode('utf-8'))
             import_result = self.import_data(data)
             return import_result
         except Exception as e:
@@ -3064,7 +3064,7 @@ class FormulasImportView(View):
 class BibliographyImportView(View):
     def post(self, request, *args, **kwargs):
         try:
-            data = json.loads(request.body)
+            data = json.loads(request.body.decode('utf-8'))
             import_result = self.import_data(data)
             return import_result
         except Exception as e:

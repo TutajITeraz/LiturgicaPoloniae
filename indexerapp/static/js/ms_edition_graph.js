@@ -88,7 +88,7 @@ ms_edition_graph_init = function()
     function createChart(data) 
     {
         let chartHeight = $('#chart').height();
-        const margin = { top: 20, right: 30, bottom: 40, left: 150 },
+        const margin = { top: 20, right: 30, bottom: 40, left: 250 },
         width = getWidth() - margin.left - margin.right - 50,
         height = chartHeight - margin.top - margin.bottom;
     

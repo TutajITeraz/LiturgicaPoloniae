@@ -206,7 +206,7 @@ class Decoration(models.Model):
     original_or_added = models.CharField(max_length=10,choices=[("ORIGINAL", "original"),("ADDED", "added")], blank=True, null=True)
     date_of_the_addition = models.ForeignKey('TimeReference', models.DO_NOTHING, related_name='decoration_dating', blank=True, null=True)
 
-    content = models.ForeignKey('Content', models.DO_NOTHING, related_name='content_decoration', blank=True, null=True)
+    content = models.ForeignKey('Content', models.SET_NULL, related_name='content_decoration', blank=True, null=True)
     calendar = models.ForeignKey('Calendar', models.DO_NOTHING, related_name='calendar_decoration', blank=True, null=True)
 
     where_in_ms_from = models.DecimalField(max_digits=5, decimal_places=1)
@@ -1227,6 +1227,8 @@ class ManuscriptHands(models.Model):
     where_in_ms_to = models.DecimalField(max_digits=5, decimal_places=1, blank=True, null=True)
     is_medieval = models.BooleanField(null=True)
     is_main_text = models.BooleanField(null=True)
+    dating = models.ForeignKey(TimeReference, models.DO_NOTHING, blank=True, null=True)
+
     comment = models.TextField(blank=True, null=True)
 
     entry_date = models.DateTimeField(auto_now=True)
