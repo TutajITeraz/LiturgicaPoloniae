@@ -500,18 +500,20 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
 
         queryset = Manuscripts.objects.all()
 
-        print("projectId = "+str(projectId))
+        #print("projectId = "+str(projectId))
         if projectId != 0:
             queryset = queryset.filter(ms_projects__project__id=projectId)
 
         #Always only main
-        queryset = queryset.filter(display_as_main=True)
+        #queryset = queryset.filter(display_as_main=True)
 
         
         #Main search
         search_value = self.request.GET.get('search[value]', None)
 
-        print("search_value "+search_value)
+        #print("search_value "+search_value)
+
+        
 
         if search_value:
             # Assuming you want to search in 'name', 'author', and 'description' fields
@@ -1118,9 +1120,9 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
                 queryset = queryset.filter(ms_decorations__decoration_characteristics__characteristics=q)
 
 
-        if len(formula_text)>1:
+        if formula_text and len(formula_text)>1:
             queryset = queryset.filter(ms_content__formula_text__icontains=formula_text)
-        if len(rite_name_from_ms)>1:
+        if rite_name_from_ms and len(rite_name_from_ms)>1:
             queryset = queryset.filter(ms_content__rite_name_from_ms__icontains=rite_name_from_ms)
         
         if clla_no and len(clla_no)>=1:
@@ -1929,10 +1931,10 @@ class ContributorsAutocomplete(autocomplete.Select2QuerySetView):
         qs = Contributors.objects.all()
 
         if self.q:
-            # Rozdziel `self.q` na słowa
+            # Split  `self.q` into the words
             query_parts = self.q.split()
             
-            # Budujemy skomplikowane zapytanie
+            # Build query
             query = Q()
             for part in query_parts:
                 query &= (Q(initials__icontains=part) |
@@ -1940,7 +1942,7 @@ class ContributorsAutocomplete(autocomplete.Select2QuerySetView):
                         Q(last_name__icontains=part))
 
                 
-            # Filtrujemy queryset na podstawie zapytania
+            # Filter queryset
             qs = qs.filter(query)
 
         return qs
@@ -2491,7 +2493,7 @@ class ManuscriptsImportView(View):
             return import_result
             #return JsonResponse({'info': 'success'}, status=200)
         except Exception as e:
-            return JsonResponse({'info': f'error: {str(e)}'}, status=200)
+            return JsonResponse({'info': f'exception: {str(e)}'}, status=200)
 
     def import_data(self, data):
 
@@ -2510,8 +2512,8 @@ class ManuscriptsImportView(View):
                     return JsonResponse({'info': 'error: could not find value "'+row['dating']+'" in table TimeReference'}, status=200)
                 row['dating'] = new_dating 
 
-                print('contemporary repository place in row:')
-                print(row['contemporary_repository_place'])
+                #print('contemporary repository place in row:')
+                #print(row['contemporary_repository_place'])
 
                                 
 
@@ -2521,11 +2523,11 @@ class ManuscriptsImportView(View):
                         return JsonResponse({'info': 'error: could not find value "'+row['contemporary_repository_place']+'" in table Places'}, status=200)
                     row['contemporary_repository_place'] = new_contemporary_repository_place 
 
-                print('contemporary repository place in row:')
-                print(row['contemporary_repository_place'])                
+                #print('contemporary repository place in row:')
+                #print(row['contemporary_repository_place'])                
 
-                print('place_of_origin in row:')
-                print(row['place_of_origin'])   
+                #print('place_of_origin in row:')
+                #print(row['place_of_origin'])   
 
                 if row['place_of_origin']:
                     new_place_of_origin = self.get_id_by_name('Places', row.get('place_of_origin'), 'repository_today_eng')
@@ -2533,8 +2535,8 @@ class ManuscriptsImportView(View):
                         return JsonResponse({'info': 'error: could not find value "'+row['place_of_origin']+'" in table Places'}, status=200)
                     row['place_of_origin'] = new_place_of_origin 
                 
-                print('place_of_origin in row:')
-                print(row['place_of_origin'])   
+                #print('place_of_origin in row:')
+                #print(row['place_of_origin'])   
 
                 if row['main_script']:
                     new_main_script = self.get_id_by_name('ScriptNames', row.get('main_script'), 'name')
@@ -2660,7 +2662,7 @@ class TimeReferenceImportView(View):
             import_result = self.import_data(data)
             return import_result
         except Exception as e:
-            return JsonResponse({'info': f'error: {str(e)}'}, status=200)
+            return JsonResponse({'info': f'exception: {str(e)}'}, status=200)
 
     def import_data(self, data):
         content_list = []

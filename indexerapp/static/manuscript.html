@@ -52,7 +52,7 @@
                                 <span x-text="fvalue"></span>
 
                                 <th><div class="field-name"><span x-text="name"></span></div></th>
-                                <td>
+                                <td style="width: 100%">
                                     <span x-html="value"></span> <!-- <a data-popup="yes" href="{{ ms_comment_add_url_with_parameters }}{{ field }}">+</a>-->
                                     <template x-for="comment in (await getMSInfo()).debate">
                                     
@@ -105,7 +105,7 @@
                                         <th>
                                             <div class="field-name"><span x-text="name"></span></div>
                                         </th>
-                                        <td>
+                                        <td style="width: 100%">
                                             <span x-text="value"></span> <!-- <a data-popup="yes" href="{{ ms_comment_add_url_with_parameters }}{{ field }}">+</a>-->
                                         </td>
                                     </tr>
@@ -129,21 +129,21 @@
 
                                 <tr>
                                     <th>how many quires</th>
-                                    <td x-text="(await getMSInfo()).manuscript.how_many_quires"></td>
+                                    <td x-text="(await getMSInfo()).manuscript.how_many_quires" style="width: 100%"></td>
                                 </tr>
                                 <tr>
                                     <th>quires comment</th>
-                                    <td x-text="(await getMSInfo()).manuscript.quires_comment"></td>
+                                    <td x-text="(await getMSInfo()).manuscript.quires_comment" style="width: 100%"></td>
                                 </tr>
                                 <tr>
                                     <th>foliation or pagination</th>
-                                    <td x-text="(await getMSInfo()).manuscript.foliation_or_pagination"></td>
+                                    <td x-text="(await getMSInfo()).manuscript.foliation_or_pagination" style="width: 100%"></td>
                                 </tr>
                                 <template x-for="(fvalue, fname) in (await getCodicologyFiltered()).info">
                                     <tr x-data="getPrintableValues(fname, fvalue)">
 
                                         <th><div class="field-name"><span x-text="name"></span></div></th>
-                                        <td>
+                                        <td style="width: 100%">
                                             <span x-text="value"></span> <!-- <a data-popup="yes" href="{{ ms_comment_add_url_with_parameters }}{{ field }}">+</a>-->
                                             <template x-for="comment in (await getCodicologyInfo()).debate">
                                             

@@ -874,7 +874,8 @@ ul.decoration_comment {
     box-sizing: border-box;
     margin-left: 20px;f
   }
-  
+
+/* Element counter */  
 /*  
   li.decoration_comment::before {
     content: counters(index, ".", decimal-leading-zero);
