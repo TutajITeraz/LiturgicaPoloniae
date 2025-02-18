@@ -54,7 +54,7 @@ function askQuestion() {
         },
         error: function () {
             loader.style.display = 'none';
-            alert('Error fetching data.');
+            alert('Error fetching data. Check if you are logged in! Only logged users are allowed to use AI assistant. You should have OpenAI API Key set in you user preferences');
         },
         xhrFields: {
                 withCredentials: true

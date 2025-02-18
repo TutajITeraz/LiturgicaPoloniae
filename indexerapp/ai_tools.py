@@ -338,7 +338,7 @@ This is the db structure:
 "places","region_today_eng","varchar",use this if not told otherwise
 "places","city_today_eng","varchar",use this if not told otherwise
 "places","repository_today_eng","varchar",use this if not told otherwise
-"places","place_type","varchar", can be "library", "center" or "scriptory"
+"places","place_type","varchar", can be "library", "center", "scriptory" or "multiple"
 "quires","id","bigint"
 "quires","sequence_of_the_quire","int"
 "quires","type_of_the_quire","varchar", can be "bifolium","binion","ternion","quaternion","quinternion","seksternion","septernion","okternion"

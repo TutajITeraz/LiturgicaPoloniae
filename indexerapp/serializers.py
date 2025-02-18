@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from decimal import Decimal
+from collections import OrderedDict
+
 
 from .models import RiteNames, Provenance, Content, Manuscripts, Contributors, Quires, ManuscriptHands, Hands, ScriptNames, Contributors, Places, TimeReference, ScriptNames, Sections, ContentFunctions, ManuscriptMusicNotations, EditionContent
 
@@ -163,13 +165,33 @@ class ManuscriptsSerializer(serializers.ModelSerializer):
         representation['binding_date'] = str(instance.binding_date)
         representation['binding_place'] = str(instance.binding_place)
 
+        #Year:
+        representation['dating_year'] = 9999
+        if instance.dating:
+            representation['dating_year'] = str(instance.dating.year_from)
+
         # Get all Provenance objects for the manuscript, ordered by 'timeline_sequence'
         provenances = instance.ms_provenance.all().order_by('timeline_sequence')
 
-        representation['ms_provenance']= ''
-        if len(provenances) > 0 :
-            if provenances[0].place:
-                representation['ms_provenance']= provenances[0].place.country_today_eng
+        representation['ms_provenance'] = ''
+        if len(provenances) > 0:
+            ms_provenance = OrderedDict()  # Zachowanie kolejności i usunięcie duplikatów
+
+            for p in provenances:
+                if p.date_from and p.date_from.year_to <= 1501 and p.place:
+                    if p.place.repository_today_eng:
+                        ms_provenance[p.place.repository_today_eng] = None
+                    elif p.place.city_today_eng:
+                        ms_provenance[p.place.city_today_eng] = None
+                    elif p.place.region_today_eng:
+                        ms_provenance[p.place.region_today_eng] = None
+                    elif p.place.country_historic_eng:
+                        ms_provenance[p.place.country_historic_eng] = None
+
+            representation['ms_provenance'] = ' - '.join(ms_provenance.keys())  # Oryginalna kolejność bez duplikatów
+
+            #if provenances[0].place:
+            #    representation['ms_provenance']= provenances[0].place.country_today_eng
 
         representation['page_size_max_h'] = '-'
         representation['page_size_max_w'] = '-'

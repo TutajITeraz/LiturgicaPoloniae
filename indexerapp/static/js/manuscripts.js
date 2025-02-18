@@ -986,6 +986,9 @@ manuscripts_init = function()
         //d.display_as_main_false = $('#display_as_main_false').is(':checked');
 
         d.projectId = projectId;
+
+        d.order_column = 'dating__year_from';
+        d.order_direction = 'asc'
     }
 
     var manuscripts_table = $('#manuscripts').DataTable({
@@ -1027,7 +1030,7 @@ manuscripts_init = function()
                 "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
                         let html = "<h3 class='ms_name'><a href=/static/page.html?p=manuscript&id="+oData.id+">"+oData.rism_id+" "+oData.name+"</a></h3>"
                         +"<div class='left_script_content'>"
-                            +"<div class='ms_foreign_id'><span class='mspltext'> "+oData.contemporary_repository_place+':</span> '+oData.foreign_id+"<span class='mspltext'> ("+foreign_id_name+")</span>, "+oData.shelf_mark+"<span class='mspltext'> (Shelf mark)</span></div>"
+                            +"<div class='ms_foreign_id'><span class='mspltext'> "+oData.contemporary_repository_place+':</span> '+oData.foreign_id+"<span class='mspltext'> ("+foreign_id_name+")</span>, "+oData.shelf_mark+"<span class='mspltext'> (Shelfmark)</span></div>"
                             /*+"<div class='ms_contemporary_repository_place'><b>Contemporary repository place: </b>"+oData.contemporary_repository_place+"</div>"*/
                             +"<div class='ms_dating'><b>Dating: </b>"+oData.dating+"</div>"
                             +"<div class='ms_place_of_origin'><b>Place of origin: </b>"+oData.place_of_origin+"</div>"
@@ -1070,9 +1073,10 @@ manuscripts_init = function()
             { "data": "page_size_max_w", "title": "page_size_max_w" , visible: false },
             { "data": "foreign_id", "title": foreign_id_name , visible: false },
             { "data": "contemporary_repository_place", "title": "Contemporary Repository Place" , visible: false },
-            { "data": "shelf_mark", "title": "Shelf Mark" , visible: false },
+            { "data": "shelf_mark", "title": "Shelfmark" , visible: false },
             { "data": "place_of_origin", "title": "Place of origin" , visible: false },
             { "data": "dating", "title": "Dating" , visible: false },
+            { "data": "dating_year", "title": "dating_year" , visible: false },
             /*{ "data": "how_many_columns_mostly", "title": "How Many Columns Mostly" , visible: false },
             { "data": "lines_per_page_usually", "title": "Lines per Page Usually" , visible: false },
             { "data": "how_many_quires", "title": "How Many Quires" , visible: false },*/
@@ -1081,9 +1085,9 @@ manuscripts_init = function()
             { "data": "binding_date", "title": "Binding Date" , visible: false }
             // Add more columns as needed
         ],
-        "order": [
-            { "data": "main_script", "order": "desc" },  // Sort by the "manuscript_name" column in ascending order
-        ]
+        //"order": [
+        //    { "data": "dating_year", "order": "desc" },  // Sort by the "manuscript_name" column in ascending order
+        //]
     });
 
 

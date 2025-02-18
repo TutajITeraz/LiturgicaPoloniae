@@ -1837,6 +1837,77 @@ function handleResizerMouseMove(e) {
     }
 }
 
+function resizeMaxRight()
+{
+    const leftColumn = document.getElementById("leftColumn");
+    const rightColumn = document.getElementById("rightColumn");
+    const resizer = document.getElementById("resizer");
+
+    newLeftWidth = 1;
+
+    const containerWidth = leftColumn.offsetWidth + rightColumn.offsetWidth;
+
+    leftColumn.style.width = `${newLeftWidth}%`;
+    rightColumn.style.width = `${99 - newLeftWidth}%`;
+
+    const resizerPosition = (newLeftWidth / 100) * containerWidth;
+    resizer.style.left = `${newLeftWidth + 1}%`;
+}
+
+function submitSugestionsForm() {
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const message = document.getElementById('message').value;
+    const ms_signature = document.getElementById('ms_signature').value;
+    const captcha = document.getElementById('captcha').value;
+    const captchaKey = document.getElementById('captchaImage').dataset.key;
+
+    fetch('/improve_our_data/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+        body: JSON.stringify({ name, email, message, ms_signature, captcha, captcha_key: captchaKey })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message) {
+            alert(data.message);
+
+            if(data.success)
+            {
+                document.getElementById('message').value = '';
+                document.getElementById('captcha').value = '';
+            }
+            loadCaptcha();
+        }
+    })
+    .catch(() => {
+        document.getElementById('error').textContent = 'Error submitting form. Please try again.';
+    });
+}
+
+function loadCaptcha() {
+    fetch('/improve_our_data/',{ headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken')} })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('captchaImage').src = data.captcha_image;
+            document.getElementById('captchaImage').dataset.key = data.captcha_key;
+        });
+}
+
+async function initSugestionsForm() {
+    loadCaptcha();
+
+    document.getElementById('refreshCaptcha').addEventListener('click', loadCaptcha);
+
+    document.getElementById('contactForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        submitSugestionsForm();
+    });
+
+    document.getElementById('ms_signature').value = (await getMSInfo()).manuscript.name;
+}
+
+
 manuscript_init = function () {
     //RESIZER:
     const leftColumn = document.getElementById("leftColumn");
@@ -1983,6 +2054,10 @@ manuscript_init = function () {
         manifests = {}
         manifests[iiif_manifest_url] = { "provider": "external" }
 
+        //If left column is not needed
+        if( (!iiif_manifest_url || iiif_manifest_url=='-') && (!ms_info.manuscript.image || ms_info.manuscript.image=='-') 	&& (!ms_info.manuscript.pdf_url	|| ms_info.manuscript.pdf_url=='-') )
+            resizeMaxRight();
+
         mirador_config = {
             "id": "my-mirador",
             "manifests": manifests,
@@ -2104,7 +2179,7 @@ manuscript_init = function () {
         printDiv('rightColumn', 'Liturgica Poloniae');
     });
 
-    
+    initSugestionsForm();
 
 }
 

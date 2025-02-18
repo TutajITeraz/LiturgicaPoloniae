@@ -8,7 +8,7 @@ from django.contrib.auth import login, authenticate
 
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Manuscripts, AttributeDebate, Decoration, Content, Formulas, Subjects, Characteristics, DecorationTechniques, RiteNames, ManuscriptMusicNotations, Provenance, Codicology, Layouts, TimeReference, Bibliography, EditionContent, BindingTypes, BindingStyles, BindingMaterials, Colours, Clla, Projects, MSProjects, DecorationTypes, BindingDecorationTypes, BindingComponents, Binding, ManuscriptBindingComponents,  UserOpenAIAPIKey
+from .models import Manuscripts, AttributeDebate, Decoration, Content, Formulas, Subjects, Characteristics, DecorationTechniques, RiteNames, ManuscriptMusicNotations, Provenance, Codicology, Layouts, TimeReference, Bibliography, EditionContent, BindingTypes, BindingStyles, BindingMaterials, Colours, Clla, Projects, MSProjects, DecorationTypes, BindingDecorationTypes, BindingComponents, Binding, ManuscriptBindingComponents,  UserOpenAIAPIKey, ImproveOurDataEntry
 from django.http import JsonResponse
 from django.contrib.contenttypes.models import ContentType
 
@@ -41,6 +41,11 @@ from rest_framework_datatables.django_filters.backends import DatatablesFilterBa
 from rest_framework_datatables.django_filters.filterset import DatatablesFilterSet
 from rest_framework_datatables.django_filters.filters import GlobalFilter
 from django.db.models import Count
+
+#For sorting nulls last:
+from django.db.models import F
+
+
 
 
 #For assistant:
@@ -88,6 +93,13 @@ from django.contrib.auth.decorators import login_required
 import csv
 
 #from zotero.forms import get_tag_formset
+
+#For Suggestions captcha form:
+from django.views.generic.edit import CreateView
+
+from captcha.models import CaptchaStore
+from captcha.helpers import captcha_image_url
+
 
 ZOTERO_library_type = 'group'
 #ZOTERO_api_key = 'HhPM6AN8emREftJShQBRITeI' #'5hnxe02vaDuZJ8O4qkUAT6Ty'
@@ -433,9 +445,12 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         # Extract ordering parameters from DataTables formatted request
-        order_column_index = int(self.request.query_params.get('order[0][column]', 0))
-        order_column_name = self.request.query_params.get(f'columns[{order_column_index}][data]', 'main_script')
-        order_direction = self.request.query_params.get('order[0][dir]', 'dsc')
+
+
+        order_column_name = self.request.query_params.get('order_column', 'main_script')
+        #print('order_column_name:'+str(order_column_name))
+        order_direction = self.request.query_params.get('order_direction', 'dsc')
+        #print('order_direction:'+str(order_direction))
 
         name = self.request.query_params.get('name')
         foreign_id = self.request.query_params.get('foreign_id')
@@ -505,7 +520,7 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(ms_projects__project__id=projectId)
 
         #Always only main
-        #queryset = queryset.filter(display_as_main=True)
+        queryset = queryset.filter(display_as_main=True)
 
         
         #Main search
@@ -1130,19 +1145,18 @@ class ManuscriptsViewSet(viewsets.ModelViewSet):
 
 
     
-
         # Apply ordering to queryset
         if order_direction == 'asc':
-            queryset = queryset.order_by(order_column_name)
+            queryset = queryset.order_by(F(order_column_name).asc(nulls_last=True))
         else:
-            queryset = queryset.order_by(f'-{order_column_name}')
+            queryset = queryset.order_by(F(order_column_name).desc(nulls_last=True))
 
 
         return queryset.distinct()
 
     
 
-class assistantAjaxView(View):
+class assistantAjaxView(LoginRequiredMixin,View):
 
     def get(self, request, *args, **kwargs):
         q = self.request.GET.get('q')
@@ -1614,7 +1628,7 @@ class ProvenanceAjaxView(View):
             name = '-'
             if p.place:
                 name = p.place.repository_today_eng
-                if len(name)<3:
+                if (not name) or (name and  len(name)<3):
                     name = p.place.repository_today_local_language
             
                 markers.append({
@@ -3948,3 +3962,36 @@ class DeleteContentView(View):
         deleted_count, _ = Content.objects.filter(manuscript_id=manuscript.id).delete()
         
         return JsonResponse({'status': 'success', 'deleted_count': deleted_count})
+
+
+class ImproveOurDataFormView(View):
+    def post(self, request):
+        data = json.loads(request.body)
+        name = data.get('name')
+        ms_signature = data.get('ms_signature')
+        email = data.get('email')
+        message = data.get('message')
+        captcha = data.get('captcha')
+        captcha_key = data.get('captcha_key')
+
+        # Validate captcha
+        try:
+            stored_captcha = CaptchaStore.objects.get(hashkey=captcha_key)
+            if captcha.lower() == stored_captcha.response.lower():
+                ImproveOurDataEntry.objects.create(
+                    name=name,
+                    ms_signature=ms_signature,
+                    email=email,
+                    message=message
+                )
+                stored_captcha.delete()
+                return JsonResponse({"message": "Thank you! Form submitted successfully.", "success": True})
+            else:
+                return JsonResponse({"message": "Invalid captcha."}, status=400)
+        except CaptchaStore.DoesNotExist:
+            return JsonResponse({"message": "Invalid captcha key."}, status=400)
+
+    def get(self, request):
+        new_captcha = CaptchaStore.generate_key()
+        captcha_image = captcha_image_url(new_captcha)
+        return JsonResponse({"captcha_key": new_captcha, "captcha_image": captcha_image})

@@ -66,9 +66,9 @@
                 return;
             }
 
-            var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{10,}$/;
+            var passwordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[^A-Za-z0-9]).{10,}$/;
             if (!passwordRegex.test(password)) {
-                errorElement.textContent = 'Password must be at least 10 characters long, contain both uppercase and lowercase letters, and at least one number.';
+                errorElement.textContent = 'Password must be at least 10 characters long, contain both uppercase and lowercase letters, at least one number and at least one special character';
                 return;
             }
 

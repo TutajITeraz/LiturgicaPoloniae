@@ -610,7 +610,7 @@ class Places(models.Model):
     longitude = models.FloatField(validators=[MinValueValidator(-180.0), MaxValueValidator(180.0)], blank=True, null=True)
     latitude = models.FloatField(validators=[MinValueValidator(-90.0), MaxValueValidator(90.0)], blank=True, null=True)
 
-    place_type = models.CharField(max_length=10,choices=[("library", "library"),("center", "center"),("scriptory","scriptory")], blank=True, null=True)
+    place_type = models.CharField(max_length=10,choices=[("library", "library"),("center", "center"),("scriptory","scriptory"),("multiple","multiple")], blank=True, null=True)
 
     country_today_eng = models.CharField(max_length=64, blank=True, null=True)
     region_today_eng = models.CharField(max_length=64, blank=True, null=True)
@@ -707,6 +707,20 @@ class ScriptNames(models.Model):
             txt = txt[0:30]
             txt += '(...)'
         return txt
+
+class ImproveOurDataEntry(models.Model):
+    name = models.CharField(max_length=1024)
+    ms_signature = models.CharField(max_length=1024)
+    email = models.EmailField(max_length=1024, blank=True, null=True)
+    message = models.TextField()
+
+    changes_made = models.BooleanField(null=True, default=False)
+    checked_by = models.ForeignKey('Contributors', models.DO_NOTHING, related_name='%(class)s_checked_by', null=True, blank=True)
+    entry_date = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.ms_signature
+
 
 class Manuscripts(models.Model):
     name = models.CharField(max_length=255)

@@ -537,9 +537,42 @@
                 </div>
             </template>
 
-            <div class="flex gap-x-4">
+            <div x-data="{ 'isModalOpen': false }"  class="flex gap-x-4">
                 <a class="py-2 px-1 sm:py-4 sm:px-6 bg-[#795a42] hover:bg-[#997a62] text-white font-semibold rounded drop-shadow text-base mt-5" href="#" type="button" id="btnPrint"><img class="button-icon" src="/static/img/icons/print.svg" /> Print</a>
                 <a class="py-2 px-1 sm:py-4 sm:px-6 bg-[#795a42] hover:bg-[#997a62] text-white font-semibold rounded drop-shadow text-base mt-5" target="_blank" x-bind:href="(await getTEIUrl())"><img class="button-icon" src="/static/img/icons/xmltei.svg" /> TEI XML File</a>
+            
+                <a class="py-2 px-1 sm:py-4 sm:px-6 bg-[#795a42] hover:bg-[#997a62] text-white font-semibold rounded drop-shadow text-base mt-5" href="#" type="button" x-on:click="isModalOpen = true">
+                    <img class="button-icon" src="/static/img/icons/improve.svg" /> Improve our data</a>
+                <div
+                    class="modal"
+                    role="dialog"
+                    tabindex="-1"
+                    x-show="isModalOpen"      
+                    x-on:click.away="isModalOpen = false"
+                    x-cloak
+                    x-transition
+                    >
+                    <div class="model-inner">
+                        <div class="modal-header">
+                            <h3>Improve our data</h3>
+                            <button aria-label="Close" x-on:click="isModalOpen = false">✖</button>
+                        </div>
+                        <form class="sugestions" id="contactForm">
+                            <input class="sugestions"  type="text" id="name" placeholder="Your Name" required>
+                            <input class="sugestions"  type="email" id="email" placeholder="Your Email (optional)">
+                            <input class="sugestions"  type="text" id="ms_signature" placeholder="MS Signature" required>
+                            <textarea class="sugestions"  id="message" placeholder="Your Message" required></textarea>
+                            <div>
+                                <img id="captchaImage" alt="Captcha">
+                                <button  class="sugestions"  type="button" id="refreshCaptcha">Refresh</button>
+                            </div>
+                            <input class="sugestions"  type="text" id="captcha" placeholder="Enter Captcha" required>
+                            <button class="sugestions"  type="submit">Submit</button>
+                            <div class="sugestions-error" id="error"></div>
+                        </form>
+                    </div>
+                </div>
+                <div class="overlay" x-show="isModalOpen" x-cloak></div>
             </div>
         </div>
     </div>
@@ -625,6 +658,50 @@
     #provenance tr td:nth-child(2) {
         width: 250px;
     }*/
+
+
+    [x-cloak] {
+        display: none !important;
+      }
+      .modal {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        left: 0;
+        top: 220px;
+        z-index: 2001;
+        width: 100%;
+        height: 100%;
+      }
+      .model-inner {
+        background-color: white;
+        border-radius: 0.5em;
+        max-width: 600px;
+        padding: 2em;
+        margin: auto;
+      }
+      .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 2px solid black;
+      }     
+      .overlay {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background: black;
+        opacity: 0.75;
+        z-index: 2000;
+      }
+
+    .sugestions form { max-width: 400px; margin: auto; padding: 1em; background: #f9f9f9; border-radius: 5px; }
+    .sugestions input, textarea { width: 100%; padding: 0.7em; margin-bottom: 1em; border: 1px solid #ccc; border-radius: 4px; }
+    .sugestions button { background-color: #5cb85c; color: white; padding: 0.7em; border: none; border-radius: 4px; cursor: pointer; }
+    .sugestions-error { color: red; }
 </style>
 
 

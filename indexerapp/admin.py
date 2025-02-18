@@ -901,7 +901,10 @@ class UserOpenAIAPIKeyAdmin(admin.ModelAdmin):
                              #if not isinstance(field, models.ForeignKey)
                              ]
 
-
+class ImproveOurDataEntryAdmin(admin.ModelAdmin):
+    list_display=  [field.name for field in ImproveOurDataEntry._meta.fields
+                             #if not isinstance(field, models.ForeignKey)
+                             ]
 
 admin.site.register(Content,ContentAdmin)
 admin.site.register(Manuscripts,ManuscriptsAdmin)
@@ -958,3 +961,4 @@ admin.site.register(DecorationCharacteristics,DecorationCharacteristicsAdmin)
 admin.site.register(ManuscriptBibliography,ManuscriptBibliographyAdmin)
 admin.site.register(Layouts,LayoutsAdmin)
 admin.site.register(UserOpenAIAPIKey,UserOpenAIAPIKeyAdmin)
+admin.site.register(ImproveOurDataEntry,ImproveOurDataEntryAdmin)

@@ -251,6 +251,8 @@ urlpatterns = [
         views.TestPage().as_view()
     ),
 
+    path('captcha/', include('captcha.urls')),
+    path('improve_our_data/', views.ImproveOurDataFormView.as_view(), name='improve_our_data_form'),
 ]
 
 
