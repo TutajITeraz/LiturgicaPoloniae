@@ -226,18 +226,18 @@ function init_layouts_table() {
             {
                 "data": "graph_img",
                 "name": "graph_img",
-                "title": "Image",
+                "title": "image",
                 /*"render": function (data, type, row, meta) {
                     return renderImg(data, type, row, meta);
                 }*/
                 "visible": false,
             },
-            { "data": "name", "title": "Name", "width": "5%" },
-            { "data": "where_in_ms_from", "title": "Where in MS From", "visible": false },
-            { "data": "where_in_ms_to", "title": "Where in MS To", "visible": false },
+            { "data": "name", "title": "name", "width": "5%" },
+            { "data": "where_in_ms_from", "title": "where in MS from", "visible": false },
+            { "data": "where_in_ms_to", "title": "where in MS to", "visible": false },
             {
                 "data": "where",
-                "title": "Where in MS",
+                "title": "where in MS",
                 "render": function (data, type, row, meta) {
                     //let fromIndex = findCanvasIndexByLabel(row.where_in_ms_from);
                     //let toIndex = findCanvasIndexByLabel(row.where_in_ms_to);
@@ -257,12 +257,12 @@ function init_layouts_table() {
                 },
                 "width": "10%"
             },
-            { "data": "how_many_columns", "title": "How Many Columns", "width": "10%" },
-            { "data": "lines_per_page_minimum", "title": "Lines per Page (min)", "visible": false },
-            { "data": "lines_per_page_maximum", "title": "Lines per Page (max)", "visible": false },
+            { "data": "how_many_columns", "title": "how many columns", "width": "10%" },
+            { "data": "lines_per_page_minimum", "title": "lines per page (min)", "visible": false },
+            { "data": "lines_per_page_maximum", "title": "lines per page (max)", "visible": false },
             {
                 "data": "lines_per_page_minimum",
-                "title": "Lines per Page",
+                "title": "lines per Page",
                 "render": function (data, type, row, meta) {
                     if (row.lines_per_page_minimum === row.lines_per_page_maximum) {
                         return row.lines_per_page_minimum;
@@ -272,25 +272,25 @@ function init_layouts_table() {
                 },
                 "width": "10%"
             },
-            { "data": "written_space_height_max", "title": "Written space height (max)", "visible": false },
-            { "data": "written_space_width_max", "title": "Written space width (max)", "visible": false },
+            { "data": "written_space_height_max", "title": "written space height (max)", "visible": false },
+            { "data": "written_space_width_max", "title": "written space width (max)", "visible": false },
             {
                 "data": "written_space",
-                "title": "Writtern Space max. HxW",
+                "title": "writtern Space max.",
                 "render": function (data, type, row, meta) {
                     return row.written_space_height_max + " mm x " + row.written_space_width_max + " mm";
                 }, 
                 "width": "10%"
             },
-            { "data": "ruling_method", "title": "Ruling method", "width": "10%" },
-            { "data": "distance_between_horizontal_ruling", "title": "Distance between horizontal ruling", "width": "5%" },
-            { "data": "distance_between_vertical_ruling", "title": "Distance between vertical ruling", "width": "5%" },
+            { "data": "ruling_method", "title": "ruling method", "width": "10%" },
+            { "data": "distance_between_horizontal_ruling", "title": "distance between horizontal ruling", "width": "5%" },
+            { "data": "distance_between_vertical_ruling", "title": "distance between vertical ruling", "width": "5%" },
 
-            { "data": "written_above_the_top_line", "title": "Written above the top line", "width": "10%" },
-            { "data": "pricking", "title": "Pricking", "width": "5%" },
-            { "data": "comments", "title": "Comments", "width": "15%" },
-            { "data": "authors", "title": "Authors", "visible": false },
-            { "data": "data_contributor", "title": "Data contributor", "visible": false },
+            { "data": "written_above_the_top_line", "title": "written above the top line", "width": "10%" },
+            { "data": "pricking", "title": "pricking", "width": "5%" },
+            { "data": "comments", "title": "comments", "width": "15%" },
+            { "data": "authors", "title": "authors", "visible": false },
+            { "data": "data_contributor", "title": "data contributor", "visible": false },
         ],
         "order": [[1, 'asc']], // Sort by the 'name' column in ascending order
         "initComplete": function () {
@@ -344,13 +344,13 @@ function init_music_table() {
         },
         "bAutoWidth": false, 
         "columns": [
-            { "data": "music_notation_name", "title": "Music Notation Name", "width": "13%" },
-            { "data": "sequence_in_ms", "title": "Sequence in MS", "width": "5%" },
-            { "data": "where_in_ms_from", "title": "Where in MS From", "visible": false },
-            { "data": "where_in_ms_to", "title": "Where in MS To", "visible": false },
+            { "data": "music_notation_name", "title": "music notation name", "width": "13%" },
+            { "data": "sequence_in_ms", "title": "sequence in MS", "width": "5%" },
+            { "data": "where_in_ms_from", "title": "where in MS from", "visible": false },
+            { "data": "where_in_ms_to", "title": "where in MS to", "visible": false },
             {
                 "data": "where",
-                "title": "Where in MS",
+                "title": "where in MS",
                 "render": function (data, type, row, meta) {
                     //let fromIndex = findCanvasIndexByLabel(row.where_in_ms_from);
                     //let toIndex = findCanvasIndexByLabel(row.where_in_ms_to);
@@ -369,14 +369,14 @@ function init_music_table() {
                     return fromText + ' - ' + toText;
                 }, "width": "12%"
             },
-            { "data": "dating", "title": "Dating", "width": "15%" },
-            { "data": "original", "title": "Original", "width": "5%" },
-            { "data": "on_lines", "title": "On Lines", "width": "5%" },
-            { "data": "music_custos", "title": "Music Custos", "width": "5%" },
-            { "data": "number_of_lines", "title": "Number of Lines", "width": "5%" },
-            { "data": "comment", "title": "Comment", "width": "40%" },
-            { "data": "authors", "title": "Authors", "visible": false },
-            { "data": "data_contributor", "title": "Data contributor", "visible": false },
+            { "data": "dating", "title": "dating", "width": "15%" },
+            { "data": "original", "title": "original", "width": "5%" },
+            { "data": "on_lines", "title": "on Lines", "width": "5%" },
+            { "data": "music_custos", "title": "music custos", "width": "5%" },
+            { "data": "number_of_lines", "title": "number of lines", "width": "5%" },
+            { "data": "comment", "title": "comment", "width": "40%" },
+            { "data": "authors", "title": "authors", "visible": false },
+            { "data": "data_contributor", "title": "data contributor", "visible": false },
         ],
         "initComplete": function () {
             displayUniqueAuthorsAndContributors(music_table, "#music_notation");
@@ -411,13 +411,13 @@ function init_content_table() {
         "pageLength": 10,
         "bAutoWidth": false, 
         "columns": [
-            { "data": "manuscript", "title": "Manuscript ID", "visible": false },
-            { "data": "manuscript_name", "title": "Manuscript", "visible": false },
-            { "data": "where_in_ms_from", "title": "Where in MS (from)", "visible": false },
-            { "data": "where_in_ms_to", "title": "Where in MS (to)", "visible": false },
+            { "data": "manuscript", "title": "manuscript id", "visible": false },
+            { "data": "manuscript_name", "title": "manuscript", "visible": false },
+            { "data": "where_in_ms_from", "title": "where in MS (from)", "visible": false },
+            { "data": "where_in_ms_to", "title": "where in MS (to)", "visible": false },
             {
                 "data": "where",
-                "title": "Where in MS",
+                "title": "where in MS",
                 "render": function (data, type, row, meta) {
                     //let fromIndex = findCanvasIndexByLabel(row.where_in_ms_from);
                     //let toIndex = findCanvasIndexByLabel(row.where_in_ms_to);
@@ -437,15 +437,15 @@ function init_content_table() {
                 },
                 "width": "10%" 
             },
-            { "data": "rite_name_from_ms", "title": "Rite name from MS", "width": "20%" },
-            { "data": "subsection", "title": "Subsection", "width": "20%"  },
-            { "data": "function", "title": "Function / Genre", "width": "10%"  },
-            { "data": "subfunction", "title": "Subgenre", "width": "10%"  },
-            { "data": "biblical_reference", "title": "Biblical reference", "width": "10%"  },
-            { "data": "formula_standarized", "title": "Formula (standarized)", "width": "40%"  },
+            { "data": "rite_name_from_ms", "title": "rite name from MS", "width": "20%" },
+            { "data": "subsection", "title": "subsection", "width": "20%"  },
+            { "data": "function", "title": "function / genre", "width": "10%"  },
+            { "data": "subfunction", "title": "subgenre", "width": "10%"  },
+            { "data": "biblical_reference", "title": "biblical reference", "width": "10%"  },
+            { "data": "formula_standarized", "title": "formula (standarized)", "width": "40%"  },
             {
                 "data": "formula_text",
-                "title": "Formula (text from MS)",
+                "title": "formula (text from MS)",
                 "render": function (data, type, row, meta) {
                     if (row.music_notation != "-")
                         return row.formula_text + ' (♪)';
@@ -455,7 +455,7 @@ function init_content_table() {
             },
             {
                 "data": "similarity_levenshtein_percent",
-                "title": "Similarity (levenshtein)",
+                "title": "similarity (levenshtein)",
                 "render": function (data, type, row, meta) {
                     return row.similarity_levenshtein_percent + "%";
                 },
@@ -469,17 +469,17 @@ function init_content_table() {
                 },
                 "width": '60px'
             },
-            { "data": "similarity_by_user", "title": "Similarity (by user)", "width": "5%"  },
-            { "data": "original_or_added", "title": "Original or Added", "visible": false },
-            { "data": "quire", "title": "Quire", "width": "5%"  },
+            { "data": "similarity_by_user", "title": "similarity (by user)", "width": "5%"  },
+            { "data": "original_or_added", "title": "original or added", "visible": false },
+            { "data": "quire", "title": "quire", "width": "5%"  },
 
-            { "data": "music_notation", "title": "Music Notation", "visible": false },
-            { "data": "sequence_in_ms", "title": "Sequence in MS", "visible": false },
-            { "data": "original_or_added", "title": "Original or Added", "visible": false },
-            { "data": "proper_texts", "title": "Proper texts", "width": "5%"  },
+            { "data": "music_notation", "title": "music notation", "visible": false },
+            { "data": "sequence_in_ms", "title": "sequence in MS", "visible": false },
+            { "data": "original_or_added", "title": "original or added", "visible": false },
+            { "data": "proper_texts", "title": "proper texts", "width": "5%"  },
 
-            { "data": "authors", "title": "Authors", "visible": false },
-            { "data": "data_contributor", "title": "Data contributor", "visible": false },
+            { "data": "authors", "title": "authors", "visible": false },
+            { "data": "data_contributor", "title": "data contributor", "visible": false },
             // Add more columns as needed
         ],
         "order": [
@@ -551,19 +551,19 @@ function init_quires_table() {
             {
                 "data": "graph_img",
                 "name": "graph_img",
-                "title": "Image",
+                "title": "image",
                 "render": function (data, type, row, meta) {
                     return renderImg(data, type, row, meta);
                 }, 
                 "width": "20%"
             },
-            { "data": "type_of_the_quire", "title": "Quire type", "width": "15%" },
-            { "data": "sequence_of_the_quire", "title": "Sequence in MS", "width": "10%" },
-            { "data": "where_in_ms_from", "title": "Where in MS (from)", "visible": false },
-            { "data": "where_in_ms_to", "title": "Where in MS (to)", "visible": false },
+            { "data": "type_of_the_quire", "title": "quire type", "width": "15%" },
+            { "data": "sequence_of_the_quire", "title": "sequence in MS", "width": "10%" },
+            { "data": "where_in_ms_from", "title": "where in MS (from)", "visible": false },
+            { "data": "where_in_ms_to", "title": "where in MS (to)", "visible": false },
             {
                 "data": "where",
-                "title": "Where in MS",
+                "title": "where in MS",
                 "render": function (data, type, row, meta) {
                     //let fromIndex = findCanvasIndexByLabel(row.where_in_ms_from);
                     //let toIndex = findCanvasIndexByLabel(row.where_in_ms_to);
@@ -583,9 +583,9 @@ function init_quires_table() {
                 },
                 "width": "15%"
             },
-            { "data": "comment", "title": "Comment", "width": "40%" },
-            { "data": "authors", "title": "Authors", "visible": false },
-            { "data": "data_contributor", "title": "Data contributor", "visible": false }
+            { "data": "comment", "title": "comment", "width": "40%" },
+            { "data": "authors", "title": "authors", "visible": false },
+            { "data": "data_contributor", "title": "data contributor", "visible": false }
         ],
         "order": [
             { "data": "sequence_of_the_quire", "order": "asc" },  // Sort by the "manuscript_name" column in ascending order
@@ -857,15 +857,15 @@ function init_decoration_table(table_info) {
         "bAutoWidth": false, 
         "columns": [
             { "data": "id", "title": "id"  , "visible": false },
-            { "data": "decoration_type", "title": "Decoration type"  , "visible": false },
-            { "data": "decoration_subtype", "title": "Decoration subtype" , "visible": false },
-            { "data": "ornamented_text", "title": "Ornamented text", "width": '15%', "visible": table_info.ornamentedTextVisible}, 
+            { "data": "decoration_type", "title": "decoration type"  , "visible": false },
+            { "data": "decoration_subtype", "title": "decoration subtype" , "visible": false },
+            { "data": "ornamented_text", "title": "ornamented text", "width": '15%', "visible": table_info.ornamentedTextVisible}, 
             { "data": "content", "title": "content", "visible": false },
             { "data": "calendar", "title": "calendar", "visible": false },
             { "data": "rite_name_standarized", "title": "rite_name_standarized", "visible": false },
             {
                 "data": "decorated_content",
-                "title": "Decorated content",
+                "title": "decorated content",
                 "render": function (data, type, row, meta) {
                     //let fromIndex = findCanvasIndexByLabel(row.where_in_ms_from);
                     //let toIndex = findCanvasIndexByLabel(row.where_in_ms_to);
@@ -884,11 +884,11 @@ function init_decoration_table(table_info) {
                     return content+' '+calendar+' '+rite_name_standarized;
                 }
             },
-            { "data": "where_in_ms_from", "title": "Where in MS (from)", "visible": false },
-            { "data": "where_in_ms_to", "title": "Where in MS (to)", "visible": false },
+            { "data": "where_in_ms_from", "title": "where in MS (from)", "visible": false },
+            { "data": "where_in_ms_to", "title": "where in MS (to)", "visible": false },
             {
                 "data": "where",
-                "title": "Where in MS",
+                "title": "where in MS",
                 "render": function (data, type, row, meta) {
                     //let fromIndex = findCanvasIndexByLabel(row.where_in_ms_from);
                     //let toIndex = findCanvasIndexByLabel(row.where_in_ms_to);
@@ -908,13 +908,13 @@ function init_decoration_table(table_info) {
                 },
                 "width": '10%'
             },
-            { "data": "location_on_the_page", "title": "Location on the page", "width": '10%' },
-            { "data": "size_characteristic", "title": "Size characteristic", "visible": false },
-            { "data": "size_height_min", "title": "Size - height min", "visible": false },
-            { "data": "size_height_max", "title": "Size - height max", "visible": false },
-            { "data": "size_width_min", "title": "Size - width min", "visible": false },
-            { "data": "size_width_max", "title": "Size - width max", "visible": false },
-            { "data": "size", "title": "Size",
+            { "data": "location_on_the_page", "title": "location on the page", "width": '10%' },
+            { "data": "size_characteristic", "title": "size characteristic", "visible": false },
+            { "data": "size_height_min", "title": "size - height min", "visible": false },
+            { "data": "size_height_max", "title": "size - height max", "visible": false },
+            { "data": "size_width_min", "title": "size - width min", "visible": false },
+            { "data": "size_width_max", "title": "size - width max", "visible": false },
+            { "data": "size", "title": "size",
                 "render": function(data, type, row, meta) {
                     let size_characteristic = row.size_characteristic;
                     if(!size_characteristic || size_characteristic=='-')
@@ -953,12 +953,12 @@ function init_decoration_table(table_info) {
                 "className": "text-center",
                 "width": '15%'
             },
-            { "data": "original_or_added", "title": "Original or added", "visible": false },
-            { "data": "monochrome_or_colour", "title": "Monochrome or colour", "visible": false },
+            { "data": "original_or_added", "title": "original or added", "visible": false },
+            { "data": "monochrome_or_colour", "title": "monochrome or colour", "visible": false },
             /*{ "data": "characteristic", "title": "Decoration characteristic" },*/
             { 
                 "data": "decoration_subjects", 
-                "title": "Subjects",
+                "title": "subjects",
                 "render": function(data, type, row) {
                     return Array.isArray(data) ? data.join("; ") : data;
                 },
@@ -966,7 +966,7 @@ function init_decoration_table(table_info) {
             },
             { 
                 "data": "decoration_colours", 
-                "title": "Colours",
+                "title": "colours",
                 "render": function(data, type, row) {
                     return Array.isArray(data) ? data.join(", ") : data;
                 }
@@ -974,7 +974,7 @@ function init_decoration_table(table_info) {
             },
             { 
                 "data": "decoration_characteristics", 
-                "title": "Characteristics",
+                "title": "characteristics",
                 "render": function(data, type, row) {
                     return Array.isArray(data) ? data.join(", ") : data;
                 },
@@ -982,7 +982,7 @@ function init_decoration_table(table_info) {
             },
             {
                 "data": "colour",
-                "title": "Colour",
+                "title": "colour",
                 "render": function (data, type, row, meta) {
 
                     let monochrome_or_colour = row.monochrome_or_colour;
@@ -1009,12 +1009,12 @@ function init_decoration_table(table_info) {
                 "width": '10%'
             },
 
-            { "data": "technique", "title": "Technique" , "width": '15%'},
-            { "data": "date_of_the_addition", "title": "Addition Date" },
+            { "data": "technique", "title": "technique" , "width": '15%'},
+            { "data": "date_of_the_addition", "title": "addition date" },
             //{ "data": "comments", "title": "Comments" },
-            { "data": "authors", "title": "Authors", "visible": false },
-            { "data": "data_contributor", "title": "Data contributor", "visible": false },
-            { "data": "entry_date", "title": "Entry date", "visible": false },
+            { "data": "authors", "title": "authors", "visible": false },
+            { "data": "data_contributor", "title": "data contributor", "visible": false },
+            { "data": "entry_date", "title": "entry date", "visible": false },
 
         ],
         "order": [
@@ -1161,12 +1161,12 @@ function init_origins_table() {
         "bAutoWidth": false, 
         "columns": [
             { "data": "id", "title": "id"  , "visible": false },
-            { "data": "origins_date", "title": "Origins date", "width": "10%" },
-            { "data": "origins_place", "title": "Origins place", "width": "30%"  },
-            { "data": "origins_comment", "title": "Origins comment", "width": "60%"  },
-            { "data": "provenance_comments", "title": "Provenance comments", "visible": false },
-            { "data": "authors", "title": "Authors", "visible": false },
-            { "data": "data_contributor", "title": "Data contributor", "visible": false }
+            { "data": "origins_date", "title": "origins date", "width": "10%" },
+            { "data": "origins_place", "title": "origins place", "width": "30%"  },
+            { "data": "origins_comment", "title": "origins comment", "width": "60%"  },
+            { "data": "provenance_comments", "title": "provenance comments", "visible": false },
+            { "data": "authors", "title": "authors", "visible": false },
+            { "data": "data_contributor", "title": "data contributor", "visible": false }
         ],
         "initComplete": function() {
             displayDebate(origins_table,"#origins");
@@ -1215,7 +1215,7 @@ function init_binding_materials_table() {
             }
         },
         "columns": [
-            { "data": "material", "title": "Material" },
+            { "data": "material", "title": "material" },
         ]
     });
 }
@@ -1256,11 +1256,11 @@ function init_main_hands() {
             { "data": "hand", "title": "hand", "width": "15%" },
             { "data": "script_name", "title": "script name", "width": "15%" },
             { "data": "sequence_in_ms", "title": "sequence in ms", "width": "15%" },
-            { "data": "where_in_ms_from", "title": "Where in MS (from)", "visible": false },
-            { "data": "where_in_ms_to", "title": "Where in MS (to)", "visible": false },
+            { "data": "where_in_ms_from", "title": "where in MS (from)", "visible": false },
+            { "data": "where_in_ms_to", "title": "where in MS (to)", "visible": false },
             {
                 "data": "where",
-                "title": "Where in MS",
+                "title": "where in MS",
                 "render": function (data, type, row, meta) {
                     //let fromIndex = findCanvasIndexByLabel(row.where_in_ms_from);
                     //let toIndex = findCanvasIndexByLabel(row.where_in_ms_to);
@@ -1340,11 +1340,11 @@ function init_additions_hands() {
             { "data": "hand", "title": "hand", "width": "15%" },
             { "data": "script_name", "title": "script name", "width": "15%" },
             { "data": "sequence_in_ms", "title": "sequence in ms", "width": "15%" },
-            { "data": "where_in_ms_from", "title": "Where in MS (from)", "visible": false },
-            { "data": "where_in_ms_to", "title": "Where in MS (to)", "visible": false },
+            { "data": "where_in_ms_from", "title": "where in MS (from)", "visible": false },
+            { "data": "where_in_ms_to", "title": "where in MS (to)", "visible": false },
             {
                 "data": "where",
-                "title": "Where in MS",
+                "title": "where in MS",
                 "render": function (data, type, row, meta) {
                     //let fromIndex = findCanvasIndexByLabel(row.where_in_ms_from);
                     //let toIndex = findCanvasIndexByLabel(row.where_in_ms_to);
@@ -1445,7 +1445,7 @@ function init_provenance_table() {
             { "data": "date_to", "title": "date_to" , "visible": false },
             {
                 "data": "date",
-                "title": "Date",
+                "title": "date",
                 "render": function (data, type, row, meta) {
                     if (row.date_from == row.date_to || row.date_to == '-')
                         return row.date_from;
@@ -1453,7 +1453,7 @@ function init_provenance_table() {
                 },
                 "width": '10%',
             },
-            { "data": "place", "title": "Place", "width": '30%' },
+            { "data": "place", "title": "place", "width": '30%' },
             { "data": "timeline_sequence", "title": "timeline_sequence", "visible": false },
             { "data": "comment", "title": "comment", "width": '60%' },
             { "data": "authors", "title": "authors", "visible": false },
@@ -1488,9 +1488,9 @@ function init_bibliography_table() {
         "pageLength": 10,
         "bAutoWidth": false, 
         "columns": [
-            { "data": "title", "title": "Title", "width": "70%"  },
-            { "data": "author", "title": "Author", "width": "20%" },
-            { "data": "year", "title": "Year", "width": "10%" }
+            { "data": "title", "title": "title", "width": "70%"  },
+            { "data": "author", "title": "author", "width": "20%" },
+            { "data": "year", "title": "year", "width": "10%" }
         ]
     });
 }
