@@ -4,6 +4,17 @@
     <div class="flex mx-3 my-1 justify-center md:justify-normal">
         <h2 class="flex items-center mr-5">Manuscript</h2>
         <select class="manuscript_filter" id="ms_select" name="state"></select>
+
+        <label class="ml-2" for="genreSelect">Genre:</label>
+        <select id="genreSelect" style="width: 200px;">
+          <option value="Sacramentary" selected>Sacramentary</option>
+        </select>
+    
+        <a class="py-1 px-1 sm:py-1 sm:px-6 bg-[#795a42] hover:bg-[#997a62] text-white font-semibold rounded drop-shadow text-base"
+           href="#" type="button" id="identifyTraditionsBtn">
+          Identify traditions
+        </a>
+  
     </div>
     <table id="content" class="table table-striped table-bordered table-hover overflow-x-auto" style="width:100%">
 </div>

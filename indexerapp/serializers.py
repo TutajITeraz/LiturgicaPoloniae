@@ -253,12 +253,14 @@ class ContentSerializer(serializers.ModelSerializer):
     music_notation = ManuscriptMusicNotationsSerializer
     edition_index = EditionContentSerializer
 
+    traditions = serializers.SerializerMethodField()
+
 
 
     class Meta:
         model = Content
         fields = (
-            'id', 'manuscript', 'quire', 'manuscript_name', 'section', 'subsection','function', 'subfunction', 'biblical_reference', 'formula', 'formula_standarized', 'music_notation', 'rite', 'rite_name_from_ms', 'formula_text', 'sequence_in_ms', 'where_in_ms_from', 'where_in_ms_to', 'similarity_by_user', 'similarity_levenshtein', 'similarity_levenshtein_percent', 'original_or_added', 'reference_to_other_items', 'subrite_name_from_ms', 'edition_index', 'edition_subindex', 'data_contributor', 'authors', 'proper_texts' 
+            'id', 'manuscript', 'quire', 'manuscript_name', 'section', 'subsection','function', 'subfunction', 'biblical_reference', 'formula', 'traditions', 'formula_standarized', 'music_notation', 'rite', 'rite_name_from_ms', 'formula_text', 'sequence_in_ms', 'where_in_ms_from', 'where_in_ms_to', 'similarity_by_user', 'similarity_levenshtein', 'similarity_levenshtein_percent', 'original_or_added', 'reference_to_other_items', 'subrite_name_from_ms', 'edition_index', 'edition_subindex', 'data_contributor', 'authors', 'proper_texts' 
         )
 
     def to_representation(self, instance):
@@ -281,6 +283,11 @@ class ContentSerializer(serializers.ModelSerializer):
 
     def get_liturgical_genre(self, content):
         return ', '.join([str(genre) for content in content.content_genres.all()])
+
+    def get_traditions(self, content):
+        if content.formula:
+            return ', '.join([str(tradition) for tradition in content.formula.tradition.all()])
+        return ''
 
     def get_manuscript_name(self, content):
         return content.manuscript.name

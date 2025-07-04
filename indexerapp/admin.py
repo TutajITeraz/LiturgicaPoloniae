@@ -21,6 +21,11 @@ import math
 
 import modelclone
 
+#For filters:
+from django.db.models import Q
+
+
+
 ########################  FolioPaginationWidget  ###################################
 
 from django.utils.safestring import mark_safe
@@ -294,8 +299,6 @@ class ManuscriptGenresInline(admin.TabularInline):
 
 
 # Formulas filters
-
-
 class FormulasFilter(AutocompleteFilter):
     title = "Formulas"
     field_name = 'formula'
@@ -306,6 +309,27 @@ class FormulaAutocomplete(autocomplete.Select2QuerySetView):
 
         if self.q:
             qs = qs.filter(name__istartswith=self.q)
+
+        return qs
+
+
+# Manuscripts filters
+class ManuscriptsFilter(AutocompleteFilter):
+    title = "Manuscripts"
+    field_name = 'manuscript'
+
+class ManuscriptsAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        qs = Manuscripts.objects.all()
+
+        if self.q:
+            qs = qs.filter(
+                Q(name__istartswith=self.q) |
+                Q(shelf_mark__istartswith=self.q) |
+                Q(foreign_id__istartswith=self.q) |
+                Q(common_name__istartswith=self.q) |
+                Q(rism_id__istartswith=self.q)
+            )
 
         return qs
 
@@ -414,8 +438,8 @@ class ContentAdmin(CustomDebateableAdmin):
 
     #wrapped_field= easy.SimpleAdminField(lambda x: linebreaksbr(x.formula), 'formula', 'formula')
 
-    list_filter = [FormulasFilter]
-    autocomplete_fields = ['formula']
+    list_filter = [FormulasFilter, ManuscriptsFilter]
+    autocomplete_fields = ['formula', 'manuscript']
 
 
     def formula_standarized(self,obj):
@@ -459,6 +483,7 @@ class ManuscriptsAdmin(CustomDebateableAdmin):
                              #if not isinstance(field, models.ForeignKey)
                              ]
 
+    search_fields = ['name__istartswith', 'shelf_mark__istartswith', 'foreign_id__istartswith', 'common_name__istartswith', 'rism_id__istartswith' ]##_startswith    
 
     #class Media:
     #    js = ('admin/js/vendor/jquery/jquery.min.js', 'admin/js/jquery.init.js',)  # Dołącz pliki JavaScript związane z obsługą popupów
@@ -906,6 +931,11 @@ class ImproveOurDataEntryAdmin(admin.ModelAdmin):
                              #if not isinstance(field, models.ForeignKey)
                              ]
 
+class TraditionsAdmin(admin.ModelAdmin):
+    list_display=  [field.name for field in Traditions._meta.fields
+                             #if not isinstance(field, models.ForeignKey)
+                             ]
+
 admin.site.register(Content,ContentAdmin)
 admin.site.register(Manuscripts,ManuscriptsAdmin)
 admin.site.register(Clla,CllaAdmin)
@@ -962,3 +992,4 @@ admin.site.register(ManuscriptBibliography,ManuscriptBibliographyAdmin)
 admin.site.register(Layouts,LayoutsAdmin)
 admin.site.register(UserOpenAIAPIKey,UserOpenAIAPIKeyAdmin)
 admin.site.register(ImproveOurDataEntry,ImproveOurDataEntryAdmin)
+admin.site.register(Traditions,TraditionsAdmin)

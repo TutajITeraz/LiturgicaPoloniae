@@ -440,6 +440,16 @@
                 <div class="open-inside" x-show="open" x-transition x-transition:enter.scale.80 x-transition:enter.duration.1500ms x-transition.scale.origin.top>
 
                     <div>
+                        <label class="ml-2" for="genreSelect">Genre:</label>
+                        <select id="genreSelect" style="width: 200px;">
+                          <option value="Sacramentary" selected>Sacramentary</option>
+                        </select>
+                    
+                        <a class="py-1 px-1 sm:py-1 sm:px-6 bg-[#795a42] hover:bg-[#997a62] text-white font-semibold rounded drop-shadow text-base"
+                           href="#" type="button" id="identifyTraditionsBtn">
+                          Identify traditions
+                        </a>
+                        
                         <table x-init="init_content_table" id="content" class="table printIt table-striped  table-bordered table-hover" style="width:100%">
                         </table>
                     </div>

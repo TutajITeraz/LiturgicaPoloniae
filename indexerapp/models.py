@@ -1282,10 +1282,25 @@ class ManuscriptWatermarks(models.Model):
             txt += '(...)'
         return txt
 
-#TODO rename to [X]Formulas
+
+class Traditions(models.Model):
+    name = models.CharField(max_length=100)
+    color_rgb = models.CharField(max_length=8, blank=True, null=True)
+    genre = models.ForeignKey(LiturgicalGenres, models.DO_NOTHING, blank=True, null=True)
+
+    class Meta:
+        db_table = 'traditions'
+        verbose_name_plural = 'Traditions'
+
+    def __str__(self): 
+        return self.name
+
 class Formulas(models.Model):
     co_no = models.CharField(max_length=50)
     text = models.TextField(blank=True, null=True)
+    tradition = models.ManyToManyField('Traditions', related_name='%(class)s_traditions', blank=True)
+    translation = models.TextField(blank=True, null=True)
+
 
     class Meta:
         #managed = False

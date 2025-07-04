@@ -571,6 +571,8 @@ input[type=password] {
 }
 
 
+
+
 .medieval-row:hover {
     background-color: #c7a898 !important; /* Light brown */
 }
@@ -583,6 +585,32 @@ input[type=password] {
     background-color: #97c696 !important; /* Light green */
 }
 
+.dot.gregorianum{
+    background-color: #0000e7;
+}
+
+.dot.gelasianum{
+    background-color: #980000;
+}
+
+.dot.both{
+    background-color: #00983a;
+}
+
+
+.dot.unattributed{
+    background-color: #777777;
+}
+
+
+.dot {
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 2px;
+    background-color: black;
+  }
 
 .unique-layouts {
     overflow: hidden;

@@ -1,4 +1,5 @@
 
+var IDENTIFY_TRADITIONS = false;
 
 function displayUniqueAuthorsAndContributors(dataTable, divToAppend) {
     var table = dataTable.table();
@@ -46,6 +47,19 @@ function displaOriginalAddedLegend(dataTable, divToAppend) {
     $(divToAppend).after(mainDiv);
 }
 
+function displayTraditionLegend(dataTable, divToAppend) {
+    var table = dataTable.table();
+
+    // Render unique values in a div below the table
+    var mainDiv = $('<div class="printIt" style="margin-top:0.5em;">'
+        +'<div style="display: inline-block; margin-right:0.5em;  margin-left: 1em; text-align: middle"> <span class="dot gregorianum" title="Gregorianum"></span><i>Gregorianum</i></div>'
+        +'<div style="display: inline-block; margin-right:0.5em;  margin-left: 1em; text-align: middle"><span class="dot gelasianum" title="Gelasianum"></span><i>Gelasianum</i></div>'
+        +'<div style="display: inline-block; margin-right:0.5em;  margin-left: 1em; text-align: middle"><span class="dot" title="Gelasianum"></span><i>Unknown tradition</i></div>'
+        + '</div>'
+    );
+
+    $(divToAppend).after(mainDiv);
+}
 
 
 content_init = function()
@@ -132,6 +146,7 @@ content_init = function()
                 { "data": "manuscript_name", "title": "Manuscript", "visible": false },
                 { "data": "where_in_ms_from", "title": "Where in MS (from)", "visible": false },
                 { "data": "where_in_ms_to", "title": "Where in MS (to)", "visible": false },
+                { "data": "traditions", "title": "Traditions", "name": "traditions", "visible": false },
                 {
                     "data": "where",
                     "title": "Where in MS",
@@ -159,9 +174,26 @@ content_init = function()
                 { "data": "function", "title": "Function / Genre", "width": "10%"  },
                 { "data": "subfunction", "title": "Subgenre", "width": "10%"  },
                 { "data": "biblical_reference", "title": "Biblical reference", "width": "10%"  },
-                { "data": "formula_standarized", "title": "Formula (standarized)", "width": "40%"  },
+                { 
+                    "data": "formula_standarized", 
+                    "name": "formula_standarized", 
+                    "title": "Formula (standarized)", 
+                    "render": function (data, type, row, meta) {
+
+                        if(row.traditions!='' && IDENTIFY_TRADITIONS)
+                        {
+                            if(row.traditions.includes("Gregorianum"))
+                                row.formula_standarized = '<span class="dot gregorianum" title="Gregorianum"></span>'+row.formula_standarized
+                            if(row.traditions.includes("Gelasianum"))
+                                row.formula_standarized = '<span class="dot gelasianum" title="Gelasianum"></span>'+row.formula_standarized
+                        }
+                        return row.formula_standarized;
+                    }, 
+                    "width": "40%"  
+                },
                 {
                     "data": "formula_text",
+                    "name": "formula_text",
                     "title": "Formula (text from MS)",
                     "render": function (data, type, row, meta) {
                         if (row.music_notation != "-")
@@ -233,40 +265,40 @@ content_init = function()
                 } else if (data.original_or_added == "ADDED") {
                     $(row).addClass('non-medieval-row');
                 }
+
             },
-            "initComplete": function (settings, json) {
-                displayUniqueAuthorsAndContributors(content_table, "#content");
-                displaOriginalAddedLegend(content_table, "#content");
-
-                // Get column information from DataTable settings
+            "drawCallback": function (settings) {
                 var columns = settings.aoColumns;
+                var json = settings.json;
 
-                // Column names to check for null values
+                if (!json || !json.data) return;
+
                 var columnsToCheck = ["function", "subfunction", "biblical_reference", "subsection", "quire", "similarity_by_user", "proper_texts", "formula_text", "rite_name_from_ms", "formula_standarized"];
 
-                // Get the DataTable instance
                 var table = this;
 
-                // Iterate over columns
                 columns.forEach(function (column, columnIndex) {
-                    // Check if the column name matches the ones to be checked
                     if (columnsToCheck.includes(column.data)) {
                         var isVisible = json.data.some(function (row) {
                             return !(row[column.data] == 'None' || row[column.data] == null || row[column.data] == '');
                         });
 
-                        // Set column visibility based on null values
                         settings.oInstance.api().column(columnIndex).visible(isVisible);
-                    }
-                    else if (column.data == "similarity_levenshtein_percent") {
+                    } else if (column.data == "similarity_levenshtein_percent") {
                         var isVisible = json.data.some(function (row) {
                             return !(row[column.data] == 0 || row[column.data] == null);
                         });
+
                         settings.oInstance.api().column(columnIndex).visible(isVisible);
                     }
                 });
+            },
+            "initComplete": function (settings, json) {
+                displayUniqueAuthorsAndContributors(content_table, "#content");
+                displaOriginalAddedLegend(content_table, "#content");
 
-
+                if(IDENTIFY_TRADITIONS)
+                    displayTraditionLegend(content_table, "#content");
             }
         });
     }
@@ -275,7 +307,7 @@ content_init = function()
 
     $('.manuscript_filter').select2({
         ajax: {
-            url: pageRoot+'/manuscripts-autocomplete-main/?project_id='+projectId,
+            url: pageRoot+'/manuscripts-autocomplete-main/',
             dataType: 'json',
             xhrFields: {
                 withCredentials: true
@@ -290,10 +322,22 @@ content_init = function()
         console.log(id);
 
         //content_table.columns(0).search(id).draw();
+        IDENTIFY_TRADITIONS = false; // Reset flag on manuscript change
+
 
         content_table_init(true);//i want initComplete to be called again
 
     });
+
+    $('#genreSelect').select2();
+
+    $('#identifyTraditionsBtn').on('click', function (e) {
+        e.preventDefault();
+        IDENTIFY_TRADITIONS = true;
+        content_table_init(true);
+    });
+    
+
 
 
     /*

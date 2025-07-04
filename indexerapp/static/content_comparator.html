@@ -2,6 +2,16 @@
 <div x-init="content_comparator_init()" class="px-2">
     <h1 class="text-[#0d1b2a] text-[32px] sm:text-[40pt] caudex-bold text-left mt-4 mb-3">Two manuscripts comparison</h1>
  
+    <label class="ml-2" for="genreSelect">Genre:</label>
+    <select id="genreSelect" style="width: 200px;">
+      <option value="Sacramentary" selected>Sacramentary</option>
+    </select>
+
+    <a class="py-1 px-1 sm:py-1 sm:px-6 bg-[#795a42] hover:bg-[#997a62] text-white font-semibold rounded drop-shadow text-base"
+       href="#" type="button" id="identifyTraditionsBtn">
+      Identify traditions
+    </a>
+
     <div class="two_columns">
 
         <div class="left_column w-[50%]"  id="leftColumn">

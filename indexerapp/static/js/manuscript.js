@@ -3,6 +3,9 @@ let manuscriptId = null;
 var map = null;
 var map_bounds = null;
 
+
+var IDENTIFY_TRADITIONS = false;
+
 manuscriptId = urlParams.get('id')
 
 function setTableHeight() {
@@ -296,6 +299,7 @@ function init_layouts_table() {
         "initComplete": function () {
             displayUniqueAuthorsAndContributors(layouts_table, "#layouts");
             displayUniqueLayouts(layouts_table, "#layouts");
+
         }
     });
 }
@@ -387,8 +391,9 @@ function init_music_table() {
 
 var content_table
 
-function init_content_table() {
+function init_content_table(reinit=false) {
     content_table = $('#content').DataTable({
+        "destroy": reinit,
         "ajax": {
             "url": pageRoot + "/api/content/?format=datatables", // Add your URL here
             "dataSrc": function (data) {
@@ -442,7 +447,24 @@ function init_content_table() {
             { "data": "function", "title": "function / genre", "width": "10%"  },
             { "data": "subfunction", "title": "subgenre", "width": "10%"  },
             { "data": "biblical_reference", "title": "biblical reference", "width": "10%"  },
-            { "data": "formula_standarized", "title": "formula (standarized)", "width": "40%"  },
+            { "data": "traditions", "title": "Traditions", "name": "traditions", "visible": false },
+            { 
+                "data": "formula_standarized", 
+                "name": "formula_standarized", 
+                "title": "Formula (standarized)", 
+                "render": function (data, type, row, meta) {
+
+                    if(row.traditions!='' && IDENTIFY_TRADITIONS)
+                    {
+                        if(row.traditions.includes("Gregorianum"))
+                            row.formula_standarized = '<span class="dot gregorianum" title="Gregorianum"></span>'+row.formula_standarized
+                        if(row.traditions.includes("Gelasianum"))
+                            row.formula_standarized = '<span class="dot gelasianum" title="Gelasianum"></span>'+row.formula_standarized
+                    }
+                    return row.formula_standarized;
+                }, 
+                "width": "40%"  
+            },
             {
                 "data": "formula_text",
                 "title": "formula (text from MS)",
@@ -493,39 +515,37 @@ function init_content_table() {
                 $(row).addClass('non-medieval-row');
             }
         },
-        "initComplete": function (settings, json) {
-            displayUniqueAuthorsAndContributors(content_table, "#content");
-            displaOriginalAddedLegend(content_table, "#content");
-
-            // Get column information from DataTable settings
+        "drawCallback": function (settings) {
             var columns = settings.aoColumns;
+            var json = settings.json;
 
-            // Column names to check for null values
-            var columnsToCheck = ["function", "subfunction", "biblical_reference", "subsection", "quire", "similarity_by_user", "proper_texts", "formula_text"];
+            if (!json || !json.data) return;
 
-            // Get the DataTable instance
+            var columnsToCheck = ["function", "subfunction", "biblical_reference", "subsection", "quire", "similarity_by_user", "proper_texts", "formula_text", "rite_name_from_ms", "formula_standarized"];
+
             var table = this;
 
-            // Iterate over columns
             columns.forEach(function (column, columnIndex) {
-                // Check if the column name matches the ones to be checked
                 if (columnsToCheck.includes(column.data)) {
                     var isVisible = json.data.some(function (row) {
-                        return !(row[column.data] == 'None' || row[column.data] == null);
+                        return !(row[column.data] == 'None' || row[column.data] == null || row[column.data] == '');
                     });
 
-                    // Set column visibility based on null values
                     settings.oInstance.api().column(columnIndex).visible(isVisible);
-                }
-                else if (column.data == "similarity_levenshtein_percent") {
+                } else if (column.data == "similarity_levenshtein_percent") {
                     var isVisible = json.data.some(function (row) {
                         return !(row[column.data] == 0 || row[column.data] == null);
                     });
+
                     settings.oInstance.api().column(columnIndex).visible(isVisible);
                 }
             });
-
-
+        },
+        "initComplete": function (settings, json) {
+            displayUniqueAuthorsAndContributors(content_table, "#content");
+            displaOriginalAddedLegend(content_table, "#content");
+            if(IDENTIFY_TRADITIONS)
+                displayTraditionLegend(content_table, "#content");
         }
     });
     content_table.columns(0).search(manuscriptId).draw()
@@ -1668,7 +1688,7 @@ function displayUniqueAuthorsAndContributors(dataTable, divToAppend) {
     var authorsString = uniqueAuthors.join(', ');
     var contributorsString = uniqueContributors.join(', ');
 
-    var combinedParagraph = '<p class="printIt"><strong>Authors:</strong>' + authorsString + '. <strong>Data Contributors</strong>: ' + contributorsString + '</p>';
+    var combinedParagraph = '<p class="printIt"><strong>Authors: </strong>' + authorsString + '. <strong>Data Contributors</strong>: ' + contributorsString + '</p>';
     uniqueValuesDiv.append(combinedParagraph);
 
     $(divToAppend).after(uniqueValuesDiv);
@@ -1741,6 +1761,19 @@ function displaOriginalAddedLegend(dataTable, divToAppend) {
     $(divToAppend).after(mainDiv);
 }
 
+function displayTraditionLegend(dataTable, divToAppend) {
+    var table = dataTable.table();
+
+    // Render unique values in a div below the table
+    var mainDiv = $('<div class="printIt" style="margin-top:0.5em;">'
+        +'<div style="display: inline-block; margin-right:0.5em;  margin-left: 1em; text-align: middle"> <span class="dot gregorianum" title="Gregorianum"></span><i>Gregorianum</i></div>'
+        +'<div style="display: inline-block; margin-right:0.5em;  margin-left: 1em; text-align: middle"><span class="dot gelasianum" title="Gelasianum"></span><i>Gelasianum</i></div>'
+        +'<div style="display: inline-block; margin-right:0.5em;  margin-left: 1em; text-align: middle"><span class="dot" title="Gelasianum"></span><i>Unknown tradition</i></div>'
+        + '</div>'
+    );
+
+    $(divToAppend).after(mainDiv);
+}
 
 
 
@@ -2021,6 +2054,15 @@ manuscript_init = function () {
     resizer.addEventListener('mousedown', mouseDownHandler);
 
     */
+
+    $('#genreSelect').select2();
+
+    $('#identifyTraditionsBtn').on('click', function (e) {
+        e.preventDefault();
+        IDENTIFY_TRADITIONS = true;
+        init_content_table(true);
+    });
+    
 
 
     //For the popup window (add comment):

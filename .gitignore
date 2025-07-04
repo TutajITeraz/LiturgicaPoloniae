@@ -168,3 +168,6 @@ ritus_indexer/settings.py
 media/
 tailwindcss-linux-x64
 indexerapp/static/tailwindcss
+indexerapp/static/formulas_visualizer/data/coordinates_hdbscan.csv
+indexerapp/static/formulas_visualizer/data/formulas_small_part.csv
+indexerapp/static/formulas_visualizer/data/formulas.csv

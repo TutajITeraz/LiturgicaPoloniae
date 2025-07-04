@@ -8,7 +8,7 @@ from django.contrib.auth import login, authenticate
 
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Manuscripts, AttributeDebate, Decoration, Content, Formulas, Subjects, Characteristics, DecorationTechniques, RiteNames, ManuscriptMusicNotations, Provenance, Codicology, Layouts, TimeReference, Bibliography, EditionContent, BindingTypes, BindingStyles, BindingMaterials, Colours, Clla, Projects, MSProjects, DecorationTypes, BindingDecorationTypes, BindingComponents, Binding, ManuscriptBindingComponents,  UserOpenAIAPIKey, ImproveOurDataEntry
+from .models import Manuscripts, AttributeDebate, Decoration, Content, Formulas, Subjects, Characteristics, DecorationTechniques, RiteNames, ManuscriptMusicNotations, Provenance, Codicology, Layouts, TimeReference, Bibliography, EditionContent, BindingTypes, BindingStyles, BindingMaterials, Colours, Clla, Projects, MSProjects, DecorationTypes, BindingDecorationTypes, BindingComponents, Binding, ManuscriptBindingComponents,  UserOpenAIAPIKey, ImproveOurDataEntry, Traditions, LiturgicalGenres
 from django.http import JsonResponse
 from django.contrib.contenttypes.models import ContentType
 
@@ -1672,8 +1672,35 @@ class AutocompleteView(View):
 
         return items
 
-        #data = [{'id': item.id, 'text': item.text} for item in items10]
-        #return JsonResponse(data, safe=False)
+class TraditionsAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # Don't forget to filter out results depending on the visitor !
+        if not self.request.user.is_authenticated:
+            return Traditions.objects.none()
+
+        qs = Traditions.objects.all()
+
+        genre = self.request.GET.get('genre', None)
+        if genre:
+            qs = qs.filter(genre__id=genre)
+
+        if self.q:
+            qs = qs.filter(name__icontains=self.q)
+
+        return qs
+
+class LiturgicalGenresAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # Don't forget to filter out results depending on the visitor !
+        if not self.request.user.is_authenticated:
+            return LiturgicalGenres.objects.none()
+
+        qs = LiturgicalGenres.objects.all()
+
+        if self.q:
+            qs = qs.filter(title__icontains=self.q)
+
+        return qs
 
 class FormulaAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
@@ -2334,6 +2361,9 @@ class ContentImportView(View):
     def post(self, request, *args, **kwargs):
         try:
             data = json.loads(request.body.decode('utf-8'))
+            if not isinstance(data, list):
+                return JsonResponse({'info': 'error: Expected a list of dictionaries in request body'}, status=200)
+
             import_result = self.import_content(data)
 
             return import_result
@@ -2386,8 +2416,10 @@ class ContentImportView(View):
 
                 new_edition_index = None
                 if 'edition_index' in row and row.get('edition_index') :
-                    print(row.get('edition_index'))
+                    #print(row.get('edition_index'))
                     parts = row.get('edition_index').split(" c.")
+                    if len(parts) < 2:
+                        return JsonResponse({'info': f'error: edition_index "{row.get("edition_index")}" is invalid'}, status=200)
                     bibliography_shortname= parts[0]
                     feast_rite_sequence= parts[1]
                     new_edition_index = self.get_edition_content_id_by_fields('EditionContent', bibliography_shortname, feast_rite_sequence)
@@ -2423,7 +2455,7 @@ class ContentImportView(View):
                     where_in_ms_to = Decimal(row['where_in_ms_to'])
 
                     # Sprawdź, czy wartość klucza obcego 'formula_id' jest poprawna
-                if 'formula_id' in row and row['formula_id'] is not None:
+                if 'formula_id' in row and isinstance(row['formula_id'], (int, str)) and row['formula_id']:
                     formula_id = row['formula_id']
                     if not self.check_foreign_key_existence('formulas', formula_id):
                         return JsonResponse({'info': f'error: could not find value "{formula_id}" in table formulas'}, status=200)
@@ -2474,8 +2506,11 @@ class ContentImportView(View):
                 for content in content_list:
                     content.save()
             except Exception as e:
-                failing_row_index = content_list.index(content)
-                failing_row = data[failing_row_index]
+                failing_row_index = content_list.index(content) if content in content_list else -1
+                if failing_row_index >= 0:
+                    failing_row = data[failing_row_index]
+                else:
+                    failing_row = {}  # Fallback
                 return JsonResponse({'info': f'error: could not find value to create foreign key in row {failing_row_index + 1}. ERROR: {str(e)}'}, status=200)
 
         except Exception as e:
@@ -3522,12 +3557,19 @@ class contentCompareJSON(View):
                 formula = str(content_object.formula)
                 rite_name = content_object.rite_name_from_ms
 
+                formula_traditions = []
+                traditions = content_object.formula.tradition
+
+                for t in traditions.all():
+                    formula_traditions.append(t.name)
+
                 reshaped_data.append({
                     'Table': row['Table'],
                     'formula_id': str(formula_id),
                     'sequence_in_ms': content_object.sequence_in_ms,
                     'formula': formula,
-                    'rite_name': rite_name
+                    'rite_name': rite_name,
+                    'formula_traditions': formula_traditions
                 })
 
         reshaped_df = pd.DataFrame(reshaped_data)

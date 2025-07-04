@@ -142,6 +142,10 @@ urlpatterns = [
 
     #autocomplete:
     path('formula-autocomplete/',views.FormulaAutocomplete.as_view(),name='formula-autocomplete'),
+    path('traditions-autocomplete/',views.TraditionsAutocomplete.as_view(),name='traditions-autocomplete'),
+    path('liturgical-genres-autocomplete/',views.LiturgicalGenresAutocomplete.as_view(),name='liturgical-genres-autocomplete'),
+
+
     path('subject-autocomplete/',views.SubjectAutocomplete.as_view(),name='subject-autocomplete'),
     path('content-autocomplete/',views.ContentAutocomplete.as_view(),name='content-autocomplete'),
     path('rites-autocomplete/',views.RiteNamesAutocomplete.as_view(),name='rites-autocomplete'),
