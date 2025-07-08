@@ -1,10 +1,69 @@
+const colorPalette = [
+    '#e6194B', '#3cb44b', '#ffe119', '#4363d8', '#f58231',
+    '#911eb4', '#42d4f4', '#f032e6', '#bfef45', '#fabed4',
+    '#469990', '#dcbeff', '#9A6324', '#fffac8', '#800000',
+    '#aaffc3', '#808000', '#ffd8b1'
+];
+let traditionColors = {
+    'Multiple': '#000075',
+    'Unattributed': '#a9a9a9'
+};
+let traditionMap = {}; // Store id-to-text mapping for traditions
+
 ms_formulas_graph_init = function() {
     $('#traditionFilter').select2();
-    $('#sacramentarySelect').select2();
+    $('#genreSelect').select2({
+        ajax: {
+            url: pageRoot + '/liturgical-genres-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+            },
+            processResults: function(data) {
+                return {
+                    results: data.results,
+                    pagination: data.pagination
+                };
+            }
+        }
+    });
 
     let originalData = [];
 
+    $('#genreSelect').on('select2:select', function(e) {
+        const genreId = e.params.data.id;
+        $('#traditionFilter').val(null).trigger('change');
+        $('#traditionFilter').select2({
+            ajax: {
+                url: pageRoot + '/traditions-autocomplete/?genre=' + genreId,
+                dataType: 'json',
+                xhrFields: {
+                    withCredentials: true
+                },
+                processResults: function(data) {
+                    console.log('Tradition filter data:', data.results);
+                    // Update traditionColors and traditionMap
+                    traditionMap = {};
+                    data.results.forEach((trad, index) => {
+                        traditionMap[trad.id] = trad.text;
+                        if (!traditionColors[trad.text]) {
+                            traditionColors[trad.text] = colorPalette[index % colorPalette.length];
+                        }
+                    });
+                    // Add Unattributed to the filter options
+                    traditionMap['Unattributed'] = 'Unattributed';
+                    data.results.push({ id: 'Unattributed', text: 'Unattributed' });
+                    return {
+                        results: data.results,
+                        pagination: data.pagination
+                    };
+                }
+            }
+        });
+    });
+
     $('#identifyTraditionsBtn').on('click', function() {
+        console.log('Identify Traditions clicked, originalData:', originalData);
         showStats(originalData);
         renderFilteredChart();
     });
@@ -48,33 +107,48 @@ ms_formulas_graph_init = function() {
 
     $('.manuscript_filter_left').on('select2:select', function(e) {
         left_id = e.params.data.id;
+        console.log('Left manuscript selected:', left_id);
         fetchDataAndDrawChart(left_id, right_id);
     });
 
     $('.manuscript_filter_right').on('select2:select', function(e) {
         right_id = e.params.data.id;
+        console.log('Right manuscript selected:', right_id);
         fetchDataAndDrawChart(left_id, right_id);
     });
 
     $('#traditionFilter').on('change', function() {
+        console.log('Tradition filter changed:', $('#traditionFilter').val());
         renderFilteredChart();
     });
 
     $('#colorizeTraditions').on('change', function() {
+        console.log('Colorize traditions toggled:', $('#colorizeTraditions').is(':checked'));
         renderFilteredChart();
     });
 
     function renderFilteredChart() {
         showSpinner("Updating graph...");
-        const selected = $('#traditionFilter').val();
+        const selectedIds = $('#traditionFilter').val() || [];
+        const selected = selectedIds.map(id => traditionMap[id] || id); // Map IDs to text
+        console.log('Selected tradition texts:', selected);
+        console.log('Original data:', originalData);
         let filteredData = originalData;
 
-        if (selected && selected.length > 0) {
+        if (selected.length > 0) {
             filteredData = originalData.filter(item => {
                 const traditions = item.formula_traditions || [];
-                return selected.every(t => traditions.includes(t));
+                console.log('Filtering item:', item.formula_id, 'Traditions:', traditions);
+                if (selected.includes('Unattributed') && selected.length === 1) {
+                    return traditions.length === 0;
+                } else if (selected.includes('Unattributed')) {
+                    return traditions.length === 0 || selected.some(t => t !== 'Unattributed' && traditions.includes(t));
+                } else {
+                    return selected.some(t => traditions.includes(t));
+                }
             });
         }
+        console.log('Filtered data:', filteredData);
         createChart(filteredData);
     }
 
@@ -83,23 +157,44 @@ ms_formulas_graph_init = function() {
     }
 
     function fetchDataAndDrawChart(left_id, right_id) {
-        if (left_id === -1 || right_id === -1) return;
+        if (left_id === -1 || right_id === -1) {
+            console.log('Invalid manuscript IDs:', left_id, right_id);
+            return;
+        }
 
         showSpinner("Data loading");
 
         fetch(pageRoot + "/compare_formulas_json/?left=" + left_id + "&right=" + right_id)
             .then(response => response.json())
             .then(data => {
+                console.log('Fetched data:', data);
                 originalData = data;
+                // Assign colors to all traditions in data
+                const allTraditions = new Set();
+                data.forEach(item => {
+                    (item.formula_traditions || []).forEach(trad => allTraditions.add(trad));
+                });
+                console.log('All traditions in data:', allTraditions);
+                let colorIndex = 0;
+                allTraditions.forEach(trad => {
+                    if (!traditionColors[trad]) {
+                        traditionColors[trad] = colorPalette[colorIndex % colorPalette.length];
+                        colorIndex++;
+                    }
+                });
+                showStats(originalData);
                 showSpinner("Generating graph");
                 renderFilteredChart();
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
             });
     }
 
     function getWidth() {
         return Math.max(
             document.body.scrollWidth,
-            document.documentElement.scrollHeight,
+            document.documentElement.scrollWidth,
             document.body.offsetWidth,
             document.documentElement.offsetWidth,
             document.documentElement.clientWidth
@@ -117,6 +212,8 @@ ms_formulas_graph_init = function() {
     }
 
     function showStats(data) {
+        console.log('showStats called with data:', data);
+        console.log('Current traditionColors:', traditionColors);
         const container = document.getElementById('ms_stats');
         container.innerHTML = '';
 
@@ -145,62 +242,66 @@ ms_formulas_graph_init = function() {
         }
 
         const msStats = [];
+        const traditionCounts = {};
+
+        allTraditions.forEach(trad => {
+            traditionCounts[trad] = { only: 0, count: 0 };
+        });
+        traditionCounts['Multiple'] = { only: 0, count: 0 };
+        traditionCounts['Unattributed'] = { only: 0, count: 0 };
 
         for (const [ms, entries] of Object.entries(msGroups)) {
             let total = entries.length;
-            let gregOnly = 0,
-                gelasOnly = 0,
-                both = 0,
-                greg = 0,
-                gelas = 0,
-                unattributed = 0;
+            let unattributed = 0;
+            let stats = { ms, total, unattributed };
+
+            for (const trad of allTraditions) {
+                stats[trad] = 0;
+                stats[`${trad}_only`] = 0;
+            }
+            stats['Multiple'] = 0;
 
             for (const e of entries) {
                 const t = new Set(e.formula_traditions);
-                if (t.has('Gregorianum')) greg++;
-                if (t.has('Gelasianum')) gelas++;
-
-                if (t.has('Gregorianum') && t.has('Gelasianum')) {
-                    both++;
-                } else if (t.has('Gregorianum')) gregOnly++;
-                else if (t.has('Gelasianum')) gelasOnly++;
-
-                if (t.size === 0) unattributed++;
+                if (t.size === 0) {
+                    unattributed++;
+                    traditionCounts['Unattributed'].count++;
+                } else if (t.size > 1) {
+                    stats['Multiple']++;
+                    traditionCounts['Multiple'].count++;
+                } else {
+                    const trad = Array.from(t)[0];
+                    stats[trad]++;
+                    traditionCounts[trad].count++;
+                    stats[`${trad}_only`]++;
+                    traditionCounts[trad].only++;
+                }
             }
 
-            msStats.push({
-                ms,
-                total,
-                gregOnly,
-                gelasOnly,
-                both,
-                unattributed
-            });
+            msStats.push(stats);
         }
 
         let inBothMS = 0;
-        let traditionCount = {};
         let totalShared = 0;
-        let sharedGregOnly = 0,
-            sharedGelasOnly = 0,
-            sharedBoth = 0,
-            sharedUnattributed = 0;
+        let sharedStats = {};
 
-        for (const trad of allTraditions) traditionCount[trad] = 0;
+        allTraditions.forEach(trad => {
+            sharedStats[trad] = 0;
+        });
+        sharedStats['Multiple'] = 0;
+        sharedStats['Unattributed'] = 0;
 
         for (const [id, sets] of allFormulaIds.entries()) {
             if (sets.size > 1) {
                 inBothMS++;
-                const traditions = allFormulaTraditions.get(id);
                 totalShared++;
-
-                if (traditions.has('Gregorianum') && traditions.has('Gelasianum')) {
-                    sharedBoth++;
-                } else if (traditions.has('Gregorianum')) sharedGregOnly++;
-                else if (traditions.has('Gelasianum')) sharedGelasOnly++;
-
+                const traditions = allFormulaTraditions.get(id);
                 if (traditions.size === 0) {
-                    sharedUnattributed++;
+                    sharedStats['Unattributed']++;
+                } else if (traditions.size > 1) {
+                    sharedStats['Multiple']++;
+                } else {
+                    sharedStats[Array.from(traditions)[0]]++;
                 }
             }
         }
@@ -212,11 +313,18 @@ ms_formulas_graph_init = function() {
                 <div class="border border-gray-300 rounded-lg p-4 bg-white shadow-md">
                     <h3 class="text-lg font-semibold text-gray-800 mb-2">${stat.ms}</h3>
                     <ul class="text-sm text-gray-700 space-y-1">
-                        <li><span class="font-medium">Total orations:</span> ${stat.total}</li>
-                        <li><span class="font-medium">Gregorianum:</span> ${stat.gregOnly}</li>
-                        <li><span class="font-medium">Gelasianum:</span> ${stat.gelasOnly}</li>
-                        <li><span class="font-medium">Both traditions:</span> ${stat.both}</li>
-                        <li><span class="font-medium">Unattributed:</span> ${stat.unattributed}</li>
+                        <li><span class="font-medium">Total orations:</span> ${stat.total}</li>`;
+            allTraditions.forEach(trad => {
+                if (stat[trad] > 0) {
+                    const tradColor = traditionColors[trad] || colorPalette[Math.floor(Math.random() * colorPalette.length)];
+                    console.log(`Assigning color to ${trad}: ${tradColor}`);
+                    html += `<li><span class="dot" style="background-color: ${tradColor};"></span><span class="font-medium">${trad}:</span> ${stat[trad]}</li>`;
+                }
+            });
+            if (stat['Multiple'] > 0) {
+                html += `<li><span class="dot" style="background-color: ${traditionColors['Multiple']};"></span><span class="font-medium">Multiple traditions:</span> ${stat['Multiple']}</li>`;
+            }
+            html += `<li><span class="dot" style="background-color: ${traditionColors['Unattributed']};"></span><span class="font-medium">Unattributed:</span> ${stat.unattributed}</li>
                     </ul>
                 </div>`;
         }
@@ -225,11 +333,18 @@ ms_formulas_graph_init = function() {
             <div class="border border-gray-300 rounded-lg p-4 bg-yellow-50 shadow-inner">
                 <h3 class="text-lg font-semibold text-yellow-900 mb-2">Global Stats</h3>
                 <ul class="text-sm text-yellow-800 space-y-1">
-                    <li><span class="font-medium">Number of connections between manuscripts:</span> ${totalShared}</li>
-                    <li><span class="font-medium">Gregorianum:</span> ${sharedGregOnly}</li>
-                    <li><span class="font-medium">Gelasianum:</span> ${sharedGelasOnly}</li>
-                    <li><span class="font-medium">Both traditions:</span> ${sharedBoth}</li>
-                    <li><span class="font-medium">Unattributed:</span> ${sharedUnattributed}</li>
+                    <li><span class="font-medium">Number of connections between manuscripts:</span> ${totalShared}</li>`;
+        allTraditions.forEach(trad => {
+            if (sharedStats[trad] > 0) {
+                const tradColor = traditionColors[trad] || colorPalette[Math.floor(Math.random() * colorPalette.length)];
+                console.log(`Assigning color to ${trad} (global): ${tradColor}`);
+                html += `<li><span class="dot" style="background-color: ${tradColor};"></span><span class="font-medium">${trad}:</span> ${sharedStats[trad]}</li>`;
+            }
+        });
+        if (sharedStats['Multiple'] > 0) {
+            html += `<li><span class="dot" style="background-color: ${traditionColors['Multiple']};"></span><span class="font-medium">Multiple traditions:</span> ${sharedStats['Multiple']}</li>`;
+        }
+        html += `<li><span class="dot" style="background-color: ${traditionColors['Unattributed']};"></span><span class="font-medium">Unattributed:</span> ${sharedStats['Unattributed']}</li>
                 </ul>
             </div>
         </div>`;
@@ -238,12 +353,14 @@ ms_formulas_graph_init = function() {
     }
 
     function createChart(data) {
+        console.log('createChart called with data:', data);
+        console.log('traditionColors:', traditionColors);
         let chartHeight = $('#chart').height();
         const margin = {
                 top: 20,
                 right: 30,
                 bottom: 40,
-                left: 300 // Increased margin for longer labels
+                left: 300
             },
             width = getWidth() - margin.left - margin.right - 50 - 340,
             height = chartHeight - margin.top - margin.bottom;
@@ -254,24 +371,21 @@ ms_formulas_graph_init = function() {
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom);
 
-        const g = svg.append("g") // Append a group for zoom/pan transformations
+        const g = svg.append("g")
             .attr("transform", `translate(${margin.left},${margin.top})`);
 
         const x = d3.scaleLinear().range([0, width]);
         const y = d3.scalePoint().range([0, height]).padding(0.1);
 
         const editionIndexes = [...new Set(data.map(d => d.formula_id))];
+        console.log('editionIndexes:', editionIndexes);
         y.domain(data.map(d => d.Table));
         x.domain(d3.extent(data, d => d.sequence_in_ms));
 
-        const colorizeTraditions = $('#colorizeTraditions').is(':checked');
+        console.log('y.domain:', y.domain());
+        console.log('x.domain:', x.domain());
 
-        const traditionColors = {
-            "Gregorianum": "#0000e7",
-            "Gelasianum": "#980000",
-            "Both": "#00983a",
-            "Unattributed": "#777777"
-        };
+        const colorizeTraditions = $('#colorizeTraditions').is(':checked');
 
         const color = d3.scaleOrdinal(d3.schemeCategory10).domain(editionIndexes);
 
@@ -282,19 +396,15 @@ ms_formulas_graph_init = function() {
         let selectedLine = null;
         let selectedCircles = null;
 
-        // Function to handle highlighting
         function highlightConnection(formula_id) {
-            // Remove previous highlighting
-            g.selectAll(".selected-line").classed("selected-line", false);
+            selectedLine = null;
             g.selectAll(".selected-circle").classed("selected-circle", false);
 
-            // Select and highlight the line
             selectedLine = g.selectAll('path.connection-line')
                 .filter(d => d.formula_id === formula_id)
                 .classed("selected-line", true)
                 .raise();
 
-            // Select and highlight the circles
             selectedCircles = g.selectAll('circle')
                 .filter(d => d.formula_id === formula_id)
                 .classed("selected-circle", true)
@@ -309,47 +419,41 @@ ms_formulas_graph_init = function() {
             highlightConnection(d.formula_id);
         }
 
-        // Group data by formula_id and Table for drawing connections
         const groupedData = d3.group(data, d => d.formula_id, d => d.Table);
+        console.log('groupedData:', groupedData);
 
         editionIndexes.forEach(formula_id => {
             const values = data.filter(d => d.formula_id === formula_id);
 
             let traditionClass = "";
-            let connectionColor = color(formula_id); // Default d3.schemeCategory10 color
-            let circleColor = color(formula_id); // Default d3.schemeCategory10 color
+            let connectionColor = color(formula_id);
+            let circleColor = color(formula_id);
 
             if (colorizeTraditions) {
-                const traditions = values[0].formula_traditions;
-
-                if (traditions.includes("Gregorianum") && traditions.includes("Gelasianum")) {
-                    traditionClass = "Both";
-                    connectionColor = traditionColors["Both"];
-                    circleColor = traditionColors["Both"];
-                } else if (traditions.includes("Gregorianum")) {
-                    traditionClass = "Gregorianum";
-                    connectionColor = traditionColors["Gregorianum"];
-                    circleColor = traditionColors["Gregorianum"];
-                } else if (traditions.includes("Gelasianum")) {
-                    traditionClass = "Gelasianum";
-                    connectionColor = traditionColors["Gelasianum"];
-                    circleColor = traditionColors["Gelasianum"];
-                } else {
+                const traditions = values[0].formula_traditions || [];
+                if (traditions.length === 0) {
                     traditionClass = "Unattributed";
                     connectionColor = traditionColors["Unattributed"];
                     circleColor = traditionColors["Unattributed"];
+                } else if (traditions.length > 1) {
+                    traditionClass = "Multiple";
+                    connectionColor = traditionColors["Multiple"];
+                    circleColor = traditionColors["Multiple"];
+                } else {
+                    traditionClass = traditions[0];
+                    connectionColor = traditionColors[traditions[0]] || color(formula_id);
+                    circleColor = traditionColors[traditions[0]] || color(formula_id);
                 }
             }
 
-            // Draw connection lines
-            g.selectAll(`.connection-line-${formula_id}`) // Use formula_id as part of the class
-                .data(data.filter(d => d.formula_id === formula_id)) // Filter data to only include the current formula
+            g.selectAll(`.connection-line-${formula_id}`)
+                .data(data.filter(d => d.formula_id === formula_id))
                 .enter()
                 .append("path")
-                .attr("class", `connection-line connection-line-${formula_id}`) // Add unique class for each formula_id
+                .attr("class", `connection-line connection-line-${formula_id}`)
                 .attr("fill", "none")
-                .attr("stroke", connectionColor) // Set connection color
-                .attr("stroke-width", 3) // Set line thickness to 3
+                .attr("stroke", connectionColor)
+                .attr("stroke-width", 3)
                 .attr("d", function(d) {
                     const leftMs = d.Table;
 
@@ -365,15 +469,14 @@ ms_formulas_graph_init = function() {
                     const rightEntries = groupedData.get(formula_id).get(rightMs);
 
                     if (!leftEntries || !rightEntries) return null;
-                    //Determine number of occurences of formulas in both manuscripts
                     const leftCount = leftEntries.length;
                     const rightCount = rightEntries.length;
 
                     let connections = [];
 
                     for (let i = 0; i < Math.max(leftCount, rightCount); i++) {
-                        let source = leftEntries[Math.min(i, leftCount - 1)]; //Loop the last entry to the source
-                        let target = rightEntries[Math.min(i, rightCount - 1)]; //Loop the last entry to the target
+                        let source = leftEntries[Math.min(i, leftCount - 1)];
+                        let target = rightEntries[Math.min(i, rightCount - 1)];
 
                         connections.push({
                             source: source,
@@ -435,13 +538,13 @@ ms_formulas_graph_init = function() {
                     handleClickOnCircle.call(this, d);
                     event.stopPropagation();
                 });
-        }); // End editionIndexes.forEach
+        });
 
         g.append("g").attr("class", "y axis")
-            .attr("transform", `translate(-5,0)`) //This line added
+            .attr("transform", `translate(-5,0)`)
             .call(d3.axisLeft(y)
                 .tickFormat(d => {
-                    const maxLength = 90; // Increased maximum length
+                    const maxLength = 90;
                     let text = d;
                     if (text.length > maxLength) {
                         text = text.substring(0, maxLength) + "...";
@@ -451,32 +554,26 @@ ms_formulas_graph_init = function() {
             .selectAll("text")
             .call(wrap, margin.left - 10);
 
-
         g.append("g").attr("class", "x axis")
             .attr("transform", `translate(0,${height})`)
             .call(d3.axisBottom(x));
 
         svg.on("click", function(event) {
             if (!d3.select(event.target).classed("dot") && !d3.select(event.target).classed("connection-line")) {
-                // Deselect if click outside of the dots or connection lines
                 g.selectAll(".selected-line").classed("selected-line", false);
                 g.selectAll(".selected-circle").classed("selected-circle", false);
             }
         });
 
         function handleZoom(e) {
-            // Rescale the x-axis based on zoom level
             const new_x = e.transform.rescaleX(x);
 
-            // Update the x-axis, but keep the y-axis untouched
             g.select(".x.axis").call(d3.axisBottom(new_x));
 
-            // Update only the x position of circles, no scaling for size or y-axis
             g.selectAll('circle')
-                .attr('cx', d => new_x(d.sequence_in_ms)); // Update x position only
+                .attr('cx', d => new_x(d.sequence_in_ms));
 
-            // Update the paths (lines) with the new x-scale, ensure proper data binding
-            g.selectAll('path.connection-line') // Select paths associated with data lines
+            g.selectAll('path.connection-line')
                 .attr('d', function(d) {
                     const leftMs = d.Table;
 
@@ -530,7 +627,7 @@ function wrap(text, width) {
             word,
             line = [],
             lineNumber = 0,
-            lineHeight = 1.1, // ems
+            lineHeight = 1.1,
             y = text.attr("y"),
             dy = parseFloat(text.attr("dy")),
             tspan = text.text(null).append("tspan").attr("x", -3).attr("y", y).attr("dy", dy + "em");
