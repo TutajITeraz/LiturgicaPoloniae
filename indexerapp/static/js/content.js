@@ -1,5 +1,15 @@
-
-var IDENTIFY_TRADITIONS = false;
+const colorPalette = [
+    '#e6194B', '#3cb44b', '#ffe119', '#4363d8', '#f58231',
+    '#911eb4', '#42d4f4', '#f032e6', '#bfef45', '#fabed4',
+    '#469990', '#dcbeff', '#9A6324', '#fffac8', '#800000',
+    '#aaffc3', '#808000', '#ffd8b1'
+];
+let traditionColors = {
+};
+let traditionMap = {
+};
+let IDENTIFY_TRADITIONS = false;
+let colorIndex = 0;
 
 function displayUniqueAuthorsAndContributors(dataTable, divToAppend) {
     var table = dataTable.table();
@@ -47,18 +57,86 @@ function displaOriginalAddedLegend(dataTable, divToAppend) {
     $(divToAppend).after(mainDiv);
 }
 
+
 function displayTraditionLegend(dataTable, divToAppend) {
-    var table = dataTable.table();
+    const genreId = $('#genreSelect').val();
+    if (!genreId) {
+        const allTraditions = Object.keys(traditionColors);
+        let html = '<div class="printIt" style="margin-top:0.5em;">';
+        allTraditions.forEach(trad => {
+            const tradColor = traditionColors[trad];
+            const displayText = trad === 'Unattributed' ? 'Unattributed' : trad === 'Multiple' ? 'Multiple traditions' : trad;
+            html += `<div style="display: inline-block; margin-right:0.5em; margin-left:1em; text-align:middle;">
+                        <span class="dot" style="background-color: ${tradColor};" title="${displayText}"></span>
+                        <i>${displayText}</i>
+                     </div>`;
+        });
+        html += '</div>';
 
-    // Render unique values in a div below the table
-    var mainDiv = $('<div class="printIt" style="margin-top:0.5em;">'
-        +'<div style="display: inline-block; margin-right:0.5em;  margin-left: 1em; text-align: middle"> <span class="dot gregorianum" title="Gregorianum"></span><i>Gregorianum</i></div>'
-        +'<div style="display: inline-block; margin-right:0.5em;  margin-left: 1em; text-align: middle"><span class="dot gelasianum" title="Gelasianum"></span><i>Gelasianum</i></div>'
-        +'<div style="display: inline-block; margin-right:0.5em;  margin-left: 1em; text-align: middle"><span class="dot" title="Gelasianum"></span><i>Unknown tradition</i></div>'
-        + '</div>'
-    );
+        $(divToAppend).next('.printIt').remove();
+        $(divToAppend).after(html);
+        return;
+    }
 
-    $(divToAppend).after(mainDiv);
+    function fetchTraditions(page = 1, accumulatedResults = []) {
+        $.ajax({
+            url: `${pageRoot}/traditions-autocomplete/?genre=${genreId}&page=${page}`,
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+            },
+            success: function(response) {
+                const results = response.results || [];
+                accumulatedResults = accumulatedResults.concat(results);
+
+                if (response.pagination && response.pagination.next) {
+                    fetchTraditions(page + 1, accumulatedResults);
+                } else {
+                    traditionMap = { 'Unattributed': 'Unattributed' };
+                    accumulatedResults.forEach(trad => {
+                        traditionMap[trad.id] = trad.text;
+                        if (!traditionColors[trad.text]) {
+                            traditionColors[trad.text] = colorPalette[colorIndex % colorPalette.length];
+                            colorIndex++;
+                        }
+                    });
+
+                    const allTraditions = Object.keys(traditionColors);
+                    let html = '<div class="printIt" style="margin-top:0.5em;">';
+                    allTraditions.forEach(trad => {
+                        const tradColor = traditionColors[trad];
+                        const displayText = trad === 'Unattributed' ? 'Unattributed' : trad === 'Multiple' ? 'Multiple traditions' : trad;
+                        html += `<div style="display: inline-block; margin-right:0.5em; margin-left:1em; text-align:middle;">
+                                    <span class="dot" style="background-color: ${tradColor};" title="${displayText}"></span>
+                                    <i>${displayText}</i>
+                                 </div>`;
+                    });
+                    html += '</div>';
+
+                    $(divToAppend).next('.printIt').remove();
+                    $(divToAppend).after(html);
+                }
+            },
+            error: function() {
+                const allTraditions = Object.keys(traditionColors);
+                let html = '<div class="printIt" style="margin-top:0.5em;">';
+                allTraditions.forEach(trad => {
+                    const tradColor = traditionColors[trad];
+                    const displayText = trad === 'Unattributed' ? 'Unattributed' : trad === 'Multiple' ? 'Multiple traditions' : trad;
+                    html += `<div style="display: inline-block; margin-right:0.5em; margin-left:1em; text-align:middle;">
+                                <span class="dot" style="background-color: ${tradColor};" title="${displayText}"></span>
+                                <i>${displayText}</i>
+                             </div>`;
+                });
+                html += '</div>';
+
+                $(divToAppend).next('.printIt').remove();
+                $(divToAppend).after(html);
+            }
+        });
+    }
+
+    fetchTraditions();
 }
 
 
@@ -178,17 +256,29 @@ content_init = function()
                     "data": "formula_standarized", 
                     "name": "formula_standarized", 
                     "title": "Formula (standarized)", 
-                    "render": function (data, type, row, meta) {
-
-                        if(row.traditions!='' && IDENTIFY_TRADITIONS)
-                        {
-                            if(row.traditions.includes("Gregorianum"))
-                                row.formula_standarized = '<span class="dot gregorianum" title="Gregorianum"></span>'+row.formula_standarized
-                            if(row.traditions.includes("Gelasianum"))
-                                row.formula_standarized = '<span class="dot gelasianum" title="Gelasianum"></span>'+row.formula_standarized
+                    render: function(data, type, row, meta) {
+                        if (row.traditions && IDENTIFY_TRADITIONS) {
+                            let traditions = Array.isArray(row.traditions) 
+                                ? row.traditions 
+                                : row.traditions.split(',').map(t => t.trim()).filter(t => t);
+    
+                            let dots = '';
+                            if (traditions.length === 0) {
+                                dots = `<span class="dot" style="background-color: ${traditionColors['Unattributed']};" title="Unattributed"></span>`;
+                            } else {
+                                traditions.forEach(trad => {
+                                    if (!traditionColors[trad]) {
+                                        traditionColors[trad] = colorPalette[colorIndex % colorPalette.length];
+                                        traditionMap[trad] = trad;
+                                        colorIndex++;
+                                    }
+                                    dots += `<span class="dot" style="background-color: ${traditionColors[trad]};" title="${trad}"></span>`;
+                                });
+                            }
+                            return dots + (row.formula_standarized || data);
                         }
-                        return row.formula_standarized;
-                    }, 
+                        return row.formula_standarized || data;
+                    },
                     "width": "40%"  
                 },
                 {
