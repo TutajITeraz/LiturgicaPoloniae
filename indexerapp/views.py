@@ -101,6 +101,11 @@ from captcha.models import CaptchaStore
 from captcha.helpers import captcha_image_url
 
 
+#For traditions assignment:
+from django.db import transaction
+
+
+
 ZOTERO_library_type = 'group'
 #ZOTERO_api_key = 'HhPM6AN8emREftJShQBRITeI' #'5hnxe02vaDuZJ8O4qkUAT6Ty'
 #ZOTERO_library_id = 5244710
@@ -4037,3 +4042,54 @@ class ImproveOurDataFormView(View):
         new_captcha = CaptchaStore.generate_key()
         captcha_image = captcha_image_url(new_captcha)
         return JsonResponse({"captcha_key": new_captcha, "captcha_image": captcha_image})
+
+
+
+class DeleteTraditionFromFormulaView(View):
+    def delete(self, request, tradition_id):
+        # Check if the user is a superuser
+        if not request.user.is_superuser:
+            return HttpResponseForbidden("Only superusers can delete tradition relations.")
+
+        # Validate tradition ID
+        tradition = get_object_or_404(Traditions, pk=tradition_id)
+        
+        # Delete all relations between this tradition and any formulas
+        deleted_count = Formulas.tradition.through.objects.filter(traditions_id=tradition.id).delete()[0]
+        
+        return JsonResponse({
+            'status': 'success',
+            'message': f'Removed {deleted_count} relations for tradition {tradition.name}',
+            'deleted_count': deleted_count
+        })
+
+class AssignMSContentToTraditionView(View):
+    def post(self, request, manuscript_id, tradition_id):
+        # Check if the user is a superuser
+        if not request.user.is_superuser:
+            return HttpResponseForbidden("Only superusers can assign content to traditions.")
+
+        # Validate manuscript and tradition
+        manuscript = get_object_or_404(Manuscripts, pk=manuscript_id)
+        tradition = get_object_or_404(Traditions, pk=tradition_id)
+        
+        # Get all formulas associated with the manuscript through content
+        formulas = Content.objects.filter(
+            manuscript_id=manuscript.id,
+            formula_id__isnull=False
+        ).values_list('formula_id', flat=True).distinct()
+        
+        # Add relations between formulas and tradition if they don't exist
+        added_count = 0
+        with transaction.atomic():
+            for formula_id in formulas:
+                formula = Formulas.objects.get(pk=formula_id)
+                if not formula.tradition.filter(id=tradition.id).exists():
+                    formula.tradition.add(tradition)
+                    added_count += 1
+        
+        return JsonResponse({
+            'status': 'success',
+            'message': f'Assigned {added_count} formulas to tradition {tradition.name}',
+            'added_count': added_count
+        })

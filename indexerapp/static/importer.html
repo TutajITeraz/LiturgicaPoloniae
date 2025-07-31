@@ -29,7 +29,6 @@
         </select>
         <button class="py-2 text-[#0d1b2a] font-semibold shadow drop-shadow-md bg-[#e8d3c3] rounded w-[200px] hover:bg-[#dec5b2] text-center mt-7" id="download-csv-from-server" onclick="downloadContentCSV()" style="display: none">Download data from the server as .csv</button>
         <button class="py-2 text-[#0d1b2a] font-semibold shadow drop-shadow-md bg-[#e8d3c3] rounded w-[200px] hover:bg-[#dec5b2] text-center mt-7" id="delete-ms-content" onclick="deleteMSContent()" style="display: none">Delete all content</button>
-
     </div>
 
     <div id="contributor_selector">
@@ -50,5 +49,14 @@
     <h2 class="text-[16pt] text-[#0d1b2a] caudex-bold text-left mb-5" >4. Send data to the database:</h2>
     <button class="py-2 text-[#0d1b2a] font-semibold shadow drop-shadow-md bg-[#e8d3c3] rounded w-[200px] hover:bg-[#dec5b2] text-center mt-7" id="send-to-server" onclick="sendToServer()" style="display: none">Send to database</button>
     
+    <div id="tradition_selector">
+        <h2 class="text-[16pt] text-[#0d1b2a] caudex-bold text-left mb-5" >5. Assign ms content to the tradition (Optional):</h2>
+        <label for="ms_select">Tradition:</label>
+        <select class="tradition_filter" id="tradition_select">
+        </select>
+        <button class="py-2 text-[#0d1b2a] font-semibold shadow drop-shadow-md bg-[#e8d3c3] rounded w-[200px] hover:bg-[#dec5b2] text-center mt-7" id="content-to-tradition" onclick="assignMSContentToTheTradition()" style="display: none">Assign all content from MS to the tradition</button>
+        <button class="py-2 text-[#0d1b2a] font-semibold shadow drop-shadow-md bg-[#e8d3c3] rounded w-[200px] hover:bg-[#dec5b2] text-center mt-7" id="delete-tradition-content" onclick="deleteTraditionContent()" style="display: none">Delete tradition content</button>
+
+    </div>
     
 </div>

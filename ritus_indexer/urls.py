@@ -247,7 +247,10 @@ urlpatterns = [
     path('api/', include(router.urls)),
 
     path('export/content/<int:manuscript_id>/', views.ContentCSVExportView.as_view(), name='content_csv_export'),
-        path('delete/content/<int:manuscript_id>/', views.DeleteContentView.as_view(), name='delete_content'),
+    path('delete/content/<int:manuscript_id>/', views.DeleteContentView.as_view(), name='delete_content'),
+    
+    path('delete/tradition-formulas/<int:tradition_id>/', views.DeleteTraditionFromFormulaView.as_view(), name='delete_tradition_from_formula'),
+    path('assign-ms-content-to-tradition/<int:manuscript_id>/<int:tradition_id>/', views.AssignMSContentToTraditionView.as_view(), name='assign_ms_content_to_tradition'),
 
 
     path(

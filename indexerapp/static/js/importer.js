@@ -1,5 +1,6 @@
 let data;
 let manuscriptId;
+let traditionId;
 let contributorId;
 let dataTable;
 let tableName;
@@ -663,6 +664,35 @@ importer_init = function()
         document.getElementById('download-csv-from-server').style.display = 'block';
         document.getElementById("delete-ms-content").style.display = 'block';
 
+        if(traditionId >=0 && traditionId < 9999999999)
+            document.getElementById("content-to-tradition").style.display = 'block';
+
+        //content_table.columns(0).search(id).draw();
+    });
+
+
+        $('.tradition_filter').select2({
+        ajax: {
+            url: pageRoot+'/traditions-autocomplete/',
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+           }
+            // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
+          }
+    });
+
+    $('.tradition_filter').on('select2:select', function (e) {
+        var data = e.params.data;
+        var id = data.id;
+        console.log(id);
+
+        traditionId = id;
+        document.getElementById("delete-tradition-content").style.display = 'block';
+
+        if(manuscriptId >=0 && manuscriptId < 9999999999)
+            document.getElementById("content-to-tradition").style.display = 'block';
+
         //content_table.columns(0).search(id).draw();
     });
 
@@ -709,6 +739,61 @@ function deleteMSContent() {
                 alert(`Successfully deleted ${data.deleted_count} items.`);
             } else {
                 alert('Failed to delete content.');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+}
+
+function deleteTraditionContent() {
+    if (!(traditionId > 0 && traditionId < 99999999)) {
+        alert('You have to select a tradition from the list!');
+        return;
+    }
+
+    if (confirm('Are you sure you want to delete all content assigned with this tradition?')) {
+        fetch(pageRoot+`/delete/tradition-formulas/${traditionId}/`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')  // Include CSRF token for security
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert(`Successfully deleted ${data.deleted_count} items.`);
+            } else {
+                alert('Failed to delete content.');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+}
+
+function assignMSContentToTheTradition() {
+    if (!(manuscriptId > 0 && manuscriptId < 99999999)) {
+        alert('You have to select a manuscript from the list!');
+        return;
+    }
+
+    if (!(traditionId > 0 && traditionId < 99999999)) {
+        alert('You have to select a tradition from the list!');
+        return;
+    }
+
+    if (confirm('Are you sure you want to assign all content from the manuscript to the tradition?')) {
+        fetch(pageRoot+`/assign-ms-content-to-tradition/${manuscriptId}/${traditionId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')  // Include CSRF token for security
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert(`Successfully assigned ${data.assigned_count} items.`);
+            } else {
+                alert('Failed to assign content.');
             }
         })
         .catch(error => console.error('Error:', error));
