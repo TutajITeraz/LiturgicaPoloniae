@@ -991,104 +991,14 @@ manuscripts_init = function()
         d.order_direction = 'asc'
     }
     
+    var manuscripts_table;
     var map = null;
+    var markerClusterGroup = null;
     var allMarkers = [];
     var map_bounds;
     var savedPageLength = 25;
     var currentView = 'table';
-    var currentPlaceType = 'contemporary_repository_place';
-
-
-    var manuscripts_table = $('#manuscripts').DataTable({
-        "ajax": {
-            "url": pageRoot + "/api/manuscripts/?format=datatables",
-            "dataSrc": function (data) {
-                var processedData = [];
-                for (var c in data.data) {
-                    processedData[c] = {};
-                    for (var f in data.data[c]) {
-                        if (f === 'contemporary_repository_place' || f === 'place_of_origin' || f === 'binding_place') {
-                            // Extract subfields to flatten the structure
-                            processedData[c][f + '_name'] = data.data[c][f] ? data.data[c][f].name : '';
-                            processedData[c][f + '_latitude'] = data.data[c][f] ? data.data[c][f].latitude : null;
-                            processedData[c][f + '_longitude'] = data.data[c][f] ? data.data[c][f].longitude : null;
-                        } else {
-                            processedData[c][f] = getPrintableValues(f, data.data[c][f]).value;
-                        }
-                    }
-                }
-                return processedData;
-            },
-            "data": getFilterData
-        },
-        "processing": false,
-        "serverSide": true,
-        "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
-        "pagingType": "full_numbers",
-        "pageLength": savedPageLength,
-        "columns": [
-            { "data": "main_script", "title": "Main Script", visible: false },
-            {
-                "data": "image",
-                "title": "Image",
-                "width": "220px",
-                "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
-                    if (oData.image.length > 3) {
-                        $(nTd).html("<img src='" + oData.image + "' style='max-height: 170px; max-width: 190px;'></img>");
-                    }
-                }
-            },
-            {
-                "data": "name",
-                "title": "Info",
-                "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
-                    let html = "<h3 class='ms_name'><a href=/static/page.html?p=manuscript&id=" + oData.id + ">" + oData.rism_id + " " + oData.name + "</a></h3>"
-                        + "<div class='left_script_content'>"
-                        + "<div class='ms_foreign_id'><span class='mspltext'> " + oData.contemporary_repository_place_name + ":</span> " + oData.foreign_id + "<span class='mspltext'> (" + foreign_id_name + ")</span>, " + oData.shelf_mark + "<span class='mspltext'> (Shelfmark)</span></div>"
-                        + "<div class='ms_dating'><b>Dating: </b>" + oData.dating + "</div>"
-                        + "<div class='ms_place_of_origin'><b>Place of origin: </b>" + oData.place_of_origin_name + "</div>"
-                        + "<div class='ms_place_of_origin'><b>Medieval provenance: </b>" + oData.ms_provenance + "</div>"
-                        + "</div>"
-                        + "<div class='right_script_content'>"
-                        + "<div class='ms_folios'><span class='decorated_left'>Number of folios: </span><span class='decorated_right'>" + oData.folios_no + "</span></div>"
-                        + "<div class='ms_measurements'><span class='decorated_left'>Measurements: </span><span class='decorated_right'>" + oData.page_size_max_h + "mm x " + oData.page_size_max_w + "mm</span></div>"
-                        + "<div class='ms_main_script'><span class='decorated_left'>Main script: </span><span class='decorated_right'>" + oData.main_script + "</span></div>"
-                        + "<div class='ms_decorated'><span class='decorated_left'>Decorated: </span><span class='decorated_right'>" + oData.decorated + "</span></div>"
-                        + "<div class='ms_music_notation'><span class='decorated_left'>Music notation: </span><span class='decorated_right'>" + oData.music_notation + "</span></div>"
-                        + "<div class='ms_binding_date'><span class='decorated_left'>Binding date: </span><span class='decorated_right'>" + oData.binding_date + "</span></div>"
-                        + "</div>";
-                    $(nTd).html(html);
-                }
-            },
-            { "data": "id", "title": "ID", visible: false },
-            { "data": "rism_id", "title": "rism_id", visible: false },
-            { "data": "ms_provenance", "title": "ms_provenance", visible: false },
-            { "data": "folios_no", "title": "folios_no", visible: false },
-            { "data": "page_size_max_h", "title": "page_size_max_h", visible: false },
-            { "data": "page_size_max_w", "title": "page_size_max_w", visible: false },
-            { "data": "foreign_id", "title": foreign_id_name, visible: false },
-            { "data": "contemporary_repository_place_name", "title": "Contemporary Repository Place Name", visible: false },
-            { "data": "contemporary_repository_place_latitude", "title": "Contemporary Repository Place Latitude", visible: false },
-            { "data": "contemporary_repository_place_longitude", "title": "Contemporary Repository Place Longitude", visible: false },
-            { "data": "shelf_mark", "title": "Shelfmark", visible: false },
-            { "data": "place_of_origin_name", "title": "Place of Origin Name", visible: false },
-            { "data": "place_of_origin_latitude", "title": "Place of Origin Latitude", visible: false },
-            { "data": "place_of_origin_longitude", "title": "Place of Origin Longitude", visible: false },
-            { "data": "dating", "title": "Dating", visible: false },
-            { "data": "dating_year", "title": "dating_year", visible: false },
-            { "data": "decorated", "title": "Decorated", visible: false },
-            { "data": "music_notation", "title": "Music Notation", visible: false },
-            { "data": "binding_date", "title": "Binding Date", visible: false },
-            { "data": "binding_place_name", "title": "Binding Place Name", visible: false },
-            { "data": "binding_place_latitude", "title": "Binding Place Latitude", visible: false },
-            { "data": "binding_place_longitude", "title": "Binding Place Longitude", visible: false }
-        ],
-        "drawCallback": function() {
-            if (currentView === 'map') {
-                updateMapMarkers();
-            }
-        }
-    });
+    var currentPlaceType = 'place_of_origin';
 
     function initMap() {
         if (map) {
@@ -1112,41 +1022,85 @@ manuscripts_init = function()
             maxBoundsViscosity: 1.0
         });
 
+        markerClusterGroup = L.markerClusterGroup({
+            maxClusterRadius: 20,
+            disableClusteringAtZoom: 10,
+            spiderfyOnMaxZoom: false,
+            showCoverageOnHover: false,
+            iconCreateFunction: function(cluster) {
+                var manuscriptCount = cluster.getAllChildMarkers().reduce(function(sum, marker) {
+                    return sum + (marker.manuscriptCount || 1);
+                }, 0);
+                return L.divIcon({
+                    html: '<img src="/static/img/icons/marker_number.svg"><div class="number">' + manuscriptCount + '</div>',
+                    className: 'leaflet-marker-icon leaflet-div-icon',
+                    iconSize: L.point(25, 41)
+                });
+            }
+        });
+
+        map.addLayer(markerClusterGroup);
         updateMapMarkers();
     }
 
     function updateMapMarkers() {
-        if (!map) return;
+        if (!map || !markerClusterGroup) return;
 
-        allMarkers.forEach(marker => marker.remove());
+        markerClusterGroup.clearLayers();
         allMarkers = [];
 
         var data = manuscripts_table.rows({ search: 'applied' }).data().toArray();
+        var manuscriptsByLocation = {};
+
+        // Group manuscripts by coordinates
         data.forEach((item, index) => {
-            let lat, lon, name;
+            let lat, lon, name, id;
             if (currentPlaceType === 'contemporary_repository_place') {
                 lat = item.contemporary_repository_place_latitude;
                 lon = item.contemporary_repository_place_longitude;
                 name = item.contemporary_repository_place_name;
+                id = item.id;
             } else if (currentPlaceType === 'place_of_origin') {
                 lat = item.place_of_origin_latitude;
                 lon = item.place_of_origin_longitude;
                 name = item.place_of_origin_name;
+                id = item.id;
             } else {
                 lat = item.binding_place_latitude;
                 lon = item.binding_place_longitude;
                 name = item.binding_place_name;
+                id = item.id;
             }
 
             if (lat && lon && !isNaN(lat) && !isNaN(lon)) {
-                var marker = new L.Marker(new L.LatLng(lat, lon), {
-                    icon: new L.NumberedDivIcon({ number: index + 1 }),
-                    autoPanOnFocus: false
-                });
-                marker.addTo(map);
-                marker.bindPopup("<b>" + (name || "Unknown") + "</b>", { autoPan: false });
-                allMarkers.push(marker);
+                let key = `${lat},${lon}`;
+                if (!manuscriptsByLocation[key]) {
+                    manuscriptsByLocation[key] = { lat, lon, name, manuscripts: [] };
+                }
+                manuscriptsByLocation[key].manuscripts.push({ id, name: item.name });
             }
+        });
+
+        // Create markers for each unique location
+        Object.values(manuscriptsByLocation).forEach(location => {
+            let popupContent = `<b>${location.name || 'Unknown'}</b><ul class="list-disc pl-4">`;
+            location.manuscripts.forEach(ms => {
+                popupContent += `<li><a href="/static/page.html?p=manuscript&id=${ms.id}" class="text-blue-600 hover:underline">${ms.name || 'Manuscript ' + ms.id}</a></li>`;
+            });
+            popupContent += '</ul>';
+
+            var marker = L.marker([location.lat, location.lon], {
+                icon: L.divIcon({
+                    html: `<img src="/static/img/icons/marker_number.svg">${location.manuscripts.length > 1 ? '<div class="number">' + location.manuscripts.length + '</div>' : ''}`,
+                    className: 'leaflet-marker-icon leaflet-div-icon',
+                    iconSize: L.point(25, 41)
+                })
+            });
+
+            marker.manuscriptCount = location.manuscripts.length; // Store manuscript count for clustering
+            marker.bindPopup(popupContent, { autoPan: true });
+            allMarkers.push(marker);
+            markerClusterGroup.addLayer(marker);
         });
 
         if (allMarkers.length > 0) {
@@ -1159,19 +1113,130 @@ manuscripts_init = function()
     }
 
 
-        $('#tableViewBtn').click(function() {
+
+
+
+    var manuscripts_table = $('#manuscripts').DataTable({
+        "ajax": {
+            "url": pageRoot + "/api/manuscripts/?format=datatables",
+            "dataSrc": function (data) {
+                var processedData = [];
+                for (var c in data.data) {
+                    processedData[c] = {};
+                    for (var f in data.data[c]) {
+                        processedData[c][f] = getPrintableValues(f, data.data[c][f]).value;
+                    }
+                }
+                return processedData;
+            },
+            "data": getFilterData
+        },
+        "processing": false,
+        "serverSide": true,
+        "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+        "pagingType": "full_numbers",
+        "pageLength": savedPageLength,
+        "columns": [
+            { "data": "main_script", "title": "Main Script", visible: false },
+            {
+                "data": "image",
+                "title": "Image",
+                "width": "220px",
+                "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                    if (oData.image && oData.image.length > 3) {
+                        $(nTd).html("<img src='" + oData.image + "' style='max-height: 170px; max-width: 190px;'></img>");
+                    }
+                }
+            },
+            {
+                "data": "name",
+                "title": "Info",
+                "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                    let html = "<h3 class='ms_name'><a href='/page.html?p=manuscript&id=" + oData.id + "' class='text-blue-600 hover:underline'>" + oData.rism_id + " " + (oData.name || '') + "</a></h3>"
+                        + "<div class='left_script_content'>"
+                        + "<div class='ms_foreign_id'><span class='mspltext'> " + (oData.contemporary_repository_place_name || '') + ":</span> " + (oData.foreign_id || '') + "<span class='mspltext'> (" + foreign_id_name + ")</span>, " + (oData.shelf_mark || '') + "<span class='mspltext'> (Shelfmark)</span></div>"
+                        + "<div class='ms_dating'><b>Dating: </b>" + (oData.dating || '') + "</div>"
+                        + "<div class='ms_place_of_origin'><b>Place of origin: </b>" + (oData.place_of_origin_name || '') + "</div>"
+                        + "<div class='ms_place_of_origin'><b>Medieval provenance: </b>" + (oData.ms_provenance || '') + "</div>"
+                        + "</div>"
+                        + "<div class='right_script_content'>"
+                        + "<div class='ms_folios'><span class='decorated_left'>Number of folios: </span><span class='decorated_right'>" + (oData.folios_no || '-') + "</span></div>"
+                        + "<div class='ms_measurements'><span class='decorated_left'>Measurements: </span><span class='decorated_right'>" + (oData.page_size_max_h || '-') + "mm x " + (oData.page_size_max_w || '-') + "mm</span></div>"
+                        + "<div class='ms_main_script'><span class='decorated_left'>Main script: </span><span class='decorated_right'>" + (oData.main_script || '') + "</span></div>"
+                        + "<div class='ms_decorated'><span class='decorated_left'>Decorated: </span><span class='decorated_right'>" + (oData.decorated || '') + "</span></div>"
+                        + "<div class='ms_music_notation'><span class='decorated_left'>Music notation: </span><span class='decorated_right'>" + (oData.music_notation || '') + "</span></div>"
+                        + "<div class='ms_binding_date'><span class='decorated_left'>Binding date: </span><span class='decorated_right'>" + (oData.binding_date || '') + "</span></div>"
+                        + "</div>";
+                    $(nTd).html(html);
+                }
+            },
+            { "data": "id", "title": "ID", visible: false },
+            { "data": "rism_id", "title": "RISM ID", visible: false },
+            { "data": "ms_provenance", "title": "Medieval Provenance", visible: false },
+            { "data": "folios_no", "title": "Folios No", visible: false },
+            { "data": "page_size_max_h", "title": "Page Size Max Height", visible: false },
+            { "data": "page_size_max_w", "title": "Page Size Max Width", visible: false },
+            { "data": "foreign_id", "title": foreign_id_name, visible: false },
+            { "data": "contemporary_repository_place_name", "title": "Contemporary Repository Place Name", visible: false },
+            { "data": "contemporary_repository_place_latitude", "title": "Contemporary Repository Place Latitude", visible: false },
+            { "data": "contemporary_repository_place_longitude", "title": "Contemporary Repository Place Longitude", visible: false },
+            { "data": "shelf_mark", "title": "Shelfmark", visible: false },
+            { "data": "place_of_origin_name", "title": "Place of Origin Name", visible: false },
+            { "data": "place_of_origin_latitude", "title": "Place of Origin Latitude", visible: false },
+            { "data": "place_of_origin_longitude", "title": "Place of Origin Longitude", visible: false },
+            { "data": "dating", "title": "Dating", visible: false },
+            { "data": "dating_year", "title": "Dating Year", visible: false },
+            { "data": "decorated", "title": "Decorated", visible: false },
+            { "data": "music_notation", "title": "Music Notation", visible: false },
+            { "data": "binding_date", "title": "Binding Date", visible: false },
+            { "data": "binding_place_name", "title": "Binding Place Name", visible: false },
+            { "data": "binding_place_latitude", "title": "Binding Place Latitude", visible: false },
+            { "data": "binding_place_longitude", "title": "Binding Place Longitude", visible: false }
+        ],
+        "initComplete": function() {
+            // Inject sort dropdown before the search bar
+            var sortDropdown = `
+                <div class="sort-container mb-2 flex justify-start items-center">
+                    <label for="sortField" class="young-serif text-[10px] sm:text-xs md:text-[8pt] uppercase mr-2">Sort by:</label>
+                    <span class="select2 select2-container select2-container--default">
+                        <select id="sortField" class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-disabled="false" aria-labelledby="select2-sortField-container" aria-controls="select2-sortField-container">
+                            <option value="name" selected>Name</option>
+                            <option value="dating_year">Dating Year</option>
+                            <option value="contemporary_repository_place_name">Contemporary Repository Place</option>
+                            <option value="place_of_origin_name">Place of Origin</option>
+                            <option value="binding_place_name">Binding Place</option>
+                        </select>
+                        <span class="select2-selection__rendered" id="select2-sortField-container" role="textbox" aria-readonly="true" title="Name"></span>
+                        <span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span>
+                    </span>
+                </div>
+            `;
+            $('.dataTables_filter').before(sortDropdown);
+            $('#sortField').select2();
+        },
+        "drawCallback": function() {
+            if (currentView === 'map') {
+                updateMapMarkers();
+            }
+        }
+    });
+
+
+
+    $('#tableViewBtn').click(function() {
         if (currentView !== 'table') {
             currentView = 'table';
             $('#tableContainer').show();
             $('#manuscripts_map').hide();
-            $('#placeTypeSelector').hide();
+            $('#placeTypeSelector').closest('.select2-container').hide();
             manuscripts_table.page.len(savedPageLength).draw();
             if (map) {
                 map.remove();
                 map = null;
+                markerClusterGroup = null;
             }
-            $('#tableViewBtn').addClass('bg-blue-500 text-white').removeClass('bg-gray-200');
-            $('#mapViewBtn').removeClass('bg-blue-500 text-white').addClass('bg-gray-200');
+            $('#tableViewBtn').addClass('font-bold bg-blue-500').removeClass('bg-gray-200');
+            $('#mapViewBtn').removeClass('font-bold bg-blue-500').addClass('bg-gray-200');
         }
     });
 
@@ -1181,13 +1246,15 @@ manuscripts_init = function()
             savedPageLength = manuscripts_table.page.len();
             $('#tableContainer').hide();
             $('#manuscripts_map').show();
-            $('#placeTypeSelector').show();
+            $('#placeTypeSelector').closest('.select2-container').show();
             manuscripts_table.page.len(-1).draw();
             initMap();
-            $('#mapViewBtn').addClass('bg-blue-500 text-white').removeClass('bg-gray-200');
-            $('#tableViewBtn').removeClass('bg-blue-500 text-white').addClass('bg-gray-200');
+            $('#mapViewBtn').addClass('font-bold bg-blue-500').removeClass('bg-gray-200');
+            $('#tableViewBtn').removeClass('font-bold bg-blue-500').addClass('bg-gray-200');
         }
     });
+
+    $('#placeTypeSelector').select2();
 
     $('#placeTypeSelector').change(function() {
         currentPlaceType = $(this).val();
@@ -1196,6 +1263,11 @@ manuscripts_init = function()
         }
     });
 
+    $(document).on('change', '#sortField', function() {
+        var column = $(this).val();
+        var columnIndex = manuscripts_table.column(column + ':name').index();
+        manuscripts_table.order([columnIndex, 'asc']).draw();
+    });
 
 
 }
