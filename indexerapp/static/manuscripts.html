@@ -1003,9 +1003,22 @@
 
         <div class id="resizer"> </div>
 
+        <div class="view-toggle mb-4">
+        <button id="tableViewBtn" class="bg-blue-500 text-white px-4 py-2 rounded">Table View</button>
+        <button id="mapViewBtn" class="bg-gray-200 px-4 py-2 rounded">Map View</button>
+        <select id="placeTypeSelector" class="ml-4 px-2 py-1 rounded" style="display: none;">
+            <option value="contemporary_repository_place">Contemporary Repository Place</option>
+            <option value="place_of_origin">Place of Origin</option>
+            <option value="binding_place">Binding Place</option>
+        </select>
+        </div>
+
         <!-- <div class="w-full" id="rightColumn"> </div> -->
         <div class="w-full" id="rightColumns">
+        <div id="tableContainer">
             <table id="manuscripts" class="table table-striped table-bordered table-hover overflow-x-auto" style="width:100%"></table>
+        </div>
+        <div id="manuscripts_map" style="display: none; height: 600px;"></div>
         </div>
     </div>
 

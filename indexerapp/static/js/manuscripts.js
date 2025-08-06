@@ -990,104 +990,210 @@ manuscripts_init = function()
         d.order_column = 'dating__year_from';
         d.order_direction = 'asc'
     }
+    
+    var map = null;
+    var allMarkers = [];
+    var map_bounds;
+    var savedPageLength = 25;
+    var currentView = 'table';
+    var currentPlaceType = 'contemporary_repository_place';
+
 
     var manuscripts_table = $('#manuscripts').DataTable({
         "ajax": {
-            "url": pageRoot+"/api/manuscripts/?format=datatables", // Add your URL here
+            "url": pageRoot + "/api/manuscripts/?format=datatables",
             "dataSrc": function (data) {
-                var processedData=[]
-
-                for(var c in data.data)
-                {
-                    processedData[c] = {}
-                    for(var f in data.data[c])
-                    {
-                        processedData[c][f] = getPrintableValues(f,data.data[c][f]).value;
+                var processedData = [];
+                for (var c in data.data) {
+                    processedData[c] = {};
+                    for (var f in data.data[c]) {
+                        if (f === 'contemporary_repository_place' || f === 'place_of_origin' || f === 'binding_place') {
+                            // Extract subfields to flatten the structure
+                            processedData[c][f + '_name'] = data.data[c][f] ? data.data[c][f].name : '';
+                            processedData[c][f + '_latitude'] = data.data[c][f] ? data.data[c][f].latitude : null;
+                            processedData[c][f + '_longitude'] = data.data[c][f] ? data.data[c][f].longitude : null;
+                        } else {
+                            processedData[c][f] = getPrintableValues(f, data.data[c][f]).value;
+                        }
                     }
                 }
-                
                 return processedData;
             },
             "data": getFilterData
         },
         "processing": false,
         "serverSide": true,
-        "lengthMenu": [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"] ],
+        "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
         "pagingType": "full_numbers",
-        "pageLength": 25,
+        "pageLength": savedPageLength,
         "columns": [
-            { "data": "main_script", "title": "Main Script" , visible: false },
-
-            { 
-                "data": "image", "title": "Image", "width": "220px",
+            { "data": "main_script", "title": "Main Script", visible: false },
+            {
+                "data": "image",
+                "title": "Image",
+                "width": "220px",
                 "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
-                    if(oData.image.length > 3)
-                        $(nTd).html("<img src='"+oData.image+"' style='max-heigth: 170px; max-width: 190px;'></img>");
-            }},
-
-            { 
-                "data": "name", "title": "Info",
+                    if (oData.image.length > 3) {
+                        $(nTd).html("<img src='" + oData.image + "' style='max-height: 170px; max-width: 190px;'></img>");
+                    }
+                }
+            },
+            {
+                "data": "name",
+                "title": "Info",
                 "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
-                        let html = "<h3 class='ms_name'><a href=/static/page.html?p=manuscript&id="+oData.id+">"+oData.rism_id+" "+oData.name+"</a></h3>"
-                        +"<div class='left_script_content'>"
-                            +"<div class='ms_foreign_id'><span class='mspltext'> "+oData.contemporary_repository_place+':</span> '+oData.foreign_id+"<span class='mspltext'> ("+foreign_id_name+")</span>, "+oData.shelf_mark+"<span class='mspltext'> (Shelfmark)</span></div>"
-                            /*+"<div class='ms_contemporary_repository_place'><b>Contemporary repository place: </b>"+oData.contemporary_repository_place+"</div>"*/
-                            +"<div class='ms_dating'><b>Dating: </b>"+oData.dating+"</div>"
-                            +"<div class='ms_place_of_origin'><b>Place of origin: </b>"+oData.place_of_origin+"</div>"
-                            
-                            +"<div class='ms_place_of_origin'><b>Medieval provenance: </b>"+oData.ms_provenance+"</div>"
-                        +"</div>"
-
-                        /*+"<div class='ms_main_script'><b>Main script: </b>"+oData.main_script+"</div>"*/
-                        
-                        +"<div class='right_script_content'>"
-                            +"<div class='ms_folios'><span class='decorated_left'>Number of folios: </span><span class='decorated_right'>"+oData.folios_no+"</span></div>"
-                            +"<div class='ms_measurements'><span class='decorated_left'>Measurements: </span><span class='decorated_right'>"+oData.page_size_max_h+"mm x "+oData.page_size_max_w+"mm</span></div>"
-                            +"<div class='ms_main_script'><span class='decorated_left'>Main script: </span><span class='decorated_right'>"+oData.main_script+"</span></div>"
-
-                            +"<div class='ms_decorated'><span class='decorated_left'>Decorated: </span><span class='decorated_right'>"+oData.decorated+"</span></div>"
-                            +"<div class='ms_music_notation'><span class='decorated_left'>Music notation: </span><span class='decorated_right'>"+oData.music_notation+"</span></div>"
-                            +"<div class='ms_binding_date'><span class='decorated_left'>Binding date: </span><span class='decorated_right'>"+oData.binding_date+"</span></div>"
-
-                            /*
-                            +"<div class='ms_how_many_columns_mostly'><span class='decorated_left'>How many columns (mostly): </span><span class='decorated_right'>"+oData.how_many_columns_mostly+"</span></div>"
-                            +"<div class='ms_lines_per_page_usually'><span class='decorated_left'>Lines per page usually: </span><span class='decorated_right'>"+oData.lines_per_page_usually+"</span></div>"
-                            +"<div class='ms_how_many_quires'><span class='decorated_left'>How many quires: </span><span class='decorated_right'>"+oData.how_many_quires+"</span></div>"
-                            */
-                        +"</div>"
-                        
-                        ;
-
-                        $(nTd).html(html);
-            }},
-
+                    let html = "<h3 class='ms_name'><a href=/static/page.html?p=manuscript&id=" + oData.id + ">" + oData.rism_id + " " + oData.name + "</a></h3>"
+                        + "<div class='left_script_content'>"
+                        + "<div class='ms_foreign_id'><span class='mspltext'> " + oData.contemporary_repository_place_name + ":</span> " + oData.foreign_id + "<span class='mspltext'> (" + foreign_id_name + ")</span>, " + oData.shelf_mark + "<span class='mspltext'> (Shelfmark)</span></div>"
+                        + "<div class='ms_dating'><b>Dating: </b>" + oData.dating + "</div>"
+                        + "<div class='ms_place_of_origin'><b>Place of origin: </b>" + oData.place_of_origin_name + "</div>"
+                        + "<div class='ms_place_of_origin'><b>Medieval provenance: </b>" + oData.ms_provenance + "</div>"
+                        + "</div>"
+                        + "<div class='right_script_content'>"
+                        + "<div class='ms_folios'><span class='decorated_left'>Number of folios: </span><span class='decorated_right'>" + oData.folios_no + "</span></div>"
+                        + "<div class='ms_measurements'><span class='decorated_left'>Measurements: </span><span class='decorated_right'>" + oData.page_size_max_h + "mm x " + oData.page_size_max_w + "mm</span></div>"
+                        + "<div class='ms_main_script'><span class='decorated_left'>Main script: </span><span class='decorated_right'>" + oData.main_script + "</span></div>"
+                        + "<div class='ms_decorated'><span class='decorated_left'>Decorated: </span><span class='decorated_right'>" + oData.decorated + "</span></div>"
+                        + "<div class='ms_music_notation'><span class='decorated_left'>Music notation: </span><span class='decorated_right'>" + oData.music_notation + "</span></div>"
+                        + "<div class='ms_binding_date'><span class='decorated_left'>Binding date: </span><span class='decorated_right'>" + oData.binding_date + "</span></div>"
+                        + "</div>";
+                    $(nTd).html(html);
+                }
+            },
             { "data": "id", "title": "ID", visible: false },
-            /*{ "data": "name", "title": "Name",
-            "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
-                $(nTd).html("<a href=/static/page.html?p=manuscript&id="+oData.id+">"+oData.name+"</a>");
-            }},*/
-            { "data": "rism_id", "title": "rism_id" , visible: false },
-            { "data": "ms_provenance", "title": "ms_provenance" , visible: false },
-            { "data": "folios_no", "title": "folios_no" , visible: false },
-            { "data": "page_size_max_h", "title": "page_size_max_h" , visible: false },
-            { "data": "page_size_max_w", "title": "page_size_max_w" , visible: false },
-            { "data": "foreign_id", "title": foreign_id_name , visible: false },
-            { "data": "contemporary_repository_place", "title": "Contemporary Repository Place" , visible: false },
-            { "data": "shelf_mark", "title": "Shelfmark" , visible: false },
-            { "data": "place_of_origin", "title": "Place of origin" , visible: false },
-            { "data": "dating", "title": "Dating" , visible: false },
-            { "data": "dating_year", "title": "dating_year" , visible: false },
-            /*{ "data": "how_many_columns_mostly", "title": "How Many Columns Mostly" , visible: false },
-            { "data": "lines_per_page_usually", "title": "Lines per Page Usually" , visible: false },
-            { "data": "how_many_quires", "title": "How Many Quires" , visible: false },*/
-            { "data": "decorated", "title": "Decorated" , visible: false },
-            { "data": "music_notation", "title": "Music Notation" , visible: false },
-            { "data": "binding_date", "title": "Binding Date" , visible: false }
-            // Add more columns as needed
+            { "data": "rism_id", "title": "rism_id", visible: false },
+            { "data": "ms_provenance", "title": "ms_provenance", visible: false },
+            { "data": "folios_no", "title": "folios_no", visible: false },
+            { "data": "page_size_max_h", "title": "page_size_max_h", visible: false },
+            { "data": "page_size_max_w", "title": "page_size_max_w", visible: false },
+            { "data": "foreign_id", "title": foreign_id_name, visible: false },
+            { "data": "contemporary_repository_place_name", "title": "Contemporary Repository Place Name", visible: false },
+            { "data": "contemporary_repository_place_latitude", "title": "Contemporary Repository Place Latitude", visible: false },
+            { "data": "contemporary_repository_place_longitude", "title": "Contemporary Repository Place Longitude", visible: false },
+            { "data": "shelf_mark", "title": "Shelfmark", visible: false },
+            { "data": "place_of_origin_name", "title": "Place of Origin Name", visible: false },
+            { "data": "place_of_origin_latitude", "title": "Place of Origin Latitude", visible: false },
+            { "data": "place_of_origin_longitude", "title": "Place of Origin Longitude", visible: false },
+            { "data": "dating", "title": "Dating", visible: false },
+            { "data": "dating_year", "title": "dating_year", visible: false },
+            { "data": "decorated", "title": "Decorated", visible: false },
+            { "data": "music_notation", "title": "Music Notation", visible: false },
+            { "data": "binding_date", "title": "Binding Date", visible: false },
+            { "data": "binding_place_name", "title": "Binding Place Name", visible: false },
+            { "data": "binding_place_latitude", "title": "Binding Place Latitude", visible: false },
+            { "data": "binding_place_longitude", "title": "Binding Place Longitude", visible: false }
         ],
-        //"order": [
-        //    { "data": "dating_year", "order": "desc" },  // Sort by the "manuscript_name" column in ascending order
-        //]
+        "drawCallback": function() {
+            if (currentView === 'map') {
+                updateMapMarkers();
+            }
+        }
+    });
+
+    function initMap() {
+        if (map) {
+            map.remove();
+        }
+
+        var southWest = L.latLng(-89.98155760646617, -180),
+            northEast = L.latLng(89.99346179538875, 180);
+        var bounds = L.latLngBounds(southWest, northEast);
+
+        var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        });
+
+        map = L.map('manuscripts_map', {
+            center: bounds.getCenter(),
+            zoom: 2,
+            layers: [osm],
+            maxBounds: bounds,
+            maxBoundsViscosity: 1.0
+        });
+
+        updateMapMarkers();
+    }
+
+    function updateMapMarkers() {
+        if (!map) return;
+
+        allMarkers.forEach(marker => marker.remove());
+        allMarkers = [];
+
+        var data = manuscripts_table.rows({ search: 'applied' }).data().toArray();
+        data.forEach((item, index) => {
+            let lat, lon, name;
+            if (currentPlaceType === 'contemporary_repository_place') {
+                lat = item.contemporary_repository_place_latitude;
+                lon = item.contemporary_repository_place_longitude;
+                name = item.contemporary_repository_place_name;
+            } else if (currentPlaceType === 'place_of_origin') {
+                lat = item.place_of_origin_latitude;
+                lon = item.place_of_origin_longitude;
+                name = item.place_of_origin_name;
+            } else {
+                lat = item.binding_place_latitude;
+                lon = item.binding_place_longitude;
+                name = item.binding_place_name;
+            }
+
+            if (lat && lon && !isNaN(lat) && !isNaN(lon)) {
+                var marker = new L.Marker(new L.LatLng(lat, lon), {
+                    icon: new L.NumberedDivIcon({ number: index + 1 }),
+                    autoPanOnFocus: false
+                });
+                marker.addTo(map);
+                marker.bindPopup("<b>" + (name || "Unknown") + "</b>", { autoPan: false });
+                allMarkers.push(marker);
+            }
+        });
+
+        if (allMarkers.length > 0) {
+            var group = new L.featureGroup(allMarkers);
+            map_bounds = group.getBounds();
+            map.fitBounds(map_bounds, { padding: [50, 50] });
+        }
+
+        map.invalidateSize();
+    }
+
+
+        $('#tableViewBtn').click(function() {
+        if (currentView !== 'table') {
+            currentView = 'table';
+            $('#tableContainer').show();
+            $('#manuscripts_map').hide();
+            $('#placeTypeSelector').hide();
+            manuscripts_table.page.len(savedPageLength).draw();
+            if (map) {
+                map.remove();
+                map = null;
+            }
+            $('#tableViewBtn').addClass('bg-blue-500 text-white').removeClass('bg-gray-200');
+            $('#mapViewBtn').removeClass('bg-blue-500 text-white').addClass('bg-gray-200');
+        }
+    });
+
+    $('#mapViewBtn').click(function() {
+        if (currentView !== 'map') {
+            currentView = 'map';
+            savedPageLength = manuscripts_table.page.len();
+            $('#tableContainer').hide();
+            $('#manuscripts_map').show();
+            $('#placeTypeSelector').show();
+            manuscripts_table.page.len(-1).draw();
+            initMap();
+            $('#mapViewBtn').addClass('bg-blue-500 text-white').removeClass('bg-gray-200');
+            $('#tableViewBtn').removeClass('bg-blue-500 text-white').addClass('bg-gray-200');
+        }
+    });
+
+    $('#placeTypeSelector').change(function() {
+        currentPlaceType = $(this).val();
+        if (currentView === 'map') {
+            updateMapMarkers();
+        }
     });
 
 
