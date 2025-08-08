@@ -225,7 +225,7 @@ class Decoration(models.Model):
     
     #decoration_colour = models.ForeignKey('Colours', models.DO_NOTHING, related_name='decoration_colour', blank=True, null=True)
 
-    monochrome_or_colour = models.CharField(max_length=2,choices=[("M", "monochromatic"),("B", "bicolor"),("C", "in colour")], blank=True, null=True)
+    monochrome_or_colour = models.CharField(max_length=2,choices=[("M", "monochromatic"),("B", "bicolored"),("C", "multicolored")], blank=True, null=True)
 
     #characteristic = models.ForeignKey('Characteristics', models.DO_NOTHING, related_name='decoration_characteristic', blank=True, null=True)
     technique = models.ForeignKey('DecorationTechniques', models.DO_NOTHING, related_name='decoration_technique', blank=True, null=True)

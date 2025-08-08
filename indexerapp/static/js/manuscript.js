@@ -1035,11 +1035,11 @@ function init_decoration_table(table_info) {
                     let html_text = '';
 
                     if(monochrome_or_colour=='C')
-                        html_text = '<b>in colour</b>'
+                        html_text = '<b>multicolored</b>'
                     else if (monochrome_or_colour=='M')
                         html_text = '<b>monochromatic</b>'
                     else if (monochrome_or_colour=='B')
-                        html_text = '<b>bicolor</b>'
+                        html_text = '<b>bicolored</b>'
 
                     for(var c=0; c<colours_list.length; ++c)
                     {

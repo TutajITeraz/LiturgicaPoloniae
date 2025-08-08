@@ -199,7 +199,7 @@ This is the db structure:
 "decoration","size_characteristic","varchar", can be: [("SMALL" meaning "small"),("1LINE" meaning "1-line"),("2LINES" meaning "2-lines"),("3LINES" meaning "3-lines"),("1SYSTEM" meaning "1-system"),("2SYSTEMS" meaning "2-systems"),("LARGE" meaning "large"),("FULL" meaning "full page")]
 "decoration","size_height","int"
 "decoration","size_width","int"
-"decoration","monochrome_or_colour","varchar", can be "M" if monochromatic, "B" if bicolor, or "C" if in colour
+"decoration","monochrome_or_colour","varchar", can be "M" if monochromatic, "B" if bicolored, or "C" if multicolored
 "decoration","comments","longtext"
 "decoration","entry_date","datetime"
 "decoration","calendar_id","bigint"
