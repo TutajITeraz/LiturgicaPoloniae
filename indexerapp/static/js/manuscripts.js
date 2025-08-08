@@ -1152,7 +1152,7 @@ manuscripts_init = function()
                 "data": "name",
                 "title": "Info",
                 "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
-                    let html = "<h3 class='ms_name'><a href='/page.html?p=manuscript&id=" + oData.id + "' class='text-blue-600 hover:underline'>" + oData.rism_id + " " + (oData.name || '') + "</a></h3>"
+                    let html = "<h3 class='ms_name'><a href='/static/page.html?p=manuscript&id=" + oData.id + "' class='text-blue-600 hover:underline'>" + oData.rism_id + " " + (oData.name || '') + "</a></h3>"
                         + "<div class='left_script_content'>"
                         + "<div class='ms_foreign_id'><span class='mspltext'> " + (oData.contemporary_repository_place_name || '') + ":</span> " + (oData.foreign_id || '') + "<span class='mspltext'> (" + foreign_id_name + ")</span>, " + (oData.shelf_mark || '') + "<span class='mspltext'> (Shelfmark)</span></div>"
                         + "<div class='ms_dating'><b>Dating: </b>" + (oData.dating || '') + "</div>"
