@@ -987,8 +987,9 @@ manuscripts_init = function()
 
         d.projectId = projectId;
 
-        d.order_column = 'dating__year_from';
-        d.order_direction = 'asc'
+        //d.order_column = 'dating__year_from';
+        d.order_column = $('#sortField').val();
+        d.order_direction = $('.sort-arrow').data('direction') || 'asc'
     }
     
     var manuscripts_table;
@@ -1195,23 +1196,6 @@ manuscripts_init = function()
         ],
         "initComplete": function() {
             // Inject sort dropdown before the search bar
-            var sortDropdown = `
-                <div class="sort-container mb-2 flex justify-start items-center">
-                    <label for="sortField" class="young-serif text-[10px] sm:text-xs md:text-[8pt] uppercase mr-2">Sort by:</label>
-                    <span class="select2 select2-container select2-container--default">
-                        <select id="sortField" class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-disabled="false" aria-labelledby="select2-sortField-container" aria-controls="select2-sortField-container">
-                            <option value="name" selected>Name</option>
-                            <option value="dating_year">Dating Year</option>
-                            <option value="contemporary_repository_place_name">Contemporary Repository Place</option>
-                            <option value="place_of_origin_name">Place of Origin</option>
-                            <option value="binding_place_name">Binding Place</option>
-                        </select>
-                        <span class="select2-selection__rendered" id="select2-sortField-container" role="textbox" aria-readonly="true" title="Name"></span>
-                        <span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span>
-                    </span>
-                </div>
-            `;
-            $('.dataTables_filter').before(sortDropdown);
             $('#sortField').select2();
         },
         "drawCallback": function() {
@@ -1219,6 +1203,24 @@ manuscripts_init = function()
                 updateMapMarkers();
             }
         }
+    });
+
+    $('#sortField').select2({
+        minimumResultsForSearch: Infinity // Disable search/typing
+    });
+
+    // Toggle sort direction and reload DataTable
+    $('.sort-arrow').on('click', function() {
+        var $arrow = $(this);
+        var currentDirection = $arrow.data('direction');
+        var newDirection = currentDirection === 'asc' ? 'desc' : 'asc';
+        $arrow.data('direction', newDirection).text(newDirection === 'asc' ? '▲' : '▼');
+        manuscripts_table.ajax.reload();
+    });
+
+    // Reload DataTable on sortField change
+    $('#sortField').on('change', function() {
+        manuscripts_table.ajax.reload();
     });
 
 
@@ -1261,12 +1263,6 @@ manuscripts_init = function()
         if (currentView === 'map') {
             updateMapMarkers();
         }
-    });
-
-    $(document).on('change', '#sortField', function() {
-        var column = $(this).val();
-        var columnIndex = manuscripts_table.column(column + ':name').index();
-        manuscripts_table.order([columnIndex, 'asc']).draw();
     });
 
 

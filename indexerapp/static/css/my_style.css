@@ -838,7 +838,7 @@ colgroup {
     font-family: "Fira Sans", sans-serif;
 }
 div.dt-container .dt-search input {
-    width: auto !important;
+    width: 250px !important;
     padding: 5px;
 }
 
@@ -946,4 +946,35 @@ ul.decoration_comment {
 .selected-circle {
     fill: black;
     r: 15;  /* Podwójna wielkość w porównaniu do oryginalnej */
+}
+
+/* for sorting manuscripts */
+.sort-field-container .select2-selection--single {
+    background-color: rgba(0, 0, 0, 0);
+    border: 1px solid rgb(170, 170, 170);
+    border-radius: 3px;
+    font-family: "Baskerville", Georgia, serif;
+    font-size: 10.6667px;
+    line-height: 16px;
+    padding: 5px;
+    width: 250px;
+    height: 26px;
+}
+.sort-field-container .select2-selection--single .select2-selection__rendered {
+    color: rgb(0, 0, 0);
+    line-height: 16px;
+    padding-left: 5px;
+}
+.sort-field-container .select2-selection--single .select2-selection__arrow {
+    height: 26px;
+    right: 5px;
+}
+.sort-field-container .select2-selection--single .select2-selection__arrow b {
+    border-color: rgb(0, 0, 0) transparent transparent transparent;
+}
+.sort-arrow {
+    cursor: pointer;
+    color: #d20000;
+    margin-left: 4px;
+    font-size: 20px;
 }
