@@ -703,9 +703,7 @@ class ScriptNames(models.Model):
         txt = self.name
         if txt is None:
             return "noname"
-        if len(txt)>30:
-            txt = txt[0:30]
-            txt += '(...)'
+
         return txt
 
 class ImproveOurDataEntry(models.Model):
